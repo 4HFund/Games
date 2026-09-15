@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Super Mario - Mobile & Desktop Playable</title>
+<title>SUPER FOUNDERY BROS.</title>
 <style>
   * {
     margin: 0;
@@ -14,7 +14,7 @@
     user-select: none;
   }
   body {
-    background: #111;
+    background: #0f141d;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -23,6 +23,7 @@
     overflow: hidden;
     touch-action: none;
     font-family: 'Courier New', Courier, monospace;
+    color: #f7eed7;
   }
   #game-wrapper {
     position: relative;
@@ -30,17 +31,35 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 600px;
+    max-width: 768px;
+    padding: 6px;
+  }
+  #header-banner {
+    text-align: center;
+    margin-bottom: 4px;
+    text-shadow: 2px 2px 0px #1a2233;
+  }
+  #header-banner h1 {
+    font-size: clamp(16px, 4vw, 24px);
+    color: #e06020;
+    letter-spacing: 2px;
+    font-weight: 900;
+  }
+  #header-banner p {
+    font-size: clamp(9px, 2.2vw, 12px);
+    color: #ffd040;
+    letter-spacing: 1px;
+    font-weight: bold;
   }
   #canvas-container {
     position: relative;
     width: 100%;
-    background: #5c94fc;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.8);
-    border: 3px solid #222;
-    border-radius: 4px;
-    line-height: 0;
+    background: #1b283d;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 12px rgba(224,96,32,0.4);
+    border: 3px solid #e06020;
+    border-radius: 6px;
     aspect-ratio: 256 / 224;
+    overflow: hidden;
   }
   canvas {
     width: 100%;
@@ -49,15 +68,12 @@
     image-rendering: crisp-edges;
     display: block;
   }
-
-  /* Mobile On-Screen Controller */
   #touch-controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 18px 24px;
-    margin-top: 8px;
+    padding: 10px 18px 4px 18px;
     touch-action: none;
   }
   .dpad {
@@ -67,40 +83,60 @@
   .btn {
     width: 58px;
     height: 58px;
-    background: #2a2a2a;
-    border: 3px solid #444;
+    background: #1c2738;
+    border: 3px solid #364860;
     border-radius: 50%;
-    color: #fff;
+    color: #ffd040;
     font-size: 20px;
     font-weight: bold;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.6);
     cursor: pointer;
-    transition: transform 0.05s, background 0.05s;
+    touch-action: none;
   }
   .btn:active, .btn.pressed {
-    background: #444;
+    background: #364860;
     transform: scale(0.92);
-    border-color: #666;
+    border-color: #e06020;
   }
-  .btn-jump {
-    width: 68px;
-    height: 68px;
-    background: #d82800;
-    border-color: #f85830;
-    font-size: 16px;
+  .action-buttons {
+    display: flex;
+    gap: 12px;
+  }
+  .btn-action {
+    width: 58px;
+    height: 58px;
+    font-size: 11px;
     letter-spacing: 1px;
   }
+  .btn-fire {
+    background: #e06020;
+    border-color: #ff8547;
+    color: #fff;
+  }
+  .btn-fire:active, .btn-fire.pressed {
+    background: #a84010;
+  }
+  .btn-jump {
+    background: #ffd040;
+    border-color: #ffe07a;
+    color: #2b1f00;
+  }
   .btn-jump:active, .btn-jump.pressed {
-    background: #a81000;
+    background: #d4a71c;
   }
 </style>
 </head>
 <body>
 
 <div id="game-wrapper">
+  <div id="header-banner">
+    <h1>SUPER FOUNDERY BROS.</h1>
+    <p>“SUNDAYS ARE JUST THE START”</p>
+  </div>
+
   <div id="canvas-container">
     <canvas id="canvas" width="256" height="224"></canvas>
   </div>
@@ -110,168 +146,140 @@
       <div class="btn" id="btn-left">◀</div>
       <div class="btn" id="btn-right">▶</div>
     </div>
-    <div class="btn btn-jump" id="btn-jump">JUMP</div>
+    <div class="action-buttons">
+      <div class="btn btn-action btn-fire" id="btn-action">FLAME</div>
+      <div class="btn btn-action btn-jump" id="btn-jump">JUMP</div>
+    </div>
   </div>
 </div>
 
 <script>
+// --- CONSTANTS & CONFIG ---
 const V_WIDTH = 256;
 const V_HEIGHT = 224;
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 ctx.imageSmoothingEnabled = false;
 
-// --- AUDIO SYNTHESIS ---
+// PALETTE
+const P = {
+  steelDark: '#16202e',
+  steelMid: '#24344a',
+  steelLight: '#3a5070',
+  orange: '#e06020',
+  orangeGlow: '#ff8547',
+  gold: '#ffd040',
+  cream: '#f7eed7',
+  creamDark: '#dbcbb0',
+  blueJeans: '#223854',
+  black: '#0a0d14',
+  white: '#ffffff',
+  green: '#2d843b',
+  wood: '#5a351a',
+  purple: '#6b3270',
+  redError: '#c82828'
+};
+
+// --- AUDIO SYNTHESIZER ---
 const AudioEngine = {
   ctx: null,
   init() {
     if (!this.ctx) {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (AudioContext) this.ctx = new AudioContext();
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) this.ctx = new AC();
     }
   },
-  playJump() {
+  playTone(freqs, duration, type = 'square', vol = 0.08) {
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(140, now);
-    osc.frequency.exponentialRampToValueAtTime(560, now + 0.16);
-    gain.gain.setValueAtTime(0.08, now);
-    gain.gain.linearRampToValueAtTime(0, now + 0.16);
+    osc.type = type;
+    freqs.forEach((f, idx) => {
+      osc.frequency.setValueAtTime(f, now + idx * (duration / freqs.length));
+    });
+    gain.gain.setValueAtTime(vol, now);
+    gain.gain.linearRampToValueAtTime(0, now + duration);
     osc.connect(gain);
     gain.connect(this.ctx.destination);
     osc.start(now);
-    osc.stop(now + 0.16);
+    osc.stop(now + duration);
   },
-  playStomp() {
-    if (!this.ctx) return;
-    const now = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(120, now);
-    osc.frequency.exponentialRampToValueAtTime(30, now + 0.12);
-    gain.gain.setValueAtTime(0.12, now);
-    gain.gain.linearRampToValueAtTime(0, now + 0.12);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.12);
-  },
-  playCoin() {
-    if (!this.ctx) return;
-    const now = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(987.77, now);
-    osc.frequency.setValueAtTime(1318.51, now + 0.08);
-    gain.gain.setValueAtTime(0.08, now);
-    gain.gain.linearRampToValueAtTime(0, now + 0.35);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.35);
-  },
-  playBump() {
-    if (!this.ctx) return;
-    const now = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(240, now);
-    osc.frequency.exponentialRampToValueAtTime(60, now + 0.08);
-    gain.gain.setValueAtTime(0.08, now);
-    gain.gain.linearRampToValueAtTime(0, now + 0.08);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.08);
+  jump() { this.playTone([160, 480], 0.16, 'square', 0.08); },
+  coin() { this.playTone([980, 1320], 0.28, 'sine', 0.1); },
+  powerUp() { this.playTone([260, 330, 390, 520, 660, 780], 0.35, 'triangle', 0.12); },
+  bump() { this.playTone([200, 80], 0.08, 'triangle', 0.1); },
+  stomp() { this.playTone([110, 40], 0.12, 'triangle', 0.12); },
+  flame() { this.playTone([540, 220, 110], 0.15, 'sawtooth', 0.06); },
+  levelClear() {
+    this.playTone([392, 523, 659, 784, 659, 784, 1046], 0.8, 'triangle', 0.15);
   }
 };
 
 window.addEventListener('click', () => AudioEngine.init(), { once: true });
 window.addEventListener('touchstart', () => AudioEngine.init(), { once: true });
 
-// --- INPUT HANDLER (Keyboard + Multi-touch) ---
-const keys = { left: false, right: false, jump: false };
+// --- INPUT HANDLING ---
+const keys = { left: false, right: false, jump: false, action: false };
 
 window.addEventListener('keydown', (e) => {
   AudioEngine.init();
   if (['ArrowLeft', 'KeyA'].includes(e.code)) keys.left = true;
   if (['ArrowRight', 'KeyD'].includes(e.code)) keys.right = true;
   if (['ArrowUp', 'KeyW', 'Space'].includes(e.code)) keys.jump = true;
+  if (['KeyF', 'KeyJ', 'ShiftLeft', 'ShiftRight'].includes(e.code)) {
+    if (!keys.action) shootFlame();
+    keys.action = true;
+  }
 });
 
 window.addEventListener('keyup', (e) => {
   if (['ArrowLeft', 'KeyA'].includes(e.code)) keys.left = false;
   if (['ArrowRight', 'KeyD'].includes(e.code)) keys.right = false;
   if (['ArrowUp', 'KeyW', 'Space'].includes(e.code)) keys.jump = false;
+  if (['KeyF', 'KeyJ', 'ShiftLeft', 'ShiftRight'].includes(e.code)) keys.action = false;
 });
 
-function bindTouch(elementId, actionKey) {
-  const btn = document.getElementById(elementId);
-  const press = (e) => {
+function bindBtn(id, keyName, onPress) {
+  const el = document.getElementById(id);
+  const p = (e) => {
     e.preventDefault();
     AudioEngine.init();
-    keys[actionKey] = true;
-    btn.classList.add('pressed');
+    keys[keyName] = true;
+    el.classList.add('pressed');
+    if (onPress) onPress();
   };
-  const release = (e) => {
+  const r = (e) => {
     e.preventDefault();
-    keys[actionKey] = false;
-    btn.classList.remove('pressed');
+    keys[keyName] = false;
+    el.classList.remove('pressed');
   };
-  btn.addEventListener('touchstart', press, { passive: false });
-  btn.addEventListener('touchend', release, { passive: false });
-  btn.addEventListener('touchcancel', release, { passive: false });
+  el.addEventListener('touchstart', p, { passive: false });
+  el.addEventListener('touchend', r, { passive: false });
+  el.addEventListener('touchcancel', r, { passive: false });
+  el.addEventListener('mousedown', p);
+  el.addEventListener('mouseup', r);
+  el.addEventListener('mouseleave', r);
 }
 
-bindTouch('btn-left', 'left');
-bindTouch('btn-right', 'right');
-bindTouch('btn-jump', 'jump');
+bindBtn('btn-left', 'left');
+bindBtn('btn-right', 'right');
+bindBtn('btn-jump', 'jump');
+bindBtn('btn-action', 'action', () => shootFlame());
 
-// --- RETRO NES PALETTE ---
-const C = {
-  sky: '#5c94fc',
-  groundTop: '#00a800',
-  groundDark: '#c84c0c',
-  brickLight: '#fc9838',
-  brickDark: '#c84c0c',
-  brickLine: '#000000',
-  qYellow: '#fcbc3c',
-  qDark: '#c84c0c',
-  qEmpty: '#8c5828',
-  white: '#ffffff',
-  black: '#000000',
-  marioRed: '#d82800',
-  marioSkin: '#fc9838',
-  marioBrown: '#684000',
-  goombaBrown: '#a81000',
-  goombaSkin: '#fc9838',
-  pipeGreen: '#00a800',
-  pipeDark: '#005800',
-  pipeLight: '#80d010',
-  hillGreen: '#00a800',
-  hillBorder: '#005800',
-  cloudWhite: '#fcffff'
-};
-
-// --- PIXEL SPRITE FACTORY ---
-function createPixelSprite(width, height, pixelMap, palette) {
+// --- SPRITE GENERATION ---
+function makeSprite(width, height, map, pal) {
   const c = document.createElement('canvas');
   c.width = width;
   c.height = height;
   const pctx = c.getContext('2d');
   for (let y = 0; y < height; y++) {
-    const row = pixelMap[y];
+    const row = map[y];
     if (!row) continue;
     for (let x = 0; x < width; x++) {
-      const char = row[x];
-      if (char && char !== '.' && palette[char]) {
-        pctx.fillStyle = palette[char];
+      const ch = row[x];
+      if (ch && ch !== '.' && pal[ch]) {
+        pctx.fillStyle = pal[ch];
         pctx.fillRect(x, y, 1, 1);
       }
     }
@@ -279,652 +287,964 @@ function createPixelSprite(width, height, pixelMap, palette) {
   return c;
 }
 
-const MARIO_PAL = { 'R': C.marioRed, 'S': C.marioSkin, 'B': C.marioBrown };
-const marioRun1 = createPixelSprite(16, 16, [
-  ".....RRRRR......",
-  "....RRRRRRRRR...",
-  "....BBBSS.S.....",
-  "...B.S.SSS.S....",
-  "...B.SS.SSS.S...",
-  "...BBSSS.SSSS...",
-  ".....SSSSSSS....",
-  "...RRRRBRRR.....",
-  "..RRRRRBRRRRR...",
-  ".RRRRRRBBRRRRR..",
-  ".SS.RRBRRBR.SS..",
-  ".SSS.BBBB.SSSS..",
-  ".....BBBB.......",
-  "...BBB..BBB.....",
-  "..BBBB..........",
+// Media Volunteer Sprite Palette:
+// O: Burnt Orange Cap/Trim, S: Dark Steel Blue Shirt, J: Jeans, K: Skin Cream, 
+// H: Headset/Black, G: Warm Gold, W: White, D: Shoes Dark
+const VOL_PAL = {
+  'O': P.orange,
+  'S': P.steelMid,
+  'L': P.steelLight,
+  'J': P.blueJeans,
+  'K': P.cream,
+  'H': P.black,
+  'G': P.gold,
+  'W': P.white,
+  'D': '#1a110a'
+};
+
+// Volunteer Small (16x16)
+const volSmallRun1 = makeSprite(16, 16, [
+  ".....OOOOOO.....",
+  "....OOOOOOOO....",
+  "...HHKKKKKHH....",
+  "...HHKKWKKHH....",
+  "...HHKKKK.H.....",
+  "....HHKKK.......",
+  "....SSLLSSSS....",
+  "...SSSLLSSSSS...",
+  "...OSSSSSSSSO...",
+  "...OK.SSSS.KO...",
+  "....K.JJJJ.K....",
+  ".....JJJJJJ.....",
+  ".....JJ..JJ.....",
+  "....DDD..JJ.....",
+  ".........DDD....",
   "................"
-], MARIO_PAL);
+], VOL_PAL);
 
-const marioRun2 = createPixelSprite(16, 16, [
-  ".....RRRRR......",
-  "....RRRRRRRRR...",
-  "....BBBSS.S.....",
-  "...B.S.SSS.S....",
-  "...B.SS.SSS.S...",
-  "...BBSSS.SSSS...",
-  ".....SSSSSSS....",
-  "....RRRBRRR.....",
-  "...RRRRBRRRRR...",
-  "..RRRRRBBRRRRR..",
-  "..SS.RBRRBR.SS..",
-  ".SSS.BBBB.SSSS..",
-  "....BBBBBB......",
-  "...BBBB..BB.....",
-  "....BBB.........",
+const volSmallRun2 = makeSprite(16, 16, [
+  ".....OOOOOO.....",
+  "....OOOOOOOO....",
+  "...HHKKKKKHH....",
+  "...HHKKWKKHH....",
+  "...HHKKKK.H.....",
+  "....HHKKK.......",
+  "....SSSSSSSS....",
+  "...SSSLLSSSS....",
+  "...OSSSSSSSO....",
+  "...OKSSSSSSKO...",
+  "....K.JJJJ.K....",
+  ".....JJJJJJ.....",
+  "....JJJ..JJJ....",
+  "....DDD..DDD....",
+  "................",
   "................"
-], MARIO_PAL);
+], VOL_PAL);
 
-const marioRun3 = createPixelSprite(16, 16, [
-  ".....RRRRR......",
-  "....RRRRRRRRR...",
-  "....BBBSS.S.....",
-  "...B.S.SSS.S....",
-  "...B.SS.SSS.S...",
-  "...BBSSS.SSSS...",
-  ".....SSSSSSS....",
-  ".....RRRBRR.....",
-  "...RRRRRBRRR....",
-  "..RRRRRRBBRRRR..",
-  "..SS.RRBRRBR.SS.",
-  ".SSS.BBBB.SSSS..",
-  "....BBBBBB......",
-  "...BBBB.BBBB....",
-  "..BBBB...BBBB...",
+const volSmallJump = makeSprite(16, 16, [
+  ".....OOOOOO.....",
+  "....OOOOOOOO....",
+  "...HHKKKKKHH....",
+  "...HHKKWKKHH....",
+  "...HHKKKK.H.....",
+  "....HHKKK.......",
+  "..OK.SSSSSS.KO..",
+  "..OKSSSSSSSSKO..",
+  "...SSSLLSSSS....",
+  "....SSSSSSSS....",
+  ".....JJJJJJ.....",
+  "....JJJJJJJJ....",
+  "...DDD....DDD...",
+  "................",
+  "................",
   "................"
-], MARIO_PAL);
+], VOL_PAL);
 
-const marioJump = createPixelSprite(16, 16, [
-  ".....RRRRR......",
-  "....RRRRRRRRR...",
-  "....BBBSS.S.....",
-  "...B.S.SSS.S....",
-  "...B.SS.SSS.S...",
-  "...BBSSS.SSSS...",
-  ".....SSSSSSS....",
-  "....RRRBRR......",
-  "..RRRRRRBRRR....",
-  ".RRRRRRRBBRRR...",
-  ".SS.RRRBRRBR....",
-  ".SSS.BBBB.SSSS..",
-  "....BBBBBBBSSS..",
-  "...BBBB.BBBB....",
-  "..BBBB...BBB....",
-  ".BBBB..........."
-], MARIO_PAL);
+// Volunteer Big (16x24) - Powered Up with Coffee
+const volBigRun1 = makeSprite(16, 24, [
+  ".....OOOOOO.....",
+  "....OOOOOOOO....",
+  "...OOOOOOOOOO...",
+  "...HHKKKKKHH....",
+  "...HHKKWKKHH....",
+  "...HHKKKK.H.....",
+  "....HHKKKK......",
+  ".....KKKK.......",
+  "....SSSSSSSS....",
+  "...SSSLLSSSSS...",
+  "...SSSLLSSSSS...",
+  "..OSSSSSSSSSSO..",
+  "..OK.SSSSSS.KO..",
+  "..OK.SSSSSS.KO..",
+  "...K.SSSSSS.K...",
+  ".....JJJJJJ.....",
+  "....JJJJJJJJ....",
+  "....JJJ..JJJ....",
+  "....JJJ..JJJ....",
+  "....JJJ..JJJ....",
+  "...DDDD..JJJ....",
+  ".........DDDD...",
+  "................",
+  "................"
+], VOL_PAL);
 
-const GOOMBA_PAL = { 'B': C.goombaBrown, 'S': C.goombaSkin, 'K': C.black, 'W': C.white };
-const goomba1 = createPixelSprite(16, 16, [
-  "......BBBB......",
-  "....BBBBBBBB....",
-  "...BBBBBBBBBB...",
-  "..BBBBBBBBBBBB..",
-  ".BBBWKBBBBKWBBB.",
-  ".BBBWKBBBBKWBBB.",
-  ".BBBWKBBBBKWBBB.",
-  "BBBBKKBBBBKKBBBB",
-  "BBBBSSSSSSSSBBBB",
-  ".BBSSSSSSSSSSBB.",
-  "..SSSSSSSSSSSS..",
-  "..SSSSSSSSSSSS..",
-  "...KKKK..KKKK...",
+const volBigJump = makeSprite(16, 24, [
+  ".....OOOOOO.....",
+  "....OOOOOOOO....",
+  "...OOOOOOOOOO...",
+  "...HHKKKKKHH....",
+  "...HHKKWKKHH....",
+  "...HHKKKK.H.....",
+  "....HHKKKK......",
+  ".....KKKK.......",
+  "..OK.SSSSSS.KO..",
+  "..OKSSSSSSSSKO..",
+  "...SSSLLSSSSS...",
+  "...SSSLLSSSSS...",
+  "....SSSSSSSS....",
+  ".....JJJJJJ.....",
+  "....JJJJJJJJ....",
+  "...JJJJ..JJJJ...",
+  "...JJJ....JJJ...",
+  "..DDDD....DDDD..",
+  "................",
+  "................",
+  "................",
+  "................",
+  "................",
+  "................"
+], VOL_PAL);
+
+// Coffee Mug Power-up (16x16)
+const coffeeSprite = makeSprite(16, 16, [
+  ".....W..W.......",
+  "......W..W......",
+  ".....W..W.......",
+  "....KKKKKK......",
+  "...KDDDDDDK.....",
+  "...KDDDDDDKKK...",
+  "...KDDDDDDK.K...",
+  "...KDDDDDDKKK...",
+  "...KDDDDDDK.....",
+  "...KDDDDDDK.....",
+  "....KKKKKK......",
+  "................",
+  "................",
+  "................",
+  "................",
+  "................"
+], { 'W': P.white, 'K': P.cream, 'D': P.wood });
+
+// Flame Icon Power-up (16x16)
+const flameIconSprite = makeSprite(16, 16, [
+  ".......OO.......",
+  "......OGGO......",
+  ".....OGGGGO.....",
+  ".....OGWGGO.....",
+  "....OGWWGGGO....",
+  "...OGGGWWGGGO...",
+  "...OGGGGGGGO....",
+  "..OGGGGGGGGGO...",
+  "..OGGGGGGGGGO...",
+  "..OGGG..GGGGO...",
+  "...OO....OOO....",
+  "................",
+  "................",
+  "................",
+  "................",
+  "................"
+], { 'O': P.orange, 'G': P.gold, 'W': P.white });
+
+// Enemies Sprites
+// 1. Tangled Cables (16x16)
+const cableMonster = makeSprite(16, 16, [
+  "....KK....KK....",
+  "...KWWK..KWWK...",
+  "...KWKK..KWKK...",
+  "...KKKKKKKKKK...",
+  "..KKKKKKKKKKKK..",
+  ".KKKK..KK..KKKK.",
+  ".KK.KK.KK.KK.KK.",
+  ".KK..KKKKKK..KK.",
   "..KKKKK..KKKKK..",
-  "..KKKK....KKKK..",
-  "................"
-], GOOMBA_PAL);
-
-const goomba2 = createPixelSprite(16, 16, [
-  "......BBBB......",
-  "....BBBBBBBB....",
-  "...BBBBBBBBBB...",
-  "..BBBBBBBBBBBB..",
-  ".BBBWKBBBBKWBBB.",
-  ".BBBWKBBBBKWBBB.",
-  ".BBBWKBBBBKWBBB.",
-  "BBBBKKBBBBKKBBBB",
-  "BBBBSSSSSSSSBBBB",
-  ".BBSSSSSSSSSSBB.",
-  "..SSSSSSSSSSSS..",
-  "..SSSSSSSSSSSS..",
-  "....KKKK.KKKK...",
-  "...KKKKK.KKKKK..",
-  "....KKKK..KKKK..",
-  "................"
-], GOOMBA_PAL);
-
-const goombaFlat = createPixelSprite(16, 16, [
+  "...KK..KK..KK...",
+  "..KK.KK..KK.KK..",
+  ".KK...KKKK...KK.",
+  ".KK..........KK.",
   "................",
-  "................",
-  "................",
-  "................",
-  "................",
-  "................",
-  "................",
-  "................",
-  "....BBBBBBBB....",
-  "..BBBWKKWWKBB...",
-  ".BBBBSSSSSSSSBB.",
-  "BBSSSSSSSSSSSSBB",
-  "BBKKKKKKKKKKKKBB",
-  "KKKKKKKKKKKKKKKK",
   "................",
   "................"
-], GOOMBA_PAL);
+], { 'K': '#2a3342', 'W': P.gold });
 
-const PIRANHA_PAL = { 'R': '#d82800', 'W': '#ffffff', 'G': '#00a800', 'K': '#005800' };
-const piranha1 = createPixelSprite(16, 24, [
-  ".....RRRRRR.....",
-  "...RRRWWWWRRR...",
-  "..RRRWWWWWWWWR..",
-  ".RRRRWWWWWWWWRR.",
-  ".RRRWWWWWWWWWWR.",
-  ".RRRWWRRRRWWRRR.",
+// 2. Dead Battery (16x16)
+const batteryMonster = makeSprite(16, 16, [
+  "......KKKK......",
+  "....KKWWWWKK....",
+  "....KKRRRRKK....",
+  "....KKRRRRKK....",
+  "....KKWWWWKK....",
+  "....KKRRRRKK....",
+  "....KKRRRRKK....",
+  "....KKWWWWKK....",
+  "....KKRRRRKK....",
+  "....KKRRRRKK....",
+  "....KKKKKKKK....",
+  "....DD....DD....",
+  "....DD....DD....",
+  "................",
+  "................",
+  "................"
+], { 'K': P.black, 'W': P.white, 'R': P.redError, 'D': '#444' });
+
+// 3. Technical Difficulties Monster (16x16)
+const glitchMonster = makeSprite(16, 16, [
   "..RRRRRRRRRRRR..",
-  "...RRRRRRRRRR...",
-  "....WWWWWWWW....",
-  "....RRRRRRRR....",
-  ".....GGGGGG.....",
-  ".....GKKKKG.....",
-  ".....GKKKKG.....",
-  ".....GKKKKG.....",
-  "....GGKKKKGG....",
-  "...GGGGKKGGGG...",
-  "..GGGGGKKGGGGG..",
-  ".....GKKKKG.....",
-  ".....GKKKKG.....",
-  ".....GKKKKG.....",
-  ".....GKKKKG.....",
-  ".....GKKKKG.....",
-  ".....GKKKKG.....",
-  ".....GKKKKG....."
-], PIRANHA_PAL);
+  ".RRWWRRRRRRWWRR.",
+  ".RRWWRRRRRRWWRR.",
+  ".RRRRRRRRRRRRRR.",
+  ".RRRRRRKKRRRRRR.",
+  ".RRRRKKKKKKRRRR.",
+  ".RRRRRRKKRRRRRR.",
+  ".RR.RRRRRRRR.RR.",
+  ".RR..RRRRRR..RR.",
+  "..RR.RR..RR.RR..",
+  "....RR....RR....",
+  "................",
+  "................",
+  "................",
+  "................",
+  "................"
+], { 'R': P.purple, 'W': P.white, 'K': P.gold });
 
-const piranha2 = createPixelSprite(16, 24, [
-  ".....RRRRRR.....",
-  "...RRRRRRRRRR...",
-  "..RRRWWWWWWWWR..",
-  ".RRRWWRRRRRWWWR.",
-  ".RRRWWRRRRRWWWR.",
-  ".RRRWWWWWWWWWWR.",
-  "..RRRRRRRRRRRR..",
-  "...RRRRRRRRRR...",
-  "....WWWWWWWW....",
-  "....RRRRRRRR....",
-  ".....GGGGGG.....",
-  ".....GKKKKG.....",
-  ".....GKKKKG.....",
-  ".....GKKKKG.....",
-  "....GGKKKKGG....",
-  "...GGGGKKGGGG...",
-  "..GGGGGKKGGGGG..",
-  ".....GKKKKG.....",
-  ".....GKKKKG.....",
-  ".....GKKKKG.....",
-  ".....GKKKKG.....",
-  ".....GKKKKG.....",
-  ".....GKKKKG.....",
-  ".....GKKKKG....."
-], PIRANHA_PAL);
+// 4. Rolling Basketball Obstacle (14x14)
+const basketballSprite = makeSprite(14, 14, [
+  ".....OOOO.....",
+  "...OOKKKOO...",
+  "..OOK.K.KOO..",
+  ".OOK..K..KOO.",
+  ".OKKKKKKKKKO.",
+  "OOK...K...KOO",
+  "OOK...K...KOO",
+  "OOK...K...KOO",
+  ".OKKKKKKKKKO.",
+  ".OOK..K..KOO.",
+  "..OOK.K.KOO..",
+  "...OOKKKOO...",
+  ".....OOOO.....",
+  ".............."
+], { 'O': P.orange, 'K': P.black });
 
-// --- TILE & ENVIRONMENT RENDERERS ---
-function drawQuestionBlock(ctx, x, y) {
-  ctx.fillStyle = C.qYellow;
-  ctx.fillRect(x, y, 16, 16);
-  ctx.fillStyle = C.qDark;
-  ctx.strokeRect(x + 0.5, y + 0.5, 15, 15);
-  ctx.fillRect(x + 1, y + 1, 1, 1);
-  ctx.fillRect(x + 14, y + 1, 1, 1);
-  ctx.fillRect(x + 1, y + 14, 1, 1);
-  ctx.fillRect(x + 14, y + 14, 1, 1);
-  ctx.fillStyle = C.black;
-  ctx.fillRect(x + 5, y + 3, 6, 2);
-  ctx.fillRect(x + 9, y + 5, 3, 3);
-  ctx.fillRect(x + 6, y + 7, 4, 2);
-  ctx.fillRect(x + 6, y + 9, 3, 2);
-  ctx.fillRect(x + 6, y + 12, 3, 2);
-}
-
-function drawEmptyBlock(ctx, x, y) {
-  ctx.fillStyle = C.qEmpty;
-  ctx.fillRect(x, y, 16, 16);
-  ctx.fillStyle = '#4c2800';
-  ctx.strokeRect(x + 0.5, y + 0.5, 15, 15);
-  ctx.fillRect(x + 1, y + 1, 2, 2);
-  ctx.fillRect(x + 13, y + 1, 2, 2);
-  ctx.fillRect(x + 1, y + 13, 2, 2);
-  ctx.fillRect(x + 13, y + 13, 2, 2);
-}
-
-function drawBrickBlock(ctx, x, y) {
-  ctx.fillStyle = C.brickDark;
-  ctx.fillRect(x, y, 16, 16);
-  ctx.fillStyle = C.brickLight;
-  ctx.fillRect(x + 1, y + 1, 6, 3);
-  ctx.fillRect(x + 9, y + 1, 6, 3);
-  ctx.fillRect(x + 1, y + 5, 2, 3);
-  ctx.fillRect(x + 5, y + 5, 6, 3);
-  ctx.fillRect(x + 13, y + 5, 2, 3);
-  ctx.fillRect(x + 1, y + 9, 6, 3);
-  ctx.fillRect(x + 9, y + 9, 6, 3);
-  ctx.fillRect(x + 1, y + 13, 2, 2);
-  ctx.fillRect(x + 5, y + 13, 6, 2);
-  ctx.fillRect(x + 13, y + 13, 2, 2);
-  ctx.fillStyle = C.brickLine;
-  ctx.fillRect(x, y + 4, 16, 1);
-  ctx.fillRect(x, y + 8, 16, 1);
-  ctx.fillRect(x, y + 12, 16, 1);
-  ctx.fillRect(x + 8, y, 1, 4);
-  ctx.fillRect(x + 4, y + 4, 1, 4);
-  ctx.fillRect(x + 12, y + 4, 1, 4);
-  ctx.fillRect(x + 8, y + 8, 1, 4);
-  ctx.fillRect(x + 4, y + 12, 1, 4);
-  ctx.fillRect(x + 12, y + 12, 1, 4);
-}
-
-function drawPipe(ctx, x, y, height) {
-  const topH = 15;
-  ctx.fillStyle = C.pipeGreen;
-  ctx.fillRect(x - 2, y, 36, topH);
-  ctx.fillStyle = C.pipeLight;
-  ctx.fillRect(x, y + 2, 4, topH - 4);
-  ctx.fillStyle = C.pipeDark;
-  ctx.fillRect(x + 28, y + 1, 4, topH - 2);
-  ctx.fillStyle = C.black;
-  ctx.strokeRect(x - 1.5, y + 0.5, 35, topH - 1);
-
-  const shaftH = height - topH;
-  ctx.fillStyle = C.pipeGreen;
-  ctx.fillRect(x, y + topH, 32, shaftH);
-  ctx.fillStyle = C.pipeLight;
-  ctx.fillRect(x + 2, y + topH, 4, shaftH);
-  ctx.fillStyle = C.pipeDark;
-  ctx.fillRect(x + 26, y + topH, 4, shaftH);
-  ctx.fillStyle = C.black;
-  ctx.strokeRect(x + 0.5, y + topH - 0.5, 31, shaftH);
-}
-
-function drawCloud(ctx, x, y) {
-  ctx.fillStyle = C.cloudWhite;
-  ctx.beginPath();
-  ctx.arc(x + 12, y + 12, 10, 0, Math.PI * 2);
-  ctx.arc(x + 24, y + 8, 12, 0, Math.PI * 2);
-  ctx.arc(x + 36, y + 12, 10, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillRect(x + 10, y + 10, 28, 8);
-}
-
-function drawHill(ctx, x, y, r) {
-  ctx.fillStyle = C.hillGreen;
-  ctx.beginPath();
-  ctx.arc(x, y + r, r, Math.PI, 0);
-  ctx.fill();
-  ctx.strokeStyle = C.hillBorder;
-  ctx.lineWidth = 1;
-  ctx.stroke();
-  ctx.fillStyle = C.hillBorder;
-  ctx.fillRect(x - 2, y + 8, 4, 3);
-  ctx.fillRect(x - r / 2, y + r / 2, 4, 3);
-  ctx.fillRect(x + r / 2 - 4, y + r / 2, 4, 3);
-}
-
-// --- WORLD BLUEPRINT ---
-const LEVEL_LENGTH = 1600;
+// --- GAME STATE & WORLD BLUEPRINT ---
 let score = 0;
-let coins = 0;
+let tokens = 0;
+let gameOver = false;
+let victory = false;
+let globalFrame = 0;
 
-function createWorld() {
+// Player Physics State (Sub-pixel, smooth momentum)
+const player = {
+  x: 32,
+  y: 176,
+  vx: 0,
+  vy: 0,
+  accel: 0.22,
+  friction: 0.82,
+  maxSpeed: 2.4,
+  jumpPower: -5.8,
+  grounded: true,
+  facingRight: true,
+  powerTier: 0, // 0: normal, 1: coffee big, 2: flame media hero
+  invulnTimer: 0,
+  animFrame: 0,
+  animTimer: 0,
+  finished: false
+};
+
+// Projectile Flames
+let fireballs = [];
+
+function shootFlame() {
+  if (player.powerTier < 2 || fireballs.length >= 2 || player.finished) return;
+  AudioEngine.flame();
+  fireballs.push({
+    x: player.facingRight ? player.x + 16 : player.x - 4,
+    y: player.y + (player.powerTier > 0 ? 8 : 4),
+    vx: player.facingRight ? 3.8 : -3.8,
+    vy: 1.0,
+    bounces: 0
+  });
+}
+
+function createLevel() {
   return {
+    platforms: [
+      // Bible & Stage equipment floating platforms
+      { x: 160, y: 150, w: 48, h: 12, label: 'HOLY BIBLE', type: 'bible' },
+      { x: 420, y: 140, w: 48, h: 12, label: 'STAGE AUDIO', type: 'gear' },
+      { x: 580, y: 130, w: 48, h: 12, label: 'LIGHTING', type: 'gear' },
+      { x: 880, y: 130, w: 56, h: 12, label: 'WORSHIP CABLE', type: 'gear' },
+      { x: 1140, y: 140, w: 48, h: 12, label: 'MEDIA DESK', type: 'gear' },
+      { x: 1380, y: 130, w: 56, h: 12, label: 'HOLY BIBLE', type: 'bible' }
+    ],
     blocks: [
-      { id: 1, x: 260, y: 144, type: '?', hit: false, bounce: 0 },
-      { id: 2, x: 340, y: 144, type: 'brick', hit: false, bounce: 0 },
-      { id: 3, x: 356, y: 144, type: '?', hit: false, bounce: 0 },
-      { id: 4, x: 372, y: 144, type: 'brick', hit: false, bounce: 0 },
-      { id: 5, x: 388, y: 144, type: '?', hit: false, bounce: 0 },
-      { id: 6, x: 404, y: 144, type: 'brick', hit: false, bounce: 0 },
-      { id: 7, x: 388, y: 80,  type: '?', hit: false, bounce: 0 },
-      { id: 8, x: 740, y: 144, type: 'brick', hit: false, bounce: 0 },
-      { id: 9, x: 756, y: 144, type: '?', hit: false, bounce: 0 },
-      { id: 10, x: 772, y: 144, type: 'brick', hit: false, bounce: 0 },
-      { id: 11, x: 1080, y: 144, type: '?', hit: false, bounce: 0 },
-      { id: 12, x: 1120, y: 80,  type: '?', hit: false, bounce: 0 }
+      // FAITH? and Brick blocks
+      { x: 120, y: 152, type: 'faith', content: 'token', hit: false, bounce: 0 },
+      { x: 210, y: 152, type: 'faith', content: 'coffee', hit: false, bounce: 0 },
+      { x: 230, y: 152, type: 'brick', hit: false, bounce: 0 },
+      { x: 250, y: 152, type: 'faith', content: 'flame', hit: false, bounce: 0 },
+      { x: 330, y: 110, type: 'faith', content: 'token', hit: false, bounce: 0 },
+      { x: 490, y: 152, type: 'faith', content: 'coffee', hit: false, bounce: 0 },
+      { x: 510, y: 152, type: 'brick', hit: false, bounce: 0 },
+      { x: 700, y: 152, type: 'faith', content: 'flame', hit: false, bounce: 0 },
+      { x: 720, y: 152, type: 'brick', hit: false, bounce: 0 },
+      { x: 1020, y: 140, type: 'faith', content: 'token', hit: false, bounce: 0 },
+      { x: 1260, y: 140, type: 'faith', content: 'coffee', hit: false, bounce: 0 }
     ],
-    pipes: [
-      { x: 480, h: 32, plant: false },
-      { x: 620, h: 48, plant: true, piranhaY: 0, piranhaDir: 1 },
-      { x: 860, h: 64, plant: true, piranhaY: 0, piranhaDir: 1 },
-      { x: 1260, h: 40, plant: true, piranhaY: 0, piranhaDir: 1 }
+    doors: [
+      // Church ministry themed doors
+      { x: 290, w: 32, h: 44, label: "KIDS MIN", color: P.gold },
+      { x: 530, w: 34, h: 48, label: "WORSHIP", color: P.orange },
+      { x: 790, w: 36, h: 54, label: "MEDIA", color: P.steelMid },
+      { x: 1070, w: 34, h: 46, label: "KLOTHES", color: P.purple },
+      { x: 1300, w: 34, h: 50, label: "GROUPS", color: P.green }
     ],
-    goombas: [
-      { id: 1, x: 360, y: 184, vx: -0.6, state: 'walk', anim: 0, timer: 0 },
-      { id: 2, x: 570, y: 184, vx: -0.6, state: 'walk', anim: 0, timer: 0 },
-      { id: 3, x: 790, y: 184, vx: -0.6, state: 'walk', anim: 0, timer: 0 },
-      { id: 4, x: 820, y: 184, vx: -0.6, state: 'walk', anim: 0, timer: 0 },
-      { id: 5, x: 1200, y: 184, vx: -0.6, state: 'walk', anim: 0, timer: 0 }
+    signs: [
+      { x: 180, y: 174, text: "SUNDAYS ARE JUST THE START" },
+      { x: 740, y: 174, text: "MORE THAN A SUNDAY CHURCH" },
+      { x: 1320, y: 174, text: "SUNDAYS ARE JUST THE START" }
     ],
-    particles: []
+    enemies: [
+      { type: 'cable', x: 260, y: 184, vx: -0.5, alive: true, flatTimer: 0 },
+      { type: 'battery', x: 390, y: 184, vx: -0.6, alive: true, flatTimer: 0 },
+      { type: 'glitch', x: 630, y: 184, vx: -0.5, alive: true, flatTimer: 0 },
+      { type: 'cable', x: 840, y: 184, vx: -0.6, alive: true, flatTimer: 0 },
+      { type: 'battery', x: 970, y: 184, vx: -0.5, alive: true, flatTimer: 0 },
+      { type: 'glitch', x: 1200, y: 184, vx: -0.7, alive: true, flatTimer: 0 }
+    ],
+    obstacles: [
+      // Rolling basketballs & road cases
+      { type: 'ball', x: 460, y: 186, vx: -1.2, r: 7, rot: 0 },
+      { type: 'ball', x: 1110, y: 186, vx: -1.4, r: 7, rot: 0 }
+    ],
+    items: [],
+    particles: [],
+    // Finish Flag & Sanctuary
+    flag: { x: 1540, poleH: 100, flagY: 100, hit: false },
+    church: { x: 1600, w: 100, h: 120 }
   };
 }
 
-let world = createWorld();
+let level = createLevel();
 
-// Playable Mario State
-const mario = {
-  x: 40,
-  y: 184,
-  vx: 0,
-  vy: 0,
-  speed: 1.8,
-  grounded: true,
-  facingRight: true,
-  frameTimer: 0,
-  animFrame: 0,
-  canJump: true
-};
-
-let globalFrame = 0;
-
+// --- UPDATE LOOP ---
 function update() {
   globalFrame++;
 
-  // Horizontal Movement
-  if (keys.left) {
-    mario.vx = -mario.speed;
-    mario.facingRight = false;
-  } else if (keys.right) {
-    mario.vx = mario.speed;
-    mario.facingRight = true;
-  } else {
-    mario.vx = 0;
+  if (player.invulnTimer > 0) player.invulnTimer--;
+
+  // Victory Sequence
+  if (player.finished) {
+    player.x += 1.2;
+    player.grounded = true;
+    player.animTimer += 0.2;
+    player.animFrame = Math.floor(player.animTimer) % 2;
+
+    if (level.flag.flagY < 160) {
+      level.flag.flagY += 2;
+    }
+
+    if (player.x > level.church.x + 30) {
+      victory = true;
+    }
+    return;
   }
 
-  // Jump Input
-  if (keys.jump && mario.grounded && mario.canJump) {
-    mario.vy = -5.6;
-    mario.grounded = false;
-    mario.canJump = false;
-    AudioEngine.playJump();
+  // Horizontal Movement with Smooth Acceleration & Deceleration
+  if (keys.left) {
+    player.vx -= player.accel;
+    player.facingRight = false;
+  } else if (keys.right) {
+    player.vx += player.accel;
+    player.facingRight = true;
+  } else {
+    player.vx *= player.friction;
+    if (Math.abs(player.vx) < 0.05) player.vx = 0;
   }
-  if (!keys.jump) {
-    mario.canJump = true;
+
+  // Clamp speed
+  player.vx = Math.max(-player.maxSpeed, Math.min(player.maxSpeed, player.vx));
+  player.x += player.vx;
+
+  // Jump Action with variable height feel
+  if (keys.jump && player.grounded) {
+    player.vy = player.jumpPower;
+    player.grounded = false;
+    AudioEngine.jump();
   }
 
   // Gravity
-  if (!mario.grounded) {
-    mario.vy += 0.28;
-  }
+  player.vy += 0.28;
+  player.y += player.vy;
 
-  // Next proposed position
-  const nextX = mario.x + mario.vx;
-  const nextY = mario.y + mario.vy;
+  // Floor Collision
+  const groundY = 200 - (player.powerTier > 0 ? 24 : 16);
+  let currentSurfaceY = groundY;
 
-  // Ground level
-  const groundLevel = 184;
-  let floorY = groundLevel;
-
-  // Pipe Solid Collisions
-  world.pipes.forEach(pipe => {
-    const pipeTop = 200 - pipe.h;
-    const pipeLeft = pipe.x - 2;
-    const pipeRight = pipe.x + 34;
-
-    // Side collision
-    if (nextY + 16 > pipeTop && mario.y < 200) {
-      if (mario.vx > 0 && mario.x + 14 <= pipeLeft && nextX + 14 >= pipeLeft) {
-        mario.vx = 0;
-      } else if (mario.vx < 0 && mario.x + 2 >= pipeRight && nextX + 2 <= pipeRight) {
-        mario.vx = 0;
-      }
-    }
-
-    // Top collision
-    if (mario.x + 12 > pipe.x && mario.x + 4 < pipe.x + 32) {
-      if (mario.y + 16 <= pipeTop + 6 && mario.vy >= 0) {
-        floorY = Math.min(floorY, pipeTop - 16);
+  // Platform collisions
+  level.platforms.forEach(plat => {
+    const pHeight = player.powerTier > 0 ? 24 : 16;
+    if (player.x + 12 > plat.x && player.x + 4 < plat.x + plat.w) {
+      if (player.y + pHeight <= plat.y + 6 && player.vy >= 0) {
+        currentSurfaceY = Math.min(currentSurfaceY, plat.y - pHeight);
       }
     }
   });
 
-  // Apply horizontal movement
-  mario.x += mario.vx;
-  if (mario.x < 0) mario.x = 0;
+  // Solid Ministry Door Top Collisions
+  level.doors.forEach(d => {
+    const doorTop = 200 - d.h;
+    const pHeight = player.powerTier > 0 ? 24 : 16;
+    if (player.x + 12 > d.x && player.x + 4 < d.x + d.w) {
+      if (player.y + pHeight <= doorTop + 6 && player.vy >= 0) {
+        currentSurfaceY = Math.min(currentSurfaceY, doorTop - pHeight);
+      }
+    }
+  });
 
-  // Block Collisions
-  world.blocks.forEach(b => {
-    // Underneath bump
-    if (mario.vy < 0 && mario.x + 12 > b.x && mario.x + 4 < b.x + 16) {
-      if (mario.y <= b.y + 16 && mario.y >= b.y + 8) {
-        mario.y = b.y + 16;
-        mario.vy = 1;
+  // Block top collisions
+  level.blocks.forEach(b => {
+    const pHeight = player.powerTier > 0 ? 24 : 16;
+    if (player.x + 12 > b.x && player.x + 4 < b.x + 16) {
+      if (player.y + pHeight <= b.y + 6 && player.vy >= 0) {
+        currentSurfaceY = Math.min(currentSurfaceY, b.y - pHeight);
+      }
+    }
+  });
+
+  // Apply floor limit
+  if (player.y >= currentSurfaceY) {
+    player.y = currentSurfaceY;
+    player.vy = 0;
+    player.grounded = true;
+  } else {
+    player.grounded = false;
+  }
+
+  // Block Hit from Below
+  level.blocks.forEach(b => {
+    if (player.vy < 0 && player.x + 12 > b.x && player.x + 4 < b.x + 16) {
+      if (player.y <= b.y + 16 && player.y >= b.y + 8) {
+        player.y = b.y + 16;
+        player.vy = 0.8;
         b.bounce = -4;
-        AudioEngine.playBump();
+        AudioEngine.bump();
 
         if (!b.hit) {
           b.hit = true;
-          if (b.type === '?') {
-            AudioEngine.playCoin();
-            coins++;
-            score += 200;
-            world.particles.push({
-              x: b.x + 4,
-              y: b.y - 12,
-              vy: -4,
-              timer: 0,
-              type: 'coin'
-            });
+          if (b.type === 'faith') {
+            if (b.content === 'token') {
+              tokens++;
+              score += 100;
+              AudioEngine.coin();
+              level.particles.push({
+                type: 'token_float',
+                x: b.x + 4,
+                y: b.y - 12,
+                vy: -3.5,
+                timer: 0
+              });
+            } else if (b.content === 'coffee') {
+              level.items.push({
+                type: 'coffee',
+                x: b.x,
+                y: b.y - 16,
+                vx: 0.8,
+                vy: -2
+              });
+            } else if (b.content === 'flame') {
+              level.items.push({
+                type: 'flame',
+                x: b.x,
+                y: b.y - 16,
+                vx: 0.8,
+                vy: -2
+              });
+            }
           }
         }
       }
     }
-
-    // Top of block
-    if (mario.x + 12 > b.x && mario.x + 4 < b.x + 16) {
-      if (mario.y + 16 <= b.y + 6 && mario.vy >= 0) {
-        floorY = Math.min(floorY, b.y - 16);
-      }
-    }
-
     if (b.bounce < 0) b.bounce += 0.5;
     else b.bounce = 0;
   });
 
-  // Apply Vertical movement
-  mario.y += mario.vy;
+  // Items Physics & Collection
+  for (let i = level.items.length - 1; i >= 0; i--) {
+    const item = level.items[i];
+    item.vy += 0.25;
+    item.x += item.vx;
+    item.y += item.vy;
 
-  if (mario.y >= floorY) {
-    mario.y = floorY;
-    mario.vy = 0;
-    mario.grounded = true;
-  } else {
-    mario.grounded = false;
+    if (item.y > 184) {
+      item.y = 184;
+      item.vy = 0;
+    }
+
+    // Touch item
+    const pH = player.powerTier > 0 ? 24 : 16;
+    if (
+      player.x + 14 > item.x &&
+      player.x + 2 < item.x + 16 &&
+      player.y + pH > item.y &&
+      player.y < item.y + 16
+    ) {
+      AudioEngine.powerUp();
+      score += 500;
+      if (item.type === 'coffee') {
+        player.powerTier = Math.max(player.powerTier, 1);
+        player.y -= 8; // Adjust height transition
+      } else if (item.type === 'flame') {
+        player.powerTier = 2;
+      }
+      level.items.splice(i, 1);
+    }
   }
 
-  // Piranha Plants
-  world.pipes.forEach(pipe => {
-    if (pipe.plant) {
-      const dist = Math.abs((mario.x + 8) - (pipe.x + 16));
-      if (dist < 48) {
-        if (pipe.piranhaY < 24) pipe.piranhaY += 1.2;
-      } else {
-        if (pipe.piranhaDir === 1) {
-          pipe.piranhaY -= 0.35;
-          if (pipe.piranhaY <= -20) pipe.piranhaDir = -1;
-        } else {
-          pipe.piranhaY += 0.35;
-          if (pipe.piranhaY >= 20) pipe.piranhaDir = 1;
+  // Fireballs
+  for (let i = fireballs.length - 1; i >= 0; i--) {
+    const fb = fireballs[i];
+    fb.x += fb.vx;
+    fb.vy += 0.22;
+    fb.y += fb.vy;
+
+    if (fb.y >= 194) {
+      fb.y = 194;
+      fb.vy = -2.8;
+      fb.bounces++;
+    }
+
+    // Hit enemies
+    let fbDead = false;
+    level.enemies.forEach(e => {
+      if (e.alive && Math.abs(fb.x - e.x) < 14 && Math.abs(fb.y - e.y) < 14) {
+        e.alive = false;
+        e.flatTimer = 40;
+        score += 200;
+        AudioEngine.stomp();
+        fbDead = true;
+      }
+    });
+
+    if (fbDead || fb.bounces > 3 || fb.x < player.x - 140 || fb.x > player.x + 200) {
+      fireballs.splice(i, 1);
+    }
+  }
+
+  // Enemies Update & Collisions
+  level.enemies.forEach(e => {
+    if (e.alive) {
+      e.x += e.vx;
+      if (e.x < 100 || e.x > 1500) e.vx *= -1;
+
+      // Check collision with player
+      const pH = player.powerTier > 0 ? 24 : 16;
+      if (
+        player.x + 12 > e.x &&
+        player.x + 4 < e.x + 16 &&
+        player.y + pH >= e.y &&
+        player.y <= e.y + 16
+      ) {
+        // Stomp
+        if (player.vy > 0 && player.y + pH <= e.y + 8) {
+          e.alive = false;
+          e.flatTimer = 35;
+          player.vy = -3.8;
+          score += 200;
+          AudioEngine.stomp();
+        } else if (player.invulnTimer === 0) {
+          // Player hit
+          if (player.powerTier > 0) {
+            player.powerTier--;
+            player.invulnTimer = 60;
+            AudioEngine.bump();
+          } else {
+            // Respawn back a little with grace
+            player.x = Math.max(32, player.x - 60);
+            player.y = 176;
+            player.invulnTimer = 60;
+            score = Math.max(0, score - 100);
+            AudioEngine.bump();
+          }
         }
       }
+    } else if (e.flatTimer > 0) {
+      e.flatTimer--;
     }
   });
 
-  // Goombas stomp & walking
-  world.goombas.forEach(g => {
-    if (g.state === 'walk') {
-      g.x += g.vx;
-      g.anim += 0.08;
+  // Rolling Obstacles
+  level.obstacles.forEach(o => {
+    o.x += o.vx;
+    o.rot += o.vx * 0.1;
+    if (o.x < 50 || o.x > 1500) o.vx *= -1;
 
-      if (
-        mario.x + 12 > g.x &&
-        mario.x + 4 < g.x + 16 &&
-        mario.y + 16 >= g.y &&
-        mario.y + 16 <= g.y + 10 &&
-        mario.vy > 0
-      ) {
-        g.state = 'flat';
-        mario.vy = -3.8;
-        score += 100;
-        AudioEngine.playStomp();
+    // Hit player
+    const pH = player.powerTier > 0 ? 24 : 16;
+    if (
+      Math.abs((player.x + 8) - o.x) < 12 &&
+      Math.abs((player.y + pH / 2) - o.y) < 12
+    ) {
+      if (player.invulnTimer === 0) {
+        if (player.powerTier > 0) {
+          player.powerTier--;
+          player.invulnTimer = 60;
+        } else {
+          player.x = Math.max(32, player.x - 40);
+          player.invulnTimer = 60;
+        }
+        AudioEngine.bump();
       }
-    } else if (g.state === 'flat') {
-      g.timer++;
     }
   });
 
-  // Particle updates
-  for (let i = world.particles.length - 1; i >= 0; i--) {
-    const p = world.particles[i];
+  // Particles update
+  for (let i = level.particles.length - 1; i >= 0; i--) {
+    const p = level.particles[i];
     p.y += p.vy;
-    p.vy += 0.25;
+    p.vy += 0.22;
     p.timer++;
-    if (p.timer > 30) world.particles.splice(i, 1);
+    if (p.timer > 28) level.particles.splice(i, 1);
   }
 
-  // Mario Animation frames
-  if (mario.grounded && mario.vx !== 0) {
-    mario.frameTimer += 0.2;
-    mario.animFrame = Math.floor(mario.frameTimer) % 3;
-  } else if (mario.grounded) {
-    mario.animFrame = 0;
+  // Animation cycle
+  if (player.grounded && Math.abs(player.vx) > 0.1) {
+    player.animTimer += 0.22;
+    player.animFrame = Math.floor(player.animTimer) % 2;
+  } else {
+    player.animFrame = 0;
   }
 
-  // Seamless World End Reset
-  if (mario.x >= LEVEL_LENGTH) {
-    mario.x = 40;
-    world = createWorld();
+  // Finish Flag Collision
+  if (!player.finished && player.x >= level.flag.x - 8) {
+    player.finished = true;
+    player.vx = 0;
+    AudioEngine.levelClear();
+    score += 1500;
+  }
+}
+
+// --- RENDER ROUTINE ---
+function drawSkyGradient(cameraX) {
+  // 16-bit dusk church sky: dark steel blue into warm gold sunset glow
+  const grad = ctx.createLinearGradient(0, 0, 0, V_HEIGHT);
+  grad.addColorStop(0, '#121b29');
+  grad.addColorStop(0.65, '#25354e');
+  grad.addColorStop(0.88, '#94582f');
+  grad.addColorStop(1, '#d88c3a');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, V_WIDTH, V_HEIGHT);
+
+  // Distant Church Silhouette & Cross in background
+  const chX = (1300 - cameraX * 0.18);
+  ctx.fillStyle = '#1c293c';
+  ctx.fillRect(chX, 100, 64, 100);
+  ctx.beginPath();
+  ctx.moveTo(chX - 10, 100);
+  ctx.lineTo(chX + 32, 50);
+  ctx.lineTo(chX + 74, 100);
+  ctx.fill();
+  // Steeple Cross
+  ctx.fillStyle = P.gold;
+  ctx.fillRect(chX + 30, 24, 4, 26);
+  ctx.fillRect(chX + 24, 32, 16, 4);
+
+  // Parallax Hills & Warm Stained-Glass Tone Backdrops
+  const hillOffset = -(cameraX * 0.3) % 200;
+  for (let hx = hillOffset - 80; hx < V_WIDTH + 80; hx += 140) {
+    ctx.fillStyle = '#1e2e42';
+    ctx.beginPath();
+    ctx.arc(hx, 180, 55, Math.PI, 0);
+    ctx.fill();
+  }
+}
+
+function drawGround(cameraX) {
+  // Ground tiles: Dark Steel Blue curb with Burnt Orange brick foundation
+  ctx.fillStyle = P.steelLight;
+  ctx.fillRect(0, 200, V_WIDTH, 4);
+  ctx.fillStyle = P.steelDark;
+  ctx.fillRect(0, 204, V_WIDTH, 20);
+
+  ctx.fillStyle = P.orange;
+  const tileX = -(cameraX % 16);
+  for (let gx = tileX; gx < V_WIDTH; gx += 16) {
+    ctx.fillRect(gx + 1, 206, 14, 6);
+    ctx.fillRect(gx + 9, 214, 6, 6);
+    ctx.fillRect(gx + 1, 214, 6, 6);
   }
 }
 
 function render() {
-  ctx.fillStyle = C.sky;
-  ctx.fillRect(0, 0, V_WIDTH, V_HEIGHT);
+  const cameraX = Math.max(0, player.x - 84);
 
-  const cameraX = Math.max(0, mario.x - 90);
-
-  // Parallax Clouds
-  const cloudOffset = -(cameraX * 0.2) % 300;
-  for (let cx = cloudOffset - 100; cx < V_WIDTH + 100; cx += 150) {
-    drawCloud(ctx, cx, 32);
-    drawCloud(ctx, cx + 80, 52);
-  }
-
-  // Parallax Hills
-  const hillOffset = -(cameraX * 0.4) % 250;
-  for (let hx = hillOffset - 80; hx < V_WIDTH + 80; hx += 160) {
-    drawHill(ctx, hx, 150, 48);
-    drawHill(ctx, hx + 90, 166, 32);
-  }
-
-  // Ground Tiles
-  ctx.fillStyle = C.groundTop;
-  ctx.fillRect(0, 200, V_WIDTH, 4);
-  ctx.fillStyle = C.groundDark;
-  ctx.fillRect(0, 204, V_WIDTH, 20);
-
-  ctx.fillStyle = C.brickLine;
-  const groundTileOffset = -cameraX % 16;
-  for (let gx = groundTileOffset; gx < V_WIDTH; gx += 16) {
-    ctx.fillRect(gx, 200, 1, 24);
-    ctx.fillRect(gx, 212, 16, 1);
-  }
+  drawSkyGradient(cameraX);
+  drawGround(cameraX);
 
   ctx.save();
   ctx.translate(-cameraX, 0);
 
-  // Render Blocks
-  world.blocks.forEach(b => {
+  // --- CHURCH SANCTUARY AT END OF LEVEL ---
+  const ch = level.church;
+  ctx.fillStyle = '#212f45';
+  ctx.fillRect(ch.x, 80, ch.w, 120);
+  ctx.fillStyle = P.orange;
+  ctx.beginPath();
+  ctx.moveTo(ch.x - 10, 80);
+  ctx.lineTo(ch.x + ch.w / 2, 25);
+  ctx.lineTo(ch.x + ch.w + 10, 80);
+  ctx.fill();
+  // Stained Glass Center
+  ctx.fillStyle = P.gold;
+  ctx.beginPath();
+  ctx.arc(ch.x + ch.w / 2, 60, 16, 0, Math.PI * 2);
+  ctx.fill();
+  // Church Entrance Arch
+  ctx.fillStyle = P.steelDark;
+  ctx.fillRect(ch.x + 35, 140, 30, 60);
+  // Banner
+  ctx.fillStyle = P.cream;
+  ctx.fillRect(ch.x + 10, 110, 80, 14);
+  ctx.fillStyle = P.steelDark;
+  ctx.font = 'bold 6px monospace';
+  ctx.fillText('FOUNDERY CHURCH', ch.x + 14, 120);
+
+  // --- FINISH LINE FLAG ---
+  const fl = level.flag;
+  ctx.fillStyle = '#999';
+  ctx.fillRect(fl.x, 100, 3, fl.poleH);
+  ctx.fillStyle = P.gold;
+  ctx.fillRect(fl.x - 2, 96, 7, 5); // gold finial
+  // Stylized Foundery "F" Flag
+  ctx.fillStyle = P.orange;
+  ctx.fillRect(fl.x + 3, fl.flagY, 26, 18);
+  ctx.fillStyle = P.gold;
+  ctx.font = 'bold 12px sans-serif';
+  ctx.fillText('F', fl.x + 10, fl.flagY + 14);
+
+  // --- SIGNS ---
+  level.signs.forEach(s => {
+    // Post
+    ctx.fillStyle = P.wood;
+    ctx.fillRect(s.x + 40, s.y + 12, 4, 14);
+    // Signboard
+    ctx.fillStyle = P.cream;
+    ctx.fillRect(s.x, s.y, 88, 14);
+    ctx.strokeStyle = P.orange;
+    ctx.strokeRect(s.x + 0.5, s.y + 0.5, 87, 13);
+    ctx.fillStyle = P.steelDark;
+    ctx.font = 'bold 5px monospace';
+    ctx.fillText(s.text, s.x + 4, s.y + 9);
+  });
+
+  // --- MINISTRY DOORS (Pipes replacement) ---
+  level.doors.forEach(d => {
+    const doorY = 200 - d.h;
+    // Frame
+    ctx.fillStyle = d.color;
+    ctx.fillRect(d.x, doorY, d.w, d.h);
+    ctx.fillStyle = P.cream;
+    ctx.fillRect(d.x + 4, doorY + 6, d.w - 8, d.h - 8);
+    // Sign on Door
+    ctx.fillStyle = P.steelDark;
+    ctx.fillRect(d.x + 2, doorY - 10, d.w - 4, 9);
+    ctx.fillStyle = P.gold;
+    ctx.font = 'bold 5px monospace';
+    ctx.fillText(d.label, d.x + 4, doorY - 3);
+    // Doorknob
+    ctx.fillStyle = P.gold;
+    ctx.fillRect(d.x + d.w - 8, doorY + d.h / 2, 3, 3);
+  });
+
+  // --- FLOATING PLATFORMS (Bibles / Stage Audio) ---
+  level.platforms.forEach(plat => {
+    if (plat.type === 'bible') {
+      // Holy Bible Platform: Dark Leather with Gold Pages
+      ctx.fillStyle = '#421a08';
+      ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
+      ctx.fillStyle = P.gold;
+      ctx.fillRect(plat.x + 2, plat.y + 3, plat.w - 4, plat.h - 6);
+      ctx.fillStyle = P.cream;
+      ctx.font = 'bold 6px monospace';
+      ctx.fillText(plat.label, plat.x + 4, plat.y + 8);
+    } else {
+      // Stage Audio Equipment Roadcase
+      ctx.fillStyle = '#1c222a';
+      ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
+      ctx.fillStyle = '#8892a0';
+      ctx.strokeRect(plat.x + 0.5, plat.y + 0.5, plat.w - 1, plat.h - 1);
+      ctx.fillStyle = P.orange;
+      ctx.fillRect(plat.x + 4, plat.y + 3, 4, 4);
+      ctx.fillStyle = P.gold;
+      ctx.fillRect(plat.x + 10, plat.y + 3, 4, 4);
+    }
+  });
+
+  // --- BLOCKS (FAITH? & Bricks) ---
+  level.blocks.forEach(b => {
     const drawY = b.y + b.bounce;
-    if (b.type === '?') {
-      if (b.hit) drawEmptyBlock(ctx, b.x, drawY);
-      else drawQuestionBlock(ctx, b.x, drawY);
-    } else if (b.type === 'brick') {
-      drawBrickBlock(ctx, b.x, drawY);
+    if (b.type === 'faith') {
+      if (b.hit) {
+        ctx.fillStyle = '#544638';
+        ctx.fillRect(b.x, drawY, 16, 16);
+      } else {
+        ctx.fillStyle = P.orange;
+        ctx.fillRect(b.x, drawY, 16, 16);
+        ctx.strokeStyle = P.gold;
+        ctx.strokeRect(b.x + 0.5, drawY + 0.5, 15, 15);
+        ctx.fillStyle = P.cream;
+        ctx.font = 'bold 7px monospace';
+        ctx.fillText('FAITH', b.x + 1, drawY + 9);
+        ctx.fillStyle = P.gold;
+        ctx.fillText('?', b.x + 6, drawY + 15);
+      }
+    } else {
+      // Brick
+      ctx.fillStyle = P.steelLight;
+      ctx.fillRect(b.x, drawY, 16, 16);
+      ctx.strokeStyle = P.steelDark;
+      ctx.strokeRect(b.x + 0.5, drawY + 0.5, 15, 15);
+      ctx.fillStyle = P.orange;
+      ctx.fillRect(b.x + 2, drawY + 4, 5, 2);
+      ctx.fillRect(b.x + 9, drawY + 10, 5, 2);
     }
   });
 
-  // Render Pipes & Plants
-  world.pipes.forEach(pipe => {
-    const pipeTop = 200 - pipe.h;
-    if (pipe.plant) {
-      const piranhaSprite = Math.floor(globalFrame / 10) % 2 === 0 ? piranha1 : piranha2;
-      ctx.drawImage(piranhaSprite, pipe.x + 8, pipeTop + pipe.piranhaY);
-    }
-    drawPipe(ctx, pipe.x, pipeTop, pipe.h);
-  });
-
-  // Render Goombas
-  world.goombas.forEach(g => {
-    if (g.state === 'walk') {
-      const frame = Math.floor(g.anim) % 2 === 0 ? goomba1 : goomba2;
-      ctx.drawImage(frame, g.x, g.y);
-    } else if (g.state === 'flat' && g.timer < 30) {
-      ctx.drawImage(goombaFlat, g.x, g.y + 6);
+  // --- ITEMS (Coffee / Flame) ---
+  level.items.forEach(it => {
+    if (it.type === 'coffee') {
+      ctx.drawImage(coffeeSprite, it.x, it.y);
+    } else if (it.type === 'flame') {
+      ctx.drawImage(flameIconSprite, it.x, it.y);
     }
   });
 
-  // Render Coin Particles
-  world.particles.forEach(p => {
-    if (p.type === 'coin') {
-      ctx.fillStyle = C.qYellow;
-      const spin = Math.floor(p.timer / 3) % 4;
-      const w = spin === 1 || spin === 3 ? 4 : 8;
-      ctx.fillRect(p.x + (8 - w) / 2, p.y, w, 12);
-      ctx.fillStyle = C.white;
-      ctx.fillRect(p.x + (8 - w) / 2 + 1, p.y + 2, 2, 8);
+  // --- ENENIES ---
+  level.enemies.forEach(e => {
+    if (e.alive) {
+      if (e.type === 'cable') ctx.drawImage(cableMonster, e.x, e.y);
+      else if (e.type === 'battery') ctx.drawImage(batteryMonster, e.x, e.y);
+      else if (e.type === 'glitch') ctx.drawImage(glitchMonster, e.x, e.y);
+    } else if (e.flatTimer > 0) {
+      // Flattened defeat visual
+      ctx.fillStyle = P.orange;
+      ctx.fillRect(e.x, e.y + 12, 16, 4);
     }
   });
 
-  // Render Mario (with direction flip)
-  let marioSprite;
-  if (!mario.grounded) {
-    marioSprite = marioJump;
-  } else if (mario.vx !== 0) {
-    marioSprite = [marioRun1, marioRun2, marioRun3][mario.animFrame];
-  } else {
-    marioSprite = marioRun1;
+  // --- ROLLING BASKETBALL OBSTACLES ---
+  level.obstacles.forEach(o => {
+    ctx.save();
+    ctx.translate(o.x, o.y);
+    ctx.rotate(o.rot);
+    ctx.drawImage(basketballSprite, -o.r, -o.r);
+    ctx.restore();
+  });
+
+  // --- PROJECTILE FIREBALLS ---
+  fireballs.forEach(fb => {
+    ctx.fillStyle = P.orange;
+    ctx.beginPath();
+    ctx.arc(fb.x, fb.y, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = P.gold;
+    ctx.beginPath();
+    ctx.arc(fb.x, fb.y, 2, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // --- PARTICLES (Glowing "F" Tokens) ---
+  level.particles.forEach(p => {
+    if (p.type === 'token_float') {
+      ctx.fillStyle = P.gold;
+      ctx.font = 'bold 12px sans-serif';
+      ctx.fillText('F', p.x, p.y);
+    }
+  });
+
+  // --- PLAYER MEDIA VOLUNTEER ---
+  if (player.invulnTimer % 4 < 2) {
+    let sprite;
+    if (player.powerTier > 0) {
+      sprite = !player.grounded ? volBigJump : (player.animFrame === 1 ? volBigRun1 : volBigJump);
+    } else {
+      sprite = !player.grounded ? volSmallJump : (player.animFrame === 1 ? volSmallRun2 : volSmallRun1);
+    }
+
+    ctx.save();
+    if (!player.facingRight) {
+      ctx.translate(player.x + 16, player.y);
+      ctx.scale(-1, 1);
+      ctx.drawImage(sprite, 0, 0);
+    } else {
+      ctx.drawImage(sprite, player.x, player.y);
+    }
+    ctx.restore();
   }
 
-  ctx.save();
-  if (!mario.facingRight) {
-    ctx.translate(mario.x + 16, mario.y);
-    ctx.scale(-1, 1);
-    ctx.drawImage(marioSprite, 0, 0);
-  } else {
-    ctx.drawImage(marioSprite, mario.x, mario.y);
+  ctx.restore();
+
+  // --- RETRO 16-BIT HUD OVERLAY ---
+  ctx.fillStyle = P.gold;
+  ctx.font = 'bold 8px monospace';
+  ctx.fillText('VOLUNTEER', 14, 14);
+  ctx.fillStyle = P.cream;
+  ctx.fillText(String(score).padStart(6, '0'), 14, 23);
+
+  // Glowing "F" Token Counter
+  ctx.fillStyle = P.orange;
+  ctx.fillRect(86, 15, 6, 8);
+  ctx.fillStyle = P.gold;
+  ctx.font = 'bold 8px sans-serif';
+  ctx.fillText('F', 87, 22);
+  ctx.fillStyle = P.cream;
+  ctx.font = 'bold 8px monospace';
+  ctx.fillText('×' + String(tokens).padStart(2, '0'), 96, 23);
+
+  // Foundery World Indicator
+  ctx.fillStyle = P.gold;
+  ctx.fillText('FOUNDERY', 146, 14);
+  ctx.fillStyle = P.cream;
+  ctx.fillText('STAGE 1-1', 146, 23);
+
+  // Power Up Status
+  ctx.fillStyle = P.gold;
+  ctx.fillText('POWER', 204, 14);
+  ctx.fillStyle = P.orange;
+  ctx.fillText(player.powerTier === 2 ? 'FLAME' : (player.powerTier === 1 ? 'COFFEE' : 'NORMAL'), 204, 23);
+
+  // Victory Card
+  if (victory) {
+    ctx.fillStyle = 'rgba(15, 20, 29, 0.88)';
+    ctx.fillRect(32, 50, 192, 110);
+    ctx.strokeStyle = P.gold;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(32, 50, 192, 110);
+
+    ctx.fillStyle = P.orange;
+    ctx.font = 'bold 11px monospace';
+    ctx.fillText('STAGE COMPLETED!', 52, 75);
+
+    ctx.fillStyle = P.cream;
+    ctx.font = 'bold 7px monospace';
+    ctx.fillText('SUNDAYS ARE JUST THE START', 44, 96);
+    ctx.fillText('MORE THAN A SUNDAY CHURCH', 46, 110);
+
+    ctx.fillStyle = P.gold;
+    ctx.fillText(`FINAL SCORE: ${score}`, 68, 134);
   }
-  ctx.restore();
-
-  ctx.restore();
-
-  // Retro HUD
-  ctx.font = 'bold 8px "Courier New", monospace';
-  ctx.fillStyle = C.white;
-  ctx.fillText('MARIO', 24, 16);
-  ctx.fillText(String(score).padStart(6, '0'), 24, 26);
-
-  ctx.fillStyle = C.qYellow;
-  ctx.fillRect(96, 20, 6, 6);
-  ctx.fillStyle = C.white;
-  ctx.fillText('×' + String(coins).padStart(2, '0'), 105, 26);
-
-  ctx.fillText('WORLD', 152, 16);
-  ctx.fillText('1-1', 160, 26);
-
-  ctx.fillText('TIME', 208, 16);
-  ctx.fillText('374', 212, 26);
 }
 
+// --- MAIN ANIMATION TICK ---
 function loop() {
   update();
   render();
