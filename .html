@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Super Mario Auto-Play Retro Demo</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    background: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    font-family: 'Courier New', Courier, monospace;
+  }
+  #game-container {
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8), 0 0 15px rgba(0,0,0,0.5);
+    border: 4px solid #333;
+    border-radius: 4px;
+    background: #5c94fc;
+    line-height: 0;
+  }
+  canvas {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+<div id="game-container">
+  <canvas id="canvas" width="512" height="448"></canvas>
+</div>
+
+<script>
+// --- VIRTUAL SCREEN CONFIG ---
+const V_WIDTH = 256;
+const V_HEIGHT = 224;
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+// Offscreen buffer for crisp retro pixel scaling
+const buffer = document.createElement('canvas');
+buffer.width = V_WIDTH;
+buffer.height = V_HEIGHT;
+const bctx = buffer.getContext('2d');
+bctx.imageSmoothingEnabled = false;
+
+// --- AUDIO SYNTHESIS (Web Audio API) ---
+const AudioEngine = {
+  ctx: null,
+  init() {
+    if (!this.ctx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) this.ctx = new AudioContext();
+    }
+  },
+  playJump() {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(140, now);
+    osc.frequency.exponentialRampToValueAtTime(560, now + 0.16);
+    gain.gain.setValueAtTime(0.08, now);
+    gain.gain.linearRampToValueAtTime(0, now + 0.16);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.16);
+  },
+  playStomp() {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(120, now);
+    osc.frequency.exponentialRampToValueAtTime(30, now + 0.12);
+    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.linearRampToValueAtTime(0, now + 0.12);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.12);
+  },
+  playCoin() {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(987.77, now); // B5
+    osc.frequency.setValueAtTime(1318.51, now + 0.08); // E6
+    gain.gain.setValueAtTime(0.08, now);
+    gain.gain.linearRampToValueAtTime(0, now + 0.35);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.35);
+  },
+  playBump() {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(240, now);
+    osc.frequency.exponentialRampToValueAtTime(60, now + 0.08);
+    gain.gain.setValueAtTime(0.08, now);
+    gain.gain.linearRampToValueAtTime(0, now + 0.08);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.08);
+  }
+};
+
+window.addEventListener('click', () => AudioEngine.init(), { once: true });
+window.addEventListener('keydown', () => AudioEngine.init(), { once: true });
+
+// --- COLOR PALETTE (Accurate NES) ---
+const C = {
+  sky: '#5c94fc',
+  groundTop: '#00a800',
+  groundDark: '#c84c0c',
+  brickLight: '#fc9838',
+  brickDark: '#c84c0c',
+  brickLine: '#000000',
+  qYellow: '#fcbc3c',
+  qDark: '#c84c0c',
+  qEmpty: '#8c5828',
+  white: '#ffffff',
+  black: '#000000',
+  marioRed: '#d82800',
+  marioSkin: '#fc9838',
+  marioBrown: '#684000',
+  marioBlue: '#0040a0',
+  goombaBrown: '#a81000',
+  goombaSkin: '#fc9838',
+  pipeGreen: '#00a800',
+  pipeDark: '#005800',
+  pipeLight: '#80d010',
+  hillGreen: '#00a800',
+  hillBorder: '#005800',
+  cloudWhite: '#fcffff',
+  cloudBorder: '#9cd8fc'
+};
+
+// --- SPRITE GENERATION ENGINE ---
+function createPixelSprite(width, height, pixelMap, palette) {
+  const c = document.createElement('canvas');
+  c.width = width;
+  c.height = height;
+  const ctx = c.getContext('2d');
+  for (let y = 0; y < height; y++) {
+    const row = pixelMap[y];
+    if (!row) continue;
+    for (let x = 0; x < width; x++) {
+      const char = row[x];
+      if (char && char !== '.' && palette[char]) {
+        ctx.fillStyle = palette[char];
+        ctx.fillRect(x, y, 1, 1);
+      }
+    }
+  }
+  return c;
+}
+
+// 16x16 Mario Frames (Small Mario)
+const MARIO_PAL = { 'R': C.marioRed, 'S': C.marioSkin, 'B': C.marioBrown };
+const marioRun1 = createPixelSprite(16, 16, [
+  ".....RRRRR......",
+  "....RRRRRRRRR...",
+  "....BBBSS.S.....",
+  "...B.S.SSS.S....",
+  "...B.SS.SSS.S...",
+  "...BBSSS.SSSS...",
+  ".....SSSSSSS....",
+  "...RRRRBRRR.....",
+  "..RRRRRBRRRRR...",
+  ".RRRRRRBBRRRRR..",
+  ".SS.RRBRRBR.SS..",
+  ".SSS.BBBB.SSSS..",
+  ".....BBBB.......",
+  "...BBB..BBB.....",
+  "..BBBB..........",
+  "................"
+], MARIO_PAL);
+
+const marioRun2 = createPixelSprite(16, 16, [
+  ".....RRRRR......",
+  "....RRRRRRRRR...",
+  "....BBBSS.S.....",
+  "...B.S.SSS.S....",
+  "...B.SS.SSS.S...",
+  "...BBSSS.SSSS...",
+  ".....SSSSSSS....",
+  "....RRRBRRR.....",
+  "...RRRRBRRRRR...",
+  "..RRRRRBBRRRRR..",
+  "..SS.RBRRBR.SS..",
+  ".SSS.BBBB.SSSS..",
+  "....BBBBBB......",
+  "...BBBB..BB.....",
+  "....BBB.........",
+  "................"
+], MARIO_PAL);
+
+const marioRun3 = createPixelSprite(16, 16, [
+  ".....RRRRR......",
+  "....RRRRRRRRR...",
+  "....BBBSS.S.....",
+  "...B.S.SSS.S....",
+  "...B.SS.SSS.S...",
+  "...BBSSS.SSSS...",
+  ".....SSSSSSS....",
+  ".....RRRBRR.....",
+  "...RRRRRBRRR....",
+  "..RRRRRRBBRRRR..",
+  "..SS.RRBRRBR.SS.",
+  ".SSS.BBBB.SSSS..",
+  "....BBBBBB......",
+  "...BBBB.BBBB....",
+  "..BBBB...BBBB...",
+  "................"
+], MARIO_PAL);
+
+const marioJump = createPixelSprite(16, 16, [
+  ".....RRRRR......",
+  "....RRRRRRRRR...",
+  "....BBBSS.S.....",
+  "...B.S.SSS.S....",
+  "...B.SS.SSS.S...",
+  "...BBSSS.SSSS...",
+  ".....SSSSSSS....",
+  "....RRRBRR......",
+  "..RRRRRRBRRR....",
+  ".RRRRRRRBBRRR...",
+  ".SS.RRRBRRBR....",
+  ".SSS.BBBB.SSSS..",
+  "....BBBBBBBSSS..",
+  "...BBBB.BBBB....",
+  "..BBBB...BBB....",
+  ".BBBB..........."
+], MARIO_PAL);
+
+// Goomba Sprites
+const GOOMBA_PAL = { 'B': C.goombaBrown, 'S': C.goombaSkin, 'K': C.black, 'W': C.white };
+const goomba1 = createPixelSprite(16, 16, [
+  "......BBBB......",
+  "....BBBBBBBB....",
+  "...BBBBBBBBBB...",
+  "..BBBBBBBBBBBB..",
+  ".BBBWKBBBBKWBBB.",
+  ".BBBWKBBBBKWBBB.",
+  ".BBBWKBBBBKWBBB.",
+  "BBBBKKBBBBKKBBBB",
+  "BBBBSSSSSSSSBBBB",
+  ".BBSSSSSSSSSSBB.",
+  "..SSSSSSSSSSSS..",
+  "..SSSSSSSSSSSS..",
+  "...KKKK..KKKK...",
+  "..KKKKK..KKKKK..",
+  "..KKKK....KKKK..",
+  "................"
+], GOOMBA_PAL);
+
+const goomba2 = createPixelSprite(16, 16, [
+  "......BBBB......",
+  "....BBBBBBBB....",
+  "...BBBBBBBBBB...",
+  "..BBBBBBBBBBBB..",
+  ".BBBWKBBBBKWBBB.",
+  ".BBBWKBBBBKWBBB.",
+  ".BBBWKBBBBKWBBB.",
+  "BBBBKKBBBBKKBBBB",
+  "BBBBSSSSSSSSBBBB",
+  ".BBSSSSSSSSSSBB.",
+  "..SSSSSSSSSSSS..",
+  "..SSSSSSSSSSSS..",
+  "....KKKK.KKKK...",
+  "...KKKKK.KKKKK..",
+  "....KKKK..KKKK..",
+  "................"
+], GOOMBA_PAL);
+
+const goombaFlat = createPixelSprite(16, 16, [
+  "................",
+  "................",
+  "................",
+  "................",
+  "................",
+  "................",
+  "................",
+  "................",
+  "....BBBBBBBB....",
+  "..BBBWKKWWKBB...",
+  ".BBBBSSSSSSSSBB.",
+  "BBSSSSSSSSSSSSBB",
+  "BBKKKKKKKKKKKKBB",
+  "KKKKKKKKKKKKKKKK",
+  "................",
+  "................"
+], GOOMBA_PAL);
+
+// Piranha Plant Sprites
+const PIRANHA_PAL = { 'R': '#d82800', 'W': '#ffffff', 'G': '#00a800', 'K': '#005800' };
+const piranha1 = createPixelSprite(16, 24, [
+  ".....RRRRRR.....",
+  "...RRRWWWWRRR...",
+  "..RRRWWWWWWWWR..",
+  ".RRRRWWWWWWWWRR.",
+  ".RRRWWWWWWWWWWR.",
+  ".RRRWWRRRRWWRRR.",
+  "..RRRRRRRRRRRR..",
+  "...RRRRRRRRRR...",
+  "....WWWWWWWW....",
+  "....RRRRRRRR....",
+  ".....GGGGGG.....",
+  ".....GKKKKG.....",
+  ".....GKKKKG.....",
+  ".....GKKKKG.....",
+  "....GGKKKKGG....",
+  "...GGGGKKGGGG...",
+  "..GGGGGKKGGGGG..",
+  ".....GKKKKG.....",
+  ".....GKKKKG.....",
+  ".....GKKKKG.....",
+  ".....GKKKKG.....",
+  ".....GKKKKG.....",
+  ".....GKKKKG.....",
+  ".....GKKKKG....."
+], PIRANHA_PAL);
+
+const piranha2 = createPixelSprite(16, 24, [
+  ".....RRRRRR.....",
+  "...RRRRRRRRRR...",
+  "..RRRWWWWWWWWR..",
+  ".RRRWWRRRRRWWWR.",
+  ".RRRWWRRRRRWWWR.",
+  ".RRRWWWWWWWWWWR.",
+  "..RRRRRRRRRRRR..",
+  "...RRRRRRRRRR...",
+  "....WWWWWWWW....",
+  "....RRRRRRRR....",
+  ".....GGGGGG.....",
+  ".....GKKKKG.....",
+  ".....GKKKKG.....",
+  ".....GKKKKG.....",
+  "....GGKKKKGG....",
+  "...GGGGKKGGGG...",
+  "..GGGGGKKGGGGG..",
+  ".....GKKKKG.....",
+  ".....GKKKKG.....",
+  ".....GKKKKG.....",
+  ".....GKKKKG.....",
+  ".....GKKKKG.....",
+  ".....GKKKKG.....",
+  ".....GKKKKG....."
+], PIRANHA_PAL);
+
+// Block Textures
+function drawQuestionBlock(ctx, x, y, frame) {
+  ctx.fillStyle = C.qYellow;
+  ctx.fillRect(x, y, 16, 16);
+  ctx.fillStyle = C.qDark;
+  ctx.strokeRect(x + 0.5, y + 0.5, 15, 15);
+  ctx.fillRect(x + 1, y + 1, 1, 1);
+  ctx.fillRect(x + 14, y + 1, 1, 1);
+  ctx.fillRect(x + 1, y + 14, 1, 1);
+  ctx.fillRect(x + 14, y + 14, 1, 1);
+  ctx.fillStyle = C.black;
+  ctx.fillRect(x + 5, y + 3, 6, 2);
+  ctx.fillRect(x + 9, y + 5, 3, 3);
+  ctx.fillRect(x + 6, y + 7, 4, 2);
+  ctx.fillRect(x + 6, y + 9, 3, 2);
+  ctx.fillRect(x + 6, y + 12, 3, 2);
+}
+
+function drawEmptyBlock(ctx, x, y) {
+  ctx.fillStyle = C.qEmpty;
+  ctx.fillRect(x, y, 16, 16);
+  ctx.fillStyle = '#4c2800';
+  ctx.strokeRect(x + 0.5, y + 0.5, 15, 15);
+  ctx.fillRect(x + 1, y + 1, 2, 2);
+  ctx.fillRect(x + 13, y + 1, 2, 2);
+  ctx.fillRect(x + 1, y + 13, 2, 2);
+  ctx.fillRect(x + 13, y + 13, 2, 2);
+}
+
+function drawBrickBlock(ctx, x, y) {
+  ctx.fillStyle = C.brickDark;
+  ctx.fillRect(x, y, 16, 16);
+  ctx.fillStyle = C.brickLight;
+  ctx.fillRect(x + 1, y + 1, 6, 3);
+  ctx.fillRect(x + 9, y + 1, 6, 3);
+  ctx.fillRect(x + 1, y + 5, 2, 3);
+  ctx.fillRect(x + 5, y + 5, 6, 3);
+  ctx.fillRect(x + 13, y + 5, 2, 3);
+  ctx.fillRect(x + 1, y + 9, 6, 3);
+  ctx.fillRect(x + 9, y + 9, 6, 3);
+  ctx.fillRect(x + 1, y + 13, 2, 2);
+  ctx.fillRect(x + 5, y + 13, 6, 2);
+  ctx.fillRect(x + 13, y + 13, 2, 2);
+  ctx.fillStyle = C.brickLine;
+  ctx.fillRect(x, y + 4, 16, 1);
+  ctx.fillRect(x, y + 8, 16, 1);
+  ctx.fillRect(x, y + 12, 16, 1);
+  ctx.fillRect(x + 8, y, 1, 4);
+  ctx.fillRect(x + 4, y + 4, 1, 4);
+  ctx.fillRect(x + 12, y + 4, 1, 4);
+  ctx.fillRect(x + 8, y + 8, 1, 4);
+  ctx.fillRect(x + 4, y + 12, 1, 4);
+  ctx.fillRect(x + 12, y + 12, 1, 4);
+}
+
+function drawPipe(ctx, x, y, height) {
+  const topH = 15;
+  // Rim
+  ctx.fillStyle = C.pipeGreen;
+  ctx.fillRect(x - 2, y, 36, topH);
+  ctx.fillStyle = C.pipeLight;
+  ctx.fillRect(x, y + 2, 4, topH - 4);
+  ctx.fillStyle = C.pipeDark;
+  ctx.fillRect(x + 28, y + 1, 4, topH - 2);
+  ctx.fillStyle = C.black;
+  ctx.strokeRect(x - 1.5, y + 0.5, 35, topH - 1);
+  // Shaft
+  const shaftH = height - topH;
+  ctx.fillStyle = C.pipeGreen;
+  ctx.fillRect(x, y + topH, 32, shaftH);
+  ctx.fillStyle = C.pipeLight;
+  ctx.fillRect(x + 2, y + topH, 4, shaftH);
+  ctx.fillStyle = C.pipeDark;
+  ctx.fillRect(x + 26, y + topH, 4, shaftH);
+  ctx.fillStyle = C.black;
+  ctx.strokeRect(x + 0.5, y + topH - 0.5, 31, shaftH);
+}
+
+// --- LEVEL & SCRIPT SETUP ---
+const LEVEL_LENGTH = 1600;
+let score = 0;
+let coins = 0;
+
+// World objects blueprint generator for full seamless looping
+function createWorld() {
+  return {
+    blocks: [
+      { id: 1, x: 260, y: 144, type: '?', hit: false, bounce: 0 },
+      { id: 2, x: 340, y: 144, type: 'brick', hit: false, bounce: 0 },
+      { id: 3, x: 356, y: 144, type: '?', hit: false, bounce: 0 },
+      { id: 4, x: 372, y: 144, type: 'brick', hit: false, bounce: 0 },
+      { id: 5, x: 388, y: 144, type: '?', hit: false, bounce: 0 },
+      { id: 6, x: 404, y: 144, type: 'brick', hit: false, bounce: 0 },
+      { id: 7, x: 388, y: 80,  type: '?', hit: false, bounce: 0 },
+      { id: 8, x: 740, y: 144, type: 'brick', hit: false, bounce: 0 },
+      { id: 9, x: 756, y: 144, type: '?', hit: false, bounce: 0 },
+      { id: 10, x: 772, y: 144, type: 'brick', hit: false, bounce: 0 },
+      { id: 11, x: 1080, y: 144, type: '?', hit: false, bounce: 0 },
+      { id: 12, x: 1120, y: 80,  type: '?', hit: false, bounce: 0 }
+    ],
+    pipes: [
+      { x: 480, h: 32, plant: false },
+      { x: 620, h: 48, plant: true, piranhaY: 0, piranhaDir: 1 },
+      { x: 860, h: 64, plant: true, piranhaY: 0, piranhaDir: 1 },
+      { x: 1260, h: 40, plant: true, piranhaY: 0, piranhaDir: 1 }
+    ],
+    goombas: [
+      { id: 1, x: 360, y: 184, vx: -0.6, state: 'walk', anim: 0, timer: 0 },
+      { id: 2, x: 570, y: 184, vx: -0.6, state: 'walk', anim: 0, timer: 0 },
+      { id: 3, x: 790, y: 184, vx: -0.6, state: 'walk', anim: 0, timer: 0 },
+      { id: 4, x: 820, y: 184, vx: -0.6, state: 'walk', anim: 0, timer: 0 },
+      { id: 5, x: 1200, y: 184, vx: -0.6, state: 'walk', anim: 0, timer: 0 }
+    ],
+    particles: []
+  };
+}
+
+let world = createWorld();
+
+// Mario state
+const mario = {
+  x: 40,
+  y: 184,
+  vx: 1.5,
+  vy: 0,
+  grounded: true,
+  jumping: false,
+  frameTimer: 0,
+  animFrame: 0
+};
+
+// Jump sequence script keyed to exact X positions for speedrun perfection
+const scriptedJumps = [
+  { triggerX: 236, vy: -5.4 }, // Jump into first ? block
+  { triggerX: 334, vy: -5.4 }, // Jump onto brick row
+  { triggerX: 374, vy: -5.5 }, // High jump to hit top block
+  { triggerX: 440, vy: -5.0 }, // Clear first pipe
+  { triggerX: 520, vy: -4.5 }, // Stomp Goomba #2
+  { triggerX: 580, vy: -5.8 }, // Leap over second tall pipe
+  { triggerX: 728, vy: -5.2 }, // Hit ? block in cluster
+  { triggerX: 760, vy: -4.2 }, // Bounce stomp Goomba #3
+  { triggerX: 820, vy: -6.0 }, // High leap over tall pipe
+  { triggerX: 1056, vy: -5.4 }, // Hit ? block
+  { triggerX: 1096, vy: -5.6 }, // Hit high ? block
+  { triggerX: 1160, vy: -4.2 }, // Stomp Goomba #5
+  { triggerX: 1220, vy: -5.5 }, // Clear final pipe
+  { triggerX: 1450, vy: -5.0 }  // Victory hurdle before smooth loop
+];
+
+// --- SCENERY DRAWING (Background Hills & Clouds) ---
+function drawCloud(ctx, x, y) {
+  ctx.fillStyle = C.cloudWhite;
+  ctx.beginPath();
+  ctx.arc(x + 12, y + 12, 10, 0, Math.PI * 2);
+  ctx.arc(x + 24, y + 8, 12, 0, Math.PI * 2);
+  ctx.arc(x + 36, y + 12, 10, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillRect(x + 10, y + 10, 28, 8);
+}
+
+function drawHill(ctx, x, y, r) {
+  ctx.fillStyle = C.hillGreen;
+  ctx.beginPath();
+  ctx.arc(x, y + r, r, Math.PI, 0);
+  ctx.fill();
+  ctx.strokeStyle = C.hillBorder;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  // Hill spots
+  ctx.fillStyle = C.hillBorder;
+  ctx.fillRect(x - 2, y + 8, 4, 3);
+  ctx.fillRect(x - r / 2, y + r / 2, 4, 3);
+  ctx.fillRect(x + r / 2 - 4, y + r / 2, 4, 3);
+}
+
+// --- MAIN SIMULATION & RENDER LOOP ---
+let globalFrame = 0;
+
+function update() {
+  globalFrame++;
+
+  // Mario running logic
+  mario.x += mario.vx;
+  mario.y += mario.vy;
+
+  // Apply gravity
+  if (!mario.grounded) {
+    mario.vy += 0.28;
+  }
+
+  // Ground collision
+  const groundLevel = 184;
+  let currentSurfaceY = groundLevel;
+
+  // Pipe collisions (land on top)
+  world.pipes.forEach(pipe => {
+    const pipeTop = 200 - pipe.h;
+    if (mario.x + 12 > pipe.x && mario.x + 4 < pipe.x + 32) {
+      if (mario.y + 16 <= pipeTop + 6 && mario.vy >= 0) {
+        currentSurfaceY = Math.min(currentSurfaceY, pipeTop - 16);
+      }
+    }
+  });
+
+  // Block top collisions (stand on blocks)
+  world.blocks.forEach(b => {
+    if (mario.x + 12 > b.x && mario.x + 4 < b.x + 16) {
+      if (mario.y + 16 <= b.y + 6 && mario.vy >= 0) {
+        currentSurfaceY = Math.min(currentSurfaceY, b.y - 16);
+      }
+    }
+  });
+
+  if (mario.y >= currentSurfaceY) {
+    mario.y = currentSurfaceY;
+    mario.vy = 0;
+    mario.grounded = true;
+  } else {
+    mario.grounded = false;
+  }
+
+  // Scripted Jumping
+  scriptedJumps.forEach(j => {
+    if (Math.abs(mario.x - j.triggerX) < mario.vx) {
+      mario.vy = j.vy;
+      mario.grounded = false;
+      AudioEngine.playJump();
+    }
+  });
+
+  // Under-block bumping detection
+  world.blocks.forEach(b => {
+    if (!b.hit && mario.vy < 0) {
+      if (mario.x + 12 > b.x && mario.x + 4 < b.x + 16) {
+        if (mario.y <= b.y + 16 && mario.y >= b.y + 8) {
+          b.hit = true;
+          b.bounce = -4;
+          mario.vy = 1;
+          AudioEngine.playBump();
+
+          if (b.type === '?') {
+            AudioEngine.playCoin();
+            coins++;
+            score += 200;
+            // Pop out animated coin particle
+            world.particles.push({
+              x: b.x + 4,
+              y: b.y - 12,
+              vy: -4,
+              timer: 0,
+              type: 'coin'
+            });
+          }
+        }
+      }
+    }
+    // Block bounce physics
+    if (b.bounce < 0) {
+      b.bounce += 0.5;
+    } else {
+      b.bounce = 0;
+    }
+  });
+
+  // Piranha plant animation in pipes
+  world.pipes.forEach(pipe => {
+    if (pipe.plant) {
+      // Retract plant safely into pipe if Mario is close
+      const dist = Math.abs((mario.x + 8) - (pipe.x + 16));
+      if (dist < 48) {
+        if (pipe.piranhaY < 24) pipe.piranhaY += 1.2;
+      } else {
+        if (pipe.piranhaDir === 1) {
+          pipe.piranhaY -= 0.35;
+          if (pipe.piranhaY <= -20) pipe.piranhaDir = -1;
+        } else {
+          pipe.piranhaY += 0.35;
+          if (pipe.piranhaY >= 20) pipe.piranhaDir = 1;
+        }
+      }
+    }
+  });
+
+  // Goombas update & stomp detection
+  world.goombas.forEach(g => {
+    if (g.state === 'walk') {
+      g.x += g.vx;
+      g.anim += 0.08;
+
+      // Mario stomp Goomba
+      if (
+        mario.x + 12 > g.x &&
+        mario.x + 4 < g.x + 16 &&
+        mario.y + 16 >= g.y &&
+        mario.y + 16 <= g.y + 10 &&
+        mario.vy > 0
+      ) {
+        g.state = 'flat';
+        mario.vy = -3.2; // Bounce Mario up
+        score += 100;
+        AudioEngine.playStomp();
+      }
+    } else if (g.state === 'flat') {
+      g.timer++;
+    }
+  });
+
+  // Floating score/coin particles update
+  for (let i = world.particles.length - 1; i >= 0; i--) {
+    const p = world.particles[i];
+    p.y += p.vy;
+    p.vy += 0.25;
+    p.timer++;
+    if (p.timer > 30) {
+      world.particles.splice(i, 1);
+    }
+  }
+
+  // Mario Animation state
+  if (mario.grounded) {
+    mario.frameTimer += 0.2;
+    mario.animFrame = Math.floor(mario.frameTimer) % 3;
+  }
+
+  // Seamless World Loop Reset
+  if (mario.x >= LEVEL_LENGTH) {
+    mario.x = 40;
+    world = createWorld(); // Fresh reset for seamless continuity
+  }
+}
+
+function render() {
+  // Clear buffer
+  bctx.fillStyle = C.sky;
+  bctx.fillRect(0, 0, V_WIDTH, V_HEIGHT);
+
+  // Camera follows Mario smoothly with dynamic lead
+  const cameraX = mario.x - 70;
+
+  // --- PARALLAX BACKGROUND ---
+  // Far clouds (0.2x speed)
+  const cloudOffset = -(cameraX * 0.2) % 300;
+  for (let cx = cloudOffset - 100; cx < V_WIDTH + 100; cx += 150) {
+    drawCloud(bctx, cx, 32);
+    drawCloud(bctx, cx + 80, 52);
+  }
+
+  // Hills (0.4x speed)
+  const hillOffset = -(cameraX * 0.4) % 250;
+  for (let hx = hillOffset - 80; hx < V_WIDTH + 80; hx += 160) {
+    drawHill(bctx, hx, 150, 48);
+    drawHill(bctx, hx + 90, 166, 32);
+  }
+
+  // Ground layer
+  bctx.fillStyle = C.groundTop;
+  bctx.fillRect(0, 200, V_WIDTH, 4);
+  bctx.fillStyle = C.groundDark;
+  bctx.fillRect(0, 204, V_WIDTH, 20);
+
+  // Ground brick grid seams
+  bctx.fillStyle = C.brickLine;
+  const groundTileOffset = -cameraX % 16;
+  for (let gx = groundTileOffset; gx < V_WIDTH; gx += 16) {
+    bctx.fillRect(gx, 200, 1, 24);
+    bctx.fillRect(gx, 212, 16, 1);
+  }
+
+  bctx.save();
+  bctx.translate(-cameraX, 0);
+
+  // --- BLOCKS ---
+  world.blocks.forEach(b => {
+    const drawY = b.y + b.bounce;
+    if (b.type === '?') {
+      if (b.hit) {
+        drawEmptyBlock(bctx, b.x, drawY);
+      } else {
+        drawQuestionBlock(bctx, b.x, drawY, globalFrame);
+      }
+    } else if (b.type === 'brick') {
+      drawBrickBlock(bctx, b.x, drawY);
+    }
+  });
+
+  // --- PIPES & PIRANHA PLANTS ---
+  world.pipes.forEach(pipe => {
+    const pipeTop = 200 - pipe.h;
+
+    // Draw Piranha behind pipe rim
+    if (pipe.plant) {
+      const piranhaSprite = Math.floor(globalFrame / 10) % 2 === 0 ? piranha1 : piranha2;
+      const pY = pipeTop + pipe.piranhaY;
+      bctx.drawImage(piranhaSprite, pipe.x + 8, pY);
+    }
+
+    // Pipe body covers plant stalk
+    drawPipe(bctx, pipe.x, pipeTop, pipe.h);
+  });
+
+  // --- GOOMBAS ---
+  world.goombas.forEach(g => {
+    if (g.state === 'walk') {
+      const frame = Math.floor(g.anim) % 2 === 0 ? goomba1 : goomba2;
+      bctx.drawImage(frame, g.x, g.y);
+    } else if (g.state === 'flat' && g.timer < 30) {
+      bctx.drawImage(goombaFlat, g.x, g.y + 6);
+    }
+  });
+
+  // --- COIN PARTICLES ---
+  world.particles.forEach(p => {
+    if (p.type === 'coin') {
+      bctx.fillStyle = C.qYellow;
+      const spin = Math.floor(p.timer / 3) % 4;
+      const w = spin === 1 || spin === 3 ? 4 : 8;
+      bctx.fillRect(p.x + (8 - w) / 2, p.y, w, 12);
+      bctx.fillStyle = C.white;
+      bctx.fillRect(p.x + (8 - w) / 2 + 1, p.y + 2, 2, 8);
+    }
+  });
+
+  // --- MARIO ---
+  let marioSprite;
+  if (!mario.grounded) {
+    marioSprite = marioJump;
+  } else {
+    marioSprite = [marioRun1, marioRun2, marioRun3][mario.animFrame];
+  }
+  bctx.drawImage(marioSprite, mario.x, mario.y);
+
+  bctx.restore();
+
+  // --- RETRO HUD (Fixed on top of screen) ---
+  bctx.font = 'bold 8px "Courier New", monospace';
+  bctx.fillStyle = C.white;
+
+  // MARIO & Score
+  bctx.fillText('MARIO', 24, 16);
+  bctx.fillText(String(score).padStart(6, '0'), 24, 26);
+
+  // Coins counter
+  bctx.fillStyle = C.qYellow;
+  bctx.fillRect(96, 20, 6, 6);
+  bctx.fillStyle = C.white;
+  bctx.fillText('×' + String(coins).padStart(2, '0'), 105, 26);
+
+  // World info
+  bctx.fillText('WORLD', 152, 16);
+  bctx.fillText('1-1', 160, 26);
+
+  // Time
+  bctx.fillText('TIME', 208, 16);
+  bctx.fillText('374', 212, 26);
+
+  // Scale crisp virtual buffer to fit real canvas
+  ctx.drawImage(buffer, 0, 0, canvas.width, canvas.height);
+}
+
+// --- GAME LOOP ---
+function loop() {
+  update();
+  render();
+  requestAnimationFrame(loop);
+}
+
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
