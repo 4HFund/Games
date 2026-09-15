@@ -3,185 +3,239 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SUPER FOUNDERY BROS.</title>
+<title>SUPER FOUNDERY BROS. - 16-BIT REMASTERED</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@600;900&display=swap');
+
+  :root {
+    --steel-900: #0d1522;
+    --steel-800: #162235;
+    --steel-700: #22344f;
+    --steel-600: #334d74;
+    --orange-500: #e85d1d;
+    --orange-400: #ff7836;
+    --orange-glow: rgba(232, 93, 29, 0.45);
+    --gold-400: #ffc933;
+    --gold-300: #ffe476;
+    --cream: #fff4db;
+    --cream-dim: #ebd4b0;
+  }
+
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
     user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
   }
+
   body {
-    background: #0f141d;
+    background: radial-gradient(circle at center, #1b2638 0%, #080c14 100%);
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
     overflow: hidden;
     touch-action: none;
-    font-family: 'Courier New', Courier, monospace;
-    color: #f7eed7;
+    font-family: 'Press Start 2P', monospace;
+    color: var(--cream);
   }
-  #game-wrapper {
+
+  #cabinet {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 768px;
-    padding: 6px;
+    max-width: 820px;
+    padding: 10px 14px;
   }
-  #header-banner {
-    text-align: center;
-    margin-bottom: 4px;
-    text-shadow: 2px 2px 0px #1a2233;
-  }
-  #header-banner h1 {
-    font-size: clamp(16px, 4vw, 24px);
-    color: #e06020;
-    letter-spacing: 2px;
-    font-weight: 900;
-  }
-  #header-banner p {
-    font-size: clamp(9px, 2.2vw, 12px);
-    color: #ffd040;
-    letter-spacing: 1px;
-    font-weight: bold;
-  }
-  #canvas-container {
-    position: relative;
+
+  /* Marquee Header */
+  #marquee {
     width: 100%;
-    background: #1b283d;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 12px rgba(224,96,32,0.4);
-    border: 3px solid #e06020;
-    border-radius: 6px;
-    aspect-ratio: 256 / 224;
-    overflow: hidden;
-  }
-  canvas {
-    width: 100%;
-    height: 100%;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
-    display: block;
-  }
-  #touch-controls {
+    background: linear-gradient(180deg, #24354f 0%, #121c2c 100%);
+    border: 3px solid var(--orange-500);
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+    padding: 10px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.2), 0 -4px 20px var(--orange-glow);
+  }
+
+  .title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .title-group h1 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 900;
+    font-size: clamp(18px, 4.2vw, 28px);
+    letter-spacing: 2px;
+    background: linear-gradient(180deg, #fff 0%, var(--gold-400) 45%, var(--orange-500) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 0px #000);
+  }
+
+  .title-group span {
+    font-size: clamp(7px, 1.7vw, 9px);
+    color: var(--gold-300);
+    letter-spacing: 1.5px;
+    text-shadow: 1px 1px 0 #000;
+  }
+
+  .badge {
+    background: var(--orange-500);
+    color: #fff;
+    font-size: 8px;
+    padding: 5px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--gold-400);
+    box-shadow: 0 0 8px var(--orange-glow);
+  }
+
+  /* CRT Screen Bezel */
+  #screen-bezel {
+    position: relative;
     width: 100%;
-    padding: 10px 18px 4px 18px;
+    background: #000;
+    border: 4px solid #3a4b64;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.9), 0 0 30px var(--orange-glow);
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  /* Retro Scanline Overlay */
+  #screen-bezel::after {
+    content: " ";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                radial-gradient(circle, rgba(0,0,0,0) 65%, rgba(0,0,0,0.6) 100%);
+    background-size: 100% 3px, 100% 100%;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Mobile Touch Controls */
+  #controls {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 10px 6px 10px;
     touch-action: none;
   }
+
   .dpad {
     display: flex;
     gap: 12px;
   }
+
   .btn {
-    width: 58px;
-    height: 58px;
-    background: #1c2738;
-    border: 3px solid #364860;
+    width: 62px;
+    height: 62px;
     border-radius: 50%;
-    color: #ffd040;
-    font-size: 20px;
-    font-weight: bold;
+    background: radial-gradient(circle at 35% 35%, #354763 0%, #1a2434 100%);
+    border: 3px solid #4a6388;
+    color: var(--gold-400);
+    font-size: 22px;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.7), inset 0 2px 3px rgba(255,255,255,0.25);
     cursor: pointer;
     touch-action: none;
+    transition: transform 0.06s, border-color 0.06s;
   }
+
   .btn:active, .btn.pressed {
-    background: #364860;
-    transform: scale(0.92);
-    border-color: #e06020;
+    transform: translateY(3px) scale(0.95);
+    border-color: var(--orange-400);
+    background: radial-gradient(circle at 35% 35%, #222f42 0%, #121a26 100%);
   }
-  .action-buttons {
+
+  .action-btns {
     display: flex;
-    gap: 12px;
+    gap: 14px;
   }
+
   .btn-action {
-    width: 58px;
-    height: 58px;
-    font-size: 11px;
+    width: 66px;
+    height: 66px;
+    font-size: 9px;
     letter-spacing: 1px;
+    border-radius: 50%;
+    font-family: 'Press Start 2P', monospace;
   }
-  .btn-fire {
-    background: #e06020;
-    border-color: #ff8547;
+
+  .btn-flame {
+    background: radial-gradient(circle at 35% 35%, #f16928 0%, #9e3305 100%);
+    border-color: #ff935e;
     color: #fff;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.7), 0 0 10px var(--orange-glow);
   }
-  .btn-fire:active, .btn-fire.pressed {
-    background: #a84010;
-  }
+
   .btn-jump {
-    background: #ffd040;
-    border-color: #ffe07a;
-    color: #2b1f00;
-  }
-  .btn-jump:active, .btn-jump.pressed {
-    background: #d4a71c;
+    background: radial-gradient(circle at 35% 35%, #ffd24d 0%, #b88600 100%);
+    border-color: #ffea99;
+    color: #3b2800;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.7), 0 0 10px rgba(255,201,51,0.3);
   }
 </style>
 </head>
 <body>
 
-<div id="game-wrapper">
-  <div id="header-banner">
-    <h1>SUPER FOUNDERY BROS.</h1>
-    <p>“SUNDAYS ARE JUST THE START”</p>
+<div id="cabinet">
+  <div id="marquee">
+    <div class="title-group">
+      <h1>SUPER FOUNDERY BROS.</h1>
+      <span>“SUNDAYS ARE JUST THE START”</span>
+    </div>
+    <div class="badge">ARCADE 16-BIT</div>
   </div>
 
-  <div id="canvas-container">
-    <canvas id="canvas" width="256" height="224"></canvas>
+  <div id="screen-bezel">
+    <canvas id="canvas" width="400" height="300"></canvas>
   </div>
 
-  <div id="touch-controls">
+  <div id="controls">
     <div class="dpad">
       <div class="btn" id="btn-left">◀</div>
       <div class="btn" id="btn-right">▶</div>
     </div>
-    <div class="action-buttons">
-      <div class="btn btn-action btn-fire" id="btn-action">FLAME</div>
+    <div class="action-btns">
+      <div class="btn btn-action btn-flame" id="btn-action">FLAME</div>
       <div class="btn btn-action btn-jump" id="btn-jump">JUMP</div>
     </div>
   </div>
 </div>
 
 <script>
-// --- CONSTANTS & CONFIG ---
-const V_WIDTH = 256;
-const V_HEIGHT = 224;
+// --- CANVAS & 16-BIT RENDERER (400 x 300 Resolution) ---
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-ctx.imageSmoothingEnabled = false;
+const W = canvas.width;
+const H = canvas.height;
 
-// PALETTE
-const P = {
-  steelDark: '#16202e',
-  steelMid: '#24344a',
-  steelLight: '#3a5070',
-  orange: '#e06020',
-  orangeGlow: '#ff8547',
-  gold: '#ffd040',
-  cream: '#f7eed7',
-  creamDark: '#dbcbb0',
-  blueJeans: '#223854',
-  black: '#0a0d14',
-  white: '#ffffff',
-  green: '#2d843b',
-  wood: '#5a351a',
-  purple: '#6b3270',
-  redError: '#c82828'
-};
-
-// --- AUDIO SYNTHESIZER ---
-const AudioEngine = {
+// --- REFINED AUDIO SYNTHESIS ---
+const Sound = {
   ctx: null,
   init() {
     if (!this.ctx) {
@@ -189,41 +243,38 @@ const AudioEngine = {
       if (AC) this.ctx = new AC();
     }
   },
-  playTone(freqs, duration, type = 'square', vol = 0.08) {
+  play(freqs, duration, type = 'square', vol = 0.08) {
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
     osc.type = type;
-    freqs.forEach((f, idx) => {
-      osc.frequency.setValueAtTime(f, now + idx * (duration / freqs.length));
-    });
+    const step = duration / freqs.length;
+    freqs.forEach((f, i) => osc.frequency.setValueAtTime(f, now + i * step));
     gain.gain.setValueAtTime(vol, now);
-    gain.gain.linearRampToValueAtTime(0, now + duration);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
     osc.connect(gain);
     gain.connect(this.ctx.destination);
     osc.start(now);
     osc.stop(now + duration);
   },
-  jump() { this.playTone([160, 480], 0.16, 'square', 0.08); },
-  coin() { this.playTone([980, 1320], 0.28, 'sine', 0.1); },
-  powerUp() { this.playTone([260, 330, 390, 520, 660, 780], 0.35, 'triangle', 0.12); },
-  bump() { this.playTone([200, 80], 0.08, 'triangle', 0.1); },
-  stomp() { this.playTone([110, 40], 0.12, 'triangle', 0.12); },
-  flame() { this.playTone([540, 220, 110], 0.15, 'sawtooth', 0.06); },
-  levelClear() {
-    this.playTone([392, 523, 659, 784, 659, 784, 1046], 0.8, 'triangle', 0.15);
-  }
+  jump() { this.play([180, 240, 360, 520], 0.18, 'sine', 0.12); },
+  coin() { this.play([988, 1318], 0.28, 'triangle', 0.1); },
+  power() { this.play([262, 330, 392, 523, 659, 784], 0.35, 'triangle', 0.15); },
+  bump() { this.play([120, 80], 0.09, 'sawtooth', 0.1); },
+  stomp() { this.play([140, 60], 0.14, 'triangle', 0.15); },
+  flame() { this.play([600, 320, 160], 0.15, 'sawtooth', 0.08); },
+  win() { this.play([440, 554, 659, 880, 1108], 0.6, 'triangle', 0.16); }
 };
 
-window.addEventListener('click', () => AudioEngine.init(), { once: true });
-window.addEventListener('touchstart', () => AudioEngine.init(), { once: true });
+window.addEventListener('click', () => Sound.init(), { once: true });
+window.addEventListener('touchstart', () => Sound.init(), { once: true });
 
-// --- INPUT HANDLING ---
+// --- INPUTS (Desktop & Mobile) ---
 const keys = { left: false, right: false, jump: false, action: false };
 
 window.addEventListener('keydown', (e) => {
-  AudioEngine.init();
+  Sound.init();
   if (['ArrowLeft', 'KeyA'].includes(e.code)) keys.left = true;
   if (['ArrowRight', 'KeyD'].includes(e.code)) keys.right = true;
   if (['ArrowUp', 'KeyW', 'Space'].includes(e.code)) keys.jump = true;
@@ -240,18 +291,18 @@ window.addEventListener('keyup', (e) => {
   if (['KeyF', 'KeyJ', 'ShiftLeft', 'ShiftRight'].includes(e.code)) keys.action = false;
 });
 
-function bindBtn(id, keyName, onPress) {
+function bindBtn(id, key, onPress) {
   const el = document.getElementById(id);
   const p = (e) => {
     e.preventDefault();
-    AudioEngine.init();
-    keys[keyName] = true;
+    Sound.init();
+    keys[key] = true;
     el.classList.add('pressed');
     if (onPress) onPress();
   };
   const r = (e) => {
     e.preventDefault();
-    keys[keyName] = false;
+    keys[key] = false;
     el.classList.remove('pressed');
   };
   el.addEventListener('touchstart', p, { passive: false });
@@ -267,984 +318,977 @@ bindBtn('btn-right', 'right');
 bindBtn('btn-jump', 'jump');
 bindBtn('btn-action', 'action', () => shootFlame());
 
-// --- SPRITE GENERATION ---
-function makeSprite(width, height, map, pal) {
-  const c = document.createElement('canvas');
-  c.width = width;
-  c.height = height;
-  const pctx = c.getContext('2d');
-  for (let y = 0; y < height; y++) {
-    const row = map[y];
-    if (!row) continue;
-    for (let x = 0; x < width; x++) {
-      const ch = row[x];
-      if (ch && ch !== '.' && pal[ch]) {
-        pctx.fillStyle = pal[ch];
-        pctx.fillRect(x, y, 1, 1);
-      }
-    }
-  }
-  return c;
-}
-
-// Media Volunteer Sprite Palette:
-// O: Burnt Orange Cap/Trim, S: Dark Steel Blue Shirt, J: Jeans, K: Skin Cream, 
-// H: Headset/Black, G: Warm Gold, W: White, D: Shoes Dark
-const VOL_PAL = {
-  'O': P.orange,
-  'S': P.steelMid,
-  'L': P.steelLight,
-  'J': P.blueJeans,
-  'K': P.cream,
-  'H': P.black,
-  'G': P.gold,
-  'W': P.white,
-  'D': '#1a110a'
-};
-
-// Volunteer Small (16x16)
-const volSmallRun1 = makeSprite(16, 16, [
-  ".....OOOOOO.....",
-  "....OOOOOOOO....",
-  "...HHKKKKKHH....",
-  "...HHKKWKKHH....",
-  "...HHKKKK.H.....",
-  "....HHKKK.......",
-  "....SSLLSSSS....",
-  "...SSSLLSSSSS...",
-  "...OSSSSSSSSO...",
-  "...OK.SSSS.KO...",
-  "....K.JJJJ.K....",
-  ".....JJJJJJ.....",
-  ".....JJ..JJ.....",
-  "....DDD..JJ.....",
-  ".........DDD....",
-  "................"
-], VOL_PAL);
-
-const volSmallRun2 = makeSprite(16, 16, [
-  ".....OOOOOO.....",
-  "....OOOOOOOO....",
-  "...HHKKKKKHH....",
-  "...HHKKWKKHH....",
-  "...HHKKKK.H.....",
-  "....HHKKK.......",
-  "....SSSSSSSS....",
-  "...SSSLLSSSS....",
-  "...OSSSSSSSO....",
-  "...OKSSSSSSKO...",
-  "....K.JJJJ.K....",
-  ".....JJJJJJ.....",
-  "....JJJ..JJJ....",
-  "....DDD..DDD....",
-  "................",
-  "................"
-], VOL_PAL);
-
-const volSmallJump = makeSprite(16, 16, [
-  ".....OOOOOO.....",
-  "....OOOOOOOO....",
-  "...HHKKKKKHH....",
-  "...HHKKWKKHH....",
-  "...HHKKKK.H.....",
-  "....HHKKK.......",
-  "..OK.SSSSSS.KO..",
-  "..OKSSSSSSSSKO..",
-  "...SSSLLSSSS....",
-  "....SSSSSSSS....",
-  ".....JJJJJJ.....",
-  "....JJJJJJJJ....",
-  "...DDD....DDD...",
-  "................",
-  "................",
-  "................"
-], VOL_PAL);
-
-// Volunteer Big (16x24) - Powered Up with Coffee
-const volBigRun1 = makeSprite(16, 24, [
-  ".....OOOOOO.....",
-  "....OOOOOOOO....",
-  "...OOOOOOOOOO...",
-  "...HHKKKKKHH....",
-  "...HHKKWKKHH....",
-  "...HHKKKK.H.....",
-  "....HHKKKK......",
-  ".....KKKK.......",
-  "....SSSSSSSS....",
-  "...SSSLLSSSSS...",
-  "...SSSLLSSSSS...",
-  "..OSSSSSSSSSSO..",
-  "..OK.SSSSSS.KO..",
-  "..OK.SSSSSS.KO..",
-  "...K.SSSSSS.K...",
-  ".....JJJJJJ.....",
-  "....JJJJJJJJ....",
-  "....JJJ..JJJ....",
-  "....JJJ..JJJ....",
-  "....JJJ..JJJ....",
-  "...DDDD..JJJ....",
-  ".........DDDD...",
-  "................",
-  "................"
-], VOL_PAL);
-
-const volBigJump = makeSprite(16, 24, [
-  ".....OOOOOO.....",
-  "....OOOOOOOO....",
-  "...OOOOOOOOOO...",
-  "...HHKKKKKHH....",
-  "...HHKKWKKHH....",
-  "...HHKKKK.H.....",
-  "....HHKKKK......",
-  ".....KKKK.......",
-  "..OK.SSSSSS.KO..",
-  "..OKSSSSSSSSKO..",
-  "...SSSLLSSSSS...",
-  "...SSSLLSSSSS...",
-  "....SSSSSSSS....",
-  ".....JJJJJJ.....",
-  "....JJJJJJJJ....",
-  "...JJJJ..JJJJ...",
-  "...JJJ....JJJ...",
-  "..DDDD....DDDD..",
-  "................",
-  "................",
-  "................",
-  "................",
-  "................",
-  "................"
-], VOL_PAL);
-
-// Coffee Mug Power-up (16x16)
-const coffeeSprite = makeSprite(16, 16, [
-  ".....W..W.......",
-  "......W..W......",
-  ".....W..W.......",
-  "....KKKKKK......",
-  "...KDDDDDDK.....",
-  "...KDDDDDDKKK...",
-  "...KDDDDDDK.K...",
-  "...KDDDDDDKKK...",
-  "...KDDDDDDK.....",
-  "...KDDDDDDK.....",
-  "....KKKKKK......",
-  "................",
-  "................",
-  "................",
-  "................",
-  "................"
-], { 'W': P.white, 'K': P.cream, 'D': P.wood });
-
-// Flame Icon Power-up (16x16)
-const flameIconSprite = makeSprite(16, 16, [
-  ".......OO.......",
-  "......OGGO......",
-  ".....OGGGGO.....",
-  ".....OGWGGO.....",
-  "....OGWWGGGO....",
-  "...OGGGWWGGGO...",
-  "...OGGGGGGGO....",
-  "..OGGGGGGGGGO...",
-  "..OGGGGGGGGGO...",
-  "..OGGG..GGGGO...",
-  "...OO....OOO....",
-  "................",
-  "................",
-  "................",
-  "................",
-  "................"
-], { 'O': P.orange, 'G': P.gold, 'W': P.white });
-
-// Enemies Sprites
-// 1. Tangled Cables (16x16)
-const cableMonster = makeSprite(16, 16, [
-  "....KK....KK....",
-  "...KWWK..KWWK...",
-  "...KWKK..KWKK...",
-  "...KKKKKKKKKK...",
-  "..KKKKKKKKKKKK..",
-  ".KKKK..KK..KKKK.",
-  ".KK.KK.KK.KK.KK.",
-  ".KK..KKKKKK..KK.",
-  "..KKKKK..KKKKK..",
-  "...KK..KK..KK...",
-  "..KK.KK..KK.KK..",
-  ".KK...KKKK...KK.",
-  ".KK..........KK.",
-  "................",
-  "................",
-  "................"
-], { 'K': '#2a3342', 'W': P.gold });
-
-// 2. Dead Battery (16x16)
-const batteryMonster = makeSprite(16, 16, [
-  "......KKKK......",
-  "....KKWWWWKK....",
-  "....KKRRRRKK....",
-  "....KKRRRRKK....",
-  "....KKWWWWKK....",
-  "....KKRRRRKK....",
-  "....KKRRRRKK....",
-  "....KKWWWWKK....",
-  "....KKRRRRKK....",
-  "....KKRRRRKK....",
-  "....KKKKKKKK....",
-  "....DD....DD....",
-  "....DD....DD....",
-  "................",
-  "................",
-  "................"
-], { 'K': P.black, 'W': P.white, 'R': P.redError, 'D': '#444' });
-
-// 3. Technical Difficulties Monster (16x16)
-const glitchMonster = makeSprite(16, 16, [
-  "..RRRRRRRRRRRR..",
-  ".RRWWRRRRRRWWRR.",
-  ".RRWWRRRRRRWWRR.",
-  ".RRRRRRRRRRRRRR.",
-  ".RRRRRRKKRRRRRR.",
-  ".RRRRKKKKKKRRRR.",
-  ".RRRRRRKKRRRRRR.",
-  ".RR.RRRRRRRR.RR.",
-  ".RR..RRRRRR..RR.",
-  "..RR.RR..RR.RR..",
-  "....RR....RR....",
-  "................",
-  "................",
-  "................",
-  "................",
-  "................"
-], { 'R': P.purple, 'W': P.white, 'K': P.gold });
-
-// 4. Rolling Basketball Obstacle (14x14)
-const basketballSprite = makeSprite(14, 14, [
-  ".....OOOO.....",
-  "...OOKKKOO...",
-  "..OOK.K.KOO..",
-  ".OOK..K..KOO.",
-  ".OKKKKKKKKKO.",
-  "OOK...K...KOO",
-  "OOK...K...KOO",
-  "OOK...K...KOO",
-  ".OKKKKKKKKKO.",
-  ".OOK..K..KOO.",
-  "..OOK.K.KOO..",
-  "...OOKKKOO...",
-  ".....OOOO.....",
-  ".............."
-], { 'O': P.orange, 'K': P.black });
-
-// --- GAME STATE & WORLD BLUEPRINT ---
+// --- GAME WORLD DATA ---
+const LEVEL_LEN = 2400;
 let score = 0;
 let tokens = 0;
-let gameOver = false;
 let victory = false;
-let globalFrame = 0;
+let globalTick = 0;
 
-// Player Physics State (Sub-pixel, smooth momentum)
+// Sub-pixel platforming player with tight inertia
 const player = {
-  x: 32,
-  y: 176,
+  x: 40,
+  y: 220,
   vx: 0,
   vy: 0,
-  accel: 0.22,
-  friction: 0.82,
-  maxSpeed: 2.4,
-  jumpPower: -5.8,
+  acc: 0.35,
+  fric: 0.84,
+  maxSpeed: 3.2,
+  jumpStrength: -6.8,
   grounded: true,
   facingRight: true,
-  powerTier: 0, // 0: normal, 1: coffee big, 2: flame media hero
-  invulnTimer: 0,
-  animFrame: 0,
-  animTimer: 0,
+  tier: 0, // 0: Normal, 1: Coffee Big, 2: Flame Pro
+  invuln: 0,
+  animTick: 0,
   finished: false
 };
 
-// Projectile Flames
-let fireballs = [];
+const fireballs = [];
 
 function shootFlame() {
-  if (player.powerTier < 2 || fireballs.length >= 2 || player.finished) return;
-  AudioEngine.flame();
+  if (player.tier < 2 || fireballs.length >= 3 || player.finished) return;
+  Sound.flame();
   fireballs.push({
-    x: player.facingRight ? player.x + 16 : player.x - 4,
-    y: player.y + (player.powerTier > 0 ? 8 : 4),
-    vx: player.facingRight ? 3.8 : -3.8,
-    vy: 1.0,
+    x: player.facingRight ? player.x + 22 : player.x - 6,
+    y: player.y + (player.tier > 0 ? 12 : 6),
+    vx: player.facingRight ? 5.2 : -5.2,
+    vy: 1.2,
     bounces: 0
   });
 }
 
-function createLevel() {
+function buildWorld() {
   return {
     platforms: [
-      // Bible & Stage equipment floating platforms
-      { x: 160, y: 150, w: 48, h: 12, label: 'HOLY BIBLE', type: 'bible' },
-      { x: 420, y: 140, w: 48, h: 12, label: 'STAGE AUDIO', type: 'gear' },
-      { x: 580, y: 130, w: 48, h: 12, label: 'LIGHTING', type: 'gear' },
-      { x: 880, y: 130, w: 56, h: 12, label: 'WORSHIP CABLE', type: 'gear' },
-      { x: 1140, y: 140, w: 48, h: 12, label: 'MEDIA DESK', type: 'gear' },
-      { x: 1380, y: 130, w: 56, h: 12, label: 'HOLY BIBLE', type: 'bible' }
+      { x: 190, y: 190, w: 70, h: 14, type: 'bible', title: 'HOLY BIBLE' },
+      { x: 380, y: 170, w: 84, h: 14, type: 'truss', title: 'STAGE TRUSS' },
+      { x: 620, y: 155, w: 76, h: 14, type: 'case',  title: 'LIGHTING' },
+      { x: 920, y: 165, w: 80, h: 14, type: 'truss', title: 'AUDIO DESK' },
+      { x: 1220, y: 150, w: 70, h: 14, type: 'bible', title: 'SCRIPTURE' },
+      { x: 1520, y: 160, w: 80, h: 14, type: 'case',  title: 'AV RACK' },
+      { x: 1840, y: 150, w: 84, h: 14, type: 'truss', title: 'SANCTUARY' }
     ],
     blocks: [
-      // FAITH? and Brick blocks
-      { x: 120, y: 152, type: 'faith', content: 'token', hit: false, bounce: 0 },
-      { x: 210, y: 152, type: 'faith', content: 'coffee', hit: false, bounce: 0 },
-      { x: 230, y: 152, type: 'brick', hit: false, bounce: 0 },
-      { x: 250, y: 152, type: 'faith', content: 'flame', hit: false, bounce: 0 },
-      { x: 330, y: 110, type: 'faith', content: 'token', hit: false, bounce: 0 },
-      { x: 490, y: 152, type: 'faith', content: 'coffee', hit: false, bounce: 0 },
-      { x: 510, y: 152, type: 'brick', hit: false, bounce: 0 },
-      { x: 700, y: 152, type: 'faith', content: 'flame', hit: false, bounce: 0 },
-      { x: 720, y: 152, type: 'brick', hit: false, bounce: 0 },
-      { x: 1020, y: 140, type: 'faith', content: 'token', hit: false, bounce: 0 },
-      { x: 1260, y: 140, type: 'faith', content: 'coffee', hit: false, bounce: 0 }
+      { x: 130, y: 185, type: 'faith', item: 'token', hit: false, bounce: 0 },
+      { x: 280, y: 185, type: 'faith', item: 'coffee', hit: false, bounce: 0 },
+      { x: 304, y: 185, type: 'brick', hit: false, bounce: 0 },
+      { x: 328, y: 185, type: 'faith', item: 'flame', hit: false, bounce: 0 },
+      { x: 520, y: 140, type: 'faith', item: 'token', hit: false, bounce: 0 },
+      { x: 740, y: 185, type: 'faith', item: 'coffee', hit: false, bounce: 0 },
+      { x: 764, y: 185, type: 'brick', hit: false, bounce: 0 },
+      { x: 1040, y: 170, type: 'faith', item: 'flame', hit: false, bounce: 0 },
+      { x: 1360, y: 185, type: 'faith', item: 'token', hit: false, bounce: 0 },
+      { x: 1680, y: 170, type: 'faith', item: 'coffee', hit: false, bounce: 0 }
     ],
     doors: [
-      // Church ministry themed doors
-      { x: 290, w: 32, h: 44, label: "KIDS MIN", color: P.gold },
-      { x: 530, w: 34, h: 48, label: "WORSHIP", color: P.orange },
-      { x: 790, w: 36, h: 54, label: "MEDIA", color: P.steelMid },
-      { x: 1070, w: 34, h: 46, label: "KLOTHES", color: P.purple },
-      { x: 1300, w: 34, h: 50, label: "GROUPS", color: P.green }
+      { x: 470, w: 42, h: 56, label: "KIDS MIN", col: '#e85d1d' },
+      { x: 830, w: 42, h: 62, label: "WORSHIP",  col: '#2b5282' },
+      { x: 1140, w: 44, h: 68, label: "MEDIA BOOTH", col: '#223854' },
+      { x: 1440, w: 42, h: 58, label: "KENNY'S", col: '#6d327c' },
+      { x: 1750, w: 42, h: 64, label: "GROUPS",  col: '#2d8442' }
     ],
     signs: [
-      { x: 180, y: 174, text: "SUNDAYS ARE JUST THE START" },
-      { x: 740, y: 174, text: "MORE THAN A SUNDAY CHURCH" },
-      { x: 1320, y: 174, text: "SUNDAYS ARE JUST THE START" }
+      { x: 210, y: 226, text: "SUNDAYS ARE JUST THE START" },
+      { x: 980, y: 226, text: "MORE THAN A SUNDAY CHURCH" },
+      { x: 1620, y: 226, text: "SUNDAYS ARE JUST THE START" }
     ],
     enemies: [
-      { type: 'cable', x: 260, y: 184, vx: -0.5, alive: true, flatTimer: 0 },
-      { type: 'battery', x: 390, y: 184, vx: -0.6, alive: true, flatTimer: 0 },
-      { type: 'glitch', x: 630, y: 184, vx: -0.5, alive: true, flatTimer: 0 },
-      { type: 'cable', x: 840, y: 184, vx: -0.6, alive: true, flatTimer: 0 },
-      { type: 'battery', x: 970, y: 184, vx: -0.5, alive: true, flatTimer: 0 },
-      { type: 'glitch', x: 1200, y: 184, vx: -0.7, alive: true, flatTimer: 0 }
+      { type: 'cable',   x: 360, y: 240, vx: -0.6, alive: true, squish: 0 },
+      { type: 'battery', x: 590, y: 240, vx: -0.7, alive: true, squish: 0 },
+      { type: 'glitch',  x: 880, y: 240, vx: -0.6, alive: true, squish: 0 },
+      { type: 'clock',   x: 1080, y: 240, vx: -0.8, alive: true, squish: 0 },
+      { type: 'battery', x: 1320, y: 240, vx: -0.7, alive: true, squish: 0 },
+      { type: 'cable',   x: 1560, y: 240, vx: -0.6, alive: true, squish: 0 },
+      { type: 'glitch',  x: 1800, y: 240, vx: -0.8, alive: true, squish: 0 }
     ],
     obstacles: [
-      // Rolling basketballs & road cases
-      { type: 'ball', x: 460, y: 186, vx: -1.2, r: 7, rot: 0 },
-      { type: 'ball', x: 1110, y: 186, vx: -1.4, r: 7, rot: 0 }
+      { type: 'ball', x: 680,  y: 244, vx: -1.4, r: 8, rot: 0 },
+      { type: 'case', x: 1250, y: 242, vx: -1.2, w: 18, h: 14 },
+      { type: 'ball', x: 1690, y: 244, vx: -1.5, r: 8, rot: 0 }
     ],
     items: [],
     particles: [],
-    // Finish Flag & Sanctuary
-    flag: { x: 1540, poleH: 100, flagY: 100, hit: false },
-    church: { x: 1600, w: 100, h: 120 }
+    flag: { x: 2120, poleH: 140, flagY: 130, reached: false },
+    sanctuary: { x: 2210, w: 140, h: 150 }
   };
 }
 
-let level = createLevel();
+let world = buildWorld();
 
-// --- UPDATE LOOP ---
+// --- HIGH-FIDELITY VECTOR PIXEL DRAWING HELPERS ---
+
+// Media Volunteer: Detailed 16-bit Church Tech Hero
+function drawVolunteer(ctx, x, y, tier, facingRight, moving, grounded, tick) {
+  ctx.save();
+  ctx.translate(x + (facingRight ? 0 : (tier > 0 ? 22 : 18)), y);
+  if (!facingRight) ctx.scale(-1, 1);
+
+  const bob = grounded && moving ? Math.sin(tick * 0.35) * 2 : 0;
+  const legSwing = grounded && moving ? Math.sin(tick * 0.35) * 5 : 0;
+  const isJump = !grounded;
+
+  const h = tier > 0 ? 30 : 22;
+  const w = tier > 0 ? 20 : 16;
+
+  // Shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.3)';
+  ctx.beginPath();
+  ctx.ellipse(w/2, h + 2, w/2 + 2, 3, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Shoes
+  ctx.fillStyle = '#1c1510';
+  ctx.fillRect(isJump ? 2 : 2 - legSwing, h - 2 + bob, 6, 4);
+  ctx.fillRect(isJump ? w - 7 : w - 7 + legSwing, h - 2 + bob, 6, 4);
+
+  // Jeans (Steel Blue)
+  ctx.fillStyle = '#223854';
+  ctx.fillRect(3, h - 10 + bob, w - 6, 8);
+  ctx.fillStyle = '#17273c';
+  ctx.fillRect(w/2 - 1, h - 9 + bob, 2, 8); // Seam
+
+  // Shirt (Dark Steel Blue with subtle highlight)
+  ctx.fillStyle = tier === 2 ? '#e85d1d' : '#2d4360';
+  ctx.fillRect(2, h - 20 + bob, w - 4, 11);
+  ctx.fillStyle = tier === 2 ? '#ffa173' : '#3f5d84';
+  ctx.fillRect(4, h - 20 + bob, 3, 11); // Fabric Highlight
+
+  // Skin (Neck & Face)
+  ctx.fillStyle = '#ffd1a4';
+  ctx.fillRect(w/2 - 2, h - 22 + bob, 4, 3);
+  ctx.fillRect(3, h - 30 + bob, w - 6, 9);
+
+  // Friendly Face details
+  ctx.fillStyle = '#3a2010';
+  ctx.fillRect(w - 7, h - 27 + bob, 2, 3); // Eye
+  ctx.fillStyle = '#d87060';
+  ctx.fillRect(w - 7, h - 23 + bob, 3, 1.5); // Smile
+
+  // Headset Boom Mic & Ear Cup
+  ctx.fillStyle = '#111';
+  ctx.fillRect(3, h - 29 + bob, 3, 6); // Ear pad
+  ctx.strokeStyle = '#222';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.arc(w/2 - 1, h - 30 + bob, w/2 - 2, Math.PI, 0); // Headband
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(4, h - 25 + bob);
+  ctx.lineTo(w - 4, h - 22 + bob); // Boom
+  ctx.stroke();
+  ctx.fillStyle = '#ff7836';
+  ctx.fillRect(w - 4, h - 23 + bob, 2, 2); // Mic wind foam
+
+  // Burnt-Orange Cap (Foundery Style)
+  ctx.fillStyle = '#e85d1d';
+  ctx.fillRect(2, h - 34 + bob, w - 4, 5);
+  ctx.fillRect(w - 4, h - 31 + bob, 6, 2.5); // Brim
+  ctx.fillStyle = '#ff925c';
+  ctx.fillRect(4, h - 34 + bob, w - 8, 2); // Cap highlight
+
+  // Flame Power-Up Aura
+  if (tier === 2) {
+    ctx.strokeStyle = 'rgba(255, 201, 51, 0.6)';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(-2, -4 + bob, w + 4, h + 6);
+  }
+
+  ctx.restore();
+}
+
+// 16-Bit FAITH? Block
+function drawFaithBlock(ctx, x, y, hit, bounce, tick) {
+  const by = y + bounce;
+  if (hit) {
+    ctx.fillStyle = '#3a3530';
+    ctx.fillRect(x, by, 20, 20);
+    ctx.fillStyle = '#221f1c';
+    ctx.strokeRect(x + 0.5, by + 0.5, 19, 19);
+    ctx.fillStyle = '#181513';
+    ctx.fillRect(x + 2, by + 2, 3, 3);
+    ctx.fillRect(x + 15, by + 2, 3, 3);
+    ctx.fillRect(x + 2, by + 15, 3, 3);
+    ctx.fillRect(x + 15, by + 15, 3, 3);
+  } else {
+    // Golden Orange Glowing Block
+    const pulse = Math.sin(tick * 0.1) * 0.15;
+    ctx.fillStyle = '#e85d1d';
+    ctx.fillRect(x, by, 20, 20);
+
+    // Bevel highlights
+    ctx.fillStyle = '#ff985a';
+    ctx.fillRect(x, by, 20, 2);
+    ctx.fillRect(x, by, 2, 20);
+    ctx.fillStyle = '#9e3406';
+    ctx.fillRect(x, by + 18, 20, 2);
+    ctx.fillRect(x + 18, by, 2, 20);
+
+    // Inner gold badge
+    ctx.fillStyle = '#ffd040';
+    ctx.fillRect(x + 3, by + 3, 14, 14);
+    ctx.fillStyle = '#b38200';
+    ctx.fillRect(x + 3, by + 15, 14, 2);
+
+    // "FAITH?" embossed lettering
+    ctx.fillStyle = '#fff';
+    ctx.font = '6px "Press Start 2P", monospace';
+    ctx.fillText('F', x + 5, by + 12);
+    ctx.fillStyle = '#9e3406';
+    ctx.fillText('?', x + 11, by + 13);
+  }
+}
+
+// 16-Bit Sound / Bible Floating Platform
+function drawPlatform(ctx, plat) {
+  if (plat.type === 'bible') {
+    // Elegant Bible with Gold Edge
+    ctx.fillStyle = '#2d1608';
+    ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
+    // Gold Page Edges
+    ctx.fillStyle = '#ffcf40';
+    ctx.fillRect(plat.x + 3, plat.y + 4, plat.w - 6, plat.h - 7);
+    ctx.fillStyle = '#b88900';
+    ctx.fillRect(plat.x + 3, plat.y + plat.h - 3, plat.w - 6, 1);
+    // Ribbon Bookmark
+    ctx.fillStyle = '#e85d1d';
+    ctx.fillRect(plat.x + plat.w / 2 - 2, plat.y, 4, plat.h + 5);
+    // Typography
+    ctx.fillStyle = '#ffea9f';
+    ctx.font = '5px "Press Start 2P"';
+    ctx.fillText('HOLY BIBLE', plat.x + 8, plat.y + 9);
+  } else {
+    // Pro Stage Truss / Road Case
+    ctx.fillStyle = '#1c2533';
+    ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
+    ctx.strokeStyle = '#5a7398';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(plat.x + 0.5, plat.y + 0.5, plat.w - 1, plat.h - 1);
+    // Chrome Corner Caps
+    ctx.fillStyle = '#9cb4d8';
+    ctx.fillRect(plat.x, plat.y, 4, 4);
+    ctx.fillRect(plat.x + plat.w - 4, plat.y, 4, 4);
+    ctx.fillRect(plat.x, plat.y + plat.h - 4, 4, 4);
+    ctx.fillRect(plat.x + plat.w - 4, plat.y + plat.h - 4, 4, 4);
+    // Title
+    ctx.fillStyle = '#ffd040';
+    ctx.font = '5px "Press Start 2P"';
+    ctx.fillText(plat.title, plat.x + 8, plat.y + 9);
+  }
+}
+
+// Ministry Door (Pipe alternative)
+function drawMinistryDoor(ctx, d) {
+  const dy = 260 - d.h;
+  // Outer Arch Frame
+  ctx.fillStyle = d.col;
+  ctx.fillRect(d.x, dy, d.w, d.h);
+  ctx.fillStyle = 'rgba(255,255,255,0.2)';
+  ctx.fillRect(d.x, dy, d.w, 3);
+  ctx.fillRect(d.x, dy, 3, d.h);
+
+  // Door Inset
+  ctx.fillStyle = '#fbf5e6';
+  ctx.fillRect(d.x + 4, dy + 8, d.w - 8, d.h - 8);
+  ctx.fillStyle = '#ded3be';
+  ctx.fillRect(d.x + 6, dy + 12, (d.w - 14)/2, d.h - 18);
+  ctx.fillRect(d.x + d.w/2 + 1, dy + 12, (d.w - 14)/2, d.h - 18);
+
+  // Department Sign Plaque
+  ctx.fillStyle = '#1b2432';
+  ctx.fillRect(d.x - 2, dy - 12, d.w + 4, 11);
+  ctx.strokeStyle = '#ffd040';
+  ctx.strokeRect(d.x - 1.5, dy - 11.5, d.w + 3, 10);
+  ctx.fillStyle = '#ffd040';
+  ctx.font = '5px "Press Start 2P"';
+  ctx.fillText(d.label, d.x + 2, dy - 4);
+
+  // Brass Handle
+  ctx.fillStyle = '#ffcf40';
+  ctx.beginPath();
+  ctx.arc(d.x + d.w - 8, dy + d.h/2 + 2, 2.5, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// Sunday Morning Monster: Tangled Cable
+function drawCableMonster(ctx, e, tick) {
+  const squish = e.squish > 0 ? 0.3 : 1;
+  ctx.save();
+  ctx.translate(e.x + 9, e.y + 16);
+  ctx.scale(1, squish);
+
+  // Tangled loops
+  ctx.strokeStyle = '#222f42';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(0, -9, 8, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.strokeStyle = '#e85d1d'; // Audio patch cable
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.arc(-2, -8, 6, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Angry Eyes
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(-6, -12, 4, 4);
+  ctx.fillRect(2, -12, 4, 4);
+  ctx.fillStyle = '#c82828';
+  ctx.fillRect(-4, -11, 2, 2);
+  ctx.fillRect(4, -11, 2, 2);
+  ctx.restore();
+}
+
+// Sunday Morning Monster: Dead Battery
+function drawBatteryMonster(ctx, e, tick) {
+  const squish = e.squish > 0 ? 0.3 : 1;
+  ctx.save();
+  ctx.translate(e.x, e.y + 16);
+  ctx.scale(1, squish);
+
+  // Battery Body
+  ctx.fillStyle = '#1c2430';
+  ctx.fillRect(0, -16, 16, 16);
+  ctx.fillStyle = '#999';
+  ctx.fillRect(5, -19, 6, 3); // Terminal Nub
+
+  // Red Dead Charge Bar
+  ctx.fillStyle = '#c82828';
+  ctx.fillRect(2, -14, 12, 5);
+  ctx.fillStyle = '#fff';
+  ctx.font = '5px "Press Start 2P"';
+  ctx.fillText('0%', 3, -4);
+
+  // X_X Eyes
+  ctx.fillStyle = '#ff7836';
+  ctx.fillText('x', 2, -9);
+  ctx.fillText('x', 9, -9);
+  ctx.restore();
+}
+
+// Sunday Morning Monster: Technical Glitch
+function drawGlitchMonster(ctx, e, tick) {
+  const squish = e.squish > 0 ? 0.3 : 1;
+  ctx.save();
+  ctx.translate(e.x, e.y + 16);
+  ctx.scale(1, squish);
+
+  ctx.fillStyle = '#5c2a7a';
+  ctx.fillRect(0, -16, 16, 16);
+
+  // Glitch Scan artifacts
+  const jitter = Math.sin(tick * 0.5) * 3;
+  ctx.fillStyle = '#ffc933';
+  ctx.fillRect(jitter, -12, 16, 3);
+  ctx.fillStyle = '#00d4ff';
+  ctx.fillRect(-jitter, -7, 16, 2);
+
+  ctx.fillStyle = '#fff';
+  ctx.font = '5px "Press Start 2P"';
+  ctx.fillText('ERR', 2, -2);
+  ctx.restore();
+}
+
+// Power-Up: Fresh Steaming Coffee
+function drawCoffee(ctx, x, y, tick) {
+  // Steam particles
+  const steam = Math.sin(tick * 0.2) * 2;
+  ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(x + 5 + steam, y - 2);
+  ctx.lineTo(x + 5 - steam, y - 7);
+  ctx.moveTo(x + 11 - steam, y - 2);
+  ctx.lineTo(x + 11 + steam, y - 7);
+  ctx.stroke();
+
+  // Ceramic Mug
+  ctx.fillStyle = '#fff5e0';
+  ctx.fillRect(x + 2, y, 12, 14);
+  ctx.fillStyle = '#e85d1d'; // Foundery Accent
+  ctx.fillRect(x + 2, y + 5, 12, 3);
+  // Handle
+  ctx.strokeStyle = '#fff5e0';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(x + 13, y + 2, 4, 8);
+}
+
+// Power-Up: Holy Flame Emblem
+function drawFlameIcon(ctx, x, y, tick) {
+  const scale = 1 + Math.sin(tick * 0.2) * 0.1;
+  ctx.save();
+  ctx.translate(x + 8, y + 8);
+  ctx.scale(scale, scale);
+
+  ctx.fillStyle = '#ffc933';
+  ctx.beginPath();
+  ctx.arc(0, 0, 9, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#e85d1d';
+  ctx.beginPath();
+  ctx.moveTo(0, -7);
+  ctx.quadraticCurveTo(6, -1, 4, 6);
+  ctx.quadraticCurveTo(0, 7, -4, 6);
+  ctx.quadraticCurveTo(-6, -1, 0, -7);
+  ctx.fill();
+
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(0, 3, 2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+// Glowing "F" Token
+function drawToken(ctx, x, y, tick) {
+  const spin = Math.abs(Math.sin(tick * 0.1));
+  ctx.save();
+  ctx.translate(x + 8, y + 8);
+  ctx.scale(spin, 1);
+
+  ctx.fillStyle = '#ff9838';
+  ctx.beginPath();
+  ctx.arc(0, 0, 7, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#ffd040';
+  ctx.beginPath();
+  ctx.arc(0, 0, 5, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#7a2800';
+  ctx.font = 'bold 7px "Outfit", sans-serif';
+  ctx.fillText('F', -3, 3);
+  ctx.restore();
+}
+
+// --- GAME LOGIC UPDATE ---
 function update() {
-  globalFrame++;
+  globalTick++;
+  if (player.invuln > 0) player.invuln--;
 
-  if (player.invulnTimer > 0) player.invulnTimer--;
-
-  // Victory Sequence
+  // Victory walk into Sanctuary
   if (player.finished) {
-    player.x += 1.2;
+    player.x += 1.4;
     player.grounded = true;
-    player.animTimer += 0.2;
-    player.animFrame = Math.floor(player.animTimer) % 2;
+    player.animTick++;
 
-    if (level.flag.flagY < 160) {
-      level.flag.flagY += 2;
-    }
+    if (world.flag.flagY < 235) world.flag.flagY += 2;
 
-    if (player.x > level.church.x + 30) {
+    if (player.x > world.sanctuary.x + 45) {
       victory = true;
     }
     return;
   }
 
-  // Horizontal Movement with Smooth Acceleration & Deceleration
+  // Smooth Horizontal Momentum
   if (keys.left) {
-    player.vx -= player.accel;
+    player.vx -= player.acc;
     player.facingRight = false;
   } else if (keys.right) {
-    player.vx += player.accel;
+    player.vx += player.acc;
     player.facingRight = true;
   } else {
-    player.vx *= player.friction;
-    if (Math.abs(player.vx) < 0.05) player.vx = 0;
+    player.vx *= player.fric;
+    if (Math.abs(player.vx) < 0.08) player.vx = 0;
   }
 
-  // Clamp speed
   player.vx = Math.max(-player.maxSpeed, Math.min(player.maxSpeed, player.vx));
   player.x += player.vx;
+  if (player.x < 0) player.x = 0;
 
-  // Jump Action with variable height feel
+  // Jump Logic
   if (keys.jump && player.grounded) {
-    player.vy = player.jumpPower;
+    player.vy = player.jumpStrength;
     player.grounded = false;
-    AudioEngine.jump();
+    Sound.jump();
   }
 
   // Gravity
-  player.vy += 0.28;
+  player.vy += 0.32;
   player.y += player.vy;
 
-  // Floor Collision
-  const groundY = 200 - (player.powerTier > 0 ? 24 : 16);
-  let currentSurfaceY = groundY;
+  const pH = player.tier > 0 ? 30 : 22;
+  const pW = player.tier > 0 ? 20 : 16;
+  let floorY = 260 - pH;
 
-  // Platform collisions
-  level.platforms.forEach(plat => {
-    const pHeight = player.powerTier > 0 ? 24 : 16;
-    if (player.x + 12 > plat.x && player.x + 4 < plat.x + plat.w) {
-      if (player.y + pHeight <= plat.y + 6 && player.vy >= 0) {
-        currentSurfaceY = Math.min(currentSurfaceY, plat.y - pHeight);
+  // Platform Landings
+  world.platforms.forEach(plat => {
+    if (player.x + pW > plat.x && player.x < plat.x + plat.w) {
+      if (player.y + pH <= plat.y + 7 && player.vy >= 0) {
+        floorY = Math.min(floorY, plat.y - pH);
       }
     }
   });
 
-  // Solid Ministry Door Top Collisions
-  level.doors.forEach(d => {
-    const doorTop = 200 - d.h;
-    const pHeight = player.powerTier > 0 ? 24 : 16;
-    if (player.x + 12 > d.x && player.x + 4 < d.x + d.w) {
-      if (player.y + pHeight <= doorTop + 6 && player.vy >= 0) {
-        currentSurfaceY = Math.min(currentSurfaceY, doorTop - pHeight);
+  // Door Top Landings
+  world.doors.forEach(d => {
+    const doorTop = 260 - d.h;
+    if (player.x + pW > d.x && player.x < d.x + d.w) {
+      if (player.y + pH <= doorTop + 7 && player.vy >= 0) {
+        floorY = Math.min(floorY, doorTop - pH);
       }
     }
   });
 
-  // Block top collisions
-  level.blocks.forEach(b => {
-    const pHeight = player.powerTier > 0 ? 24 : 16;
-    if (player.x + 12 > b.x && player.x + 4 < b.x + 16) {
-      if (player.y + pHeight <= b.y + 6 && player.vy >= 0) {
-        currentSurfaceY = Math.min(currentSurfaceY, b.y - pHeight);
+  // Block Top Landings
+  world.blocks.forEach(b => {
+    if (player.x + pW > b.x && player.x < b.x + 20) {
+      if (player.y + pH <= b.y + 7 && player.vy >= 0) {
+        floorY = Math.min(floorY, b.y - pH);
       }
     }
   });
 
-  // Apply floor limit
-  if (player.y >= currentSurfaceY) {
-    player.y = currentSurfaceY;
+  if (player.y >= floorY) {
+    player.y = floorY;
     player.vy = 0;
     player.grounded = true;
   } else {
     player.grounded = false;
   }
 
-  // Block Hit from Below
-  level.blocks.forEach(b => {
-    if (player.vy < 0 && player.x + 12 > b.x && player.x + 4 < b.x + 16) {
-      if (player.y <= b.y + 16 && player.y >= b.y + 8) {
-        player.y = b.y + 16;
-        player.vy = 0.8;
-        b.bounce = -4;
-        AudioEngine.bump();
+  // Under-block Bump Detection
+  world.blocks.forEach(b => {
+    if (player.vy < 0 && player.x + pW > b.x && player.x < b.x + 20) {
+      if (player.y <= b.y + 20 && player.y >= b.y + 10) {
+        player.y = b.y + 20;
+        player.vy = 1;
+        b.bounce = -6;
+        Sound.bump();
 
         if (!b.hit) {
           b.hit = true;
           if (b.type === 'faith') {
-            if (b.content === 'token') {
+            if (b.item === 'token') {
               tokens++;
               score += 100;
-              AudioEngine.coin();
-              level.particles.push({
-                type: 'token_float',
-                x: b.x + 4,
-                y: b.y - 12,
-                vy: -3.5,
-                timer: 0
-              });
-            } else if (b.content === 'coffee') {
-              level.items.push({
-                type: 'coffee',
-                x: b.x,
-                y: b.y - 16,
-                vx: 0.8,
-                vy: -2
-              });
-            } else if (b.content === 'flame') {
-              level.items.push({
-                type: 'flame',
-                x: b.x,
-                y: b.y - 16,
-                vx: 0.8,
-                vy: -2
-              });
+              Sound.coin();
+              world.particles.push({ type: 'token', x: b.x + 2, y: b.y - 14, vy: -3.8, life: 0 });
+            } else if (b.item === 'coffee') {
+              world.items.push({ type: 'coffee', x: b.x + 2, y: b.y - 18, vx: 0.8, vy: -2 });
+            } else if (b.item === 'flame') {
+              world.items.push({ type: 'flame', x: b.x + 2, y: b.y - 18, vx: 0.8, vy: -2 });
             }
           }
         }
       }
     }
-    if (b.bounce < 0) b.bounce += 0.5;
+    if (b.bounce < 0) b.bounce += 0.7;
     else b.bounce = 0;
   });
 
-  // Items Physics & Collection
-  for (let i = level.items.length - 1; i >= 0; i--) {
-    const item = level.items[i];
-    item.vy += 0.25;
-    item.x += item.vx;
-    item.y += item.vy;
+  // Item Collection
+  for (let i = world.items.length - 1; i >= 0; i--) {
+    const it = world.items[i];
+    it.vy += 0.25;
+    it.x += it.vx;
+    it.y += it.vy;
+    if (it.y > 244) { it.y = 244; it.vy = 0; }
 
-    if (item.y > 184) {
-      item.y = 184;
-      item.vy = 0;
-    }
-
-    // Touch item
-    const pH = player.powerTier > 0 ? 24 : 16;
-    if (
-      player.x + 14 > item.x &&
-      player.x + 2 < item.x + 16 &&
-      player.y + pH > item.y &&
-      player.y < item.y + 16
-    ) {
-      AudioEngine.powerUp();
+    if (player.x + pW > it.x && player.x < it.x + 16 && player.y + pH > it.y && player.y < it.y + 16) {
+      Sound.power();
       score += 500;
-      if (item.type === 'coffee') {
-        player.powerTier = Math.max(player.powerTier, 1);
-        player.y -= 8; // Adjust height transition
-      } else if (item.type === 'flame') {
-        player.powerTier = 2;
-      }
-      level.items.splice(i, 1);
+      if (it.type === 'coffee') player.tier = Math.max(player.tier, 1);
+      if (it.type === 'flame') player.tier = 2;
+      world.items.splice(i, 1);
     }
   }
 
-  // Fireballs
+  // Projectile Fireballs
   for (let i = fireballs.length - 1; i >= 0; i--) {
     const fb = fireballs[i];
     fb.x += fb.vx;
-    fb.vy += 0.22;
+    fb.vy += 0.25;
     fb.y += fb.vy;
 
-    if (fb.y >= 194) {
-      fb.y = 194;
-      fb.vy = -2.8;
+    if (fb.y >= 254) {
+      fb.y = 254;
+      fb.vy = -3.2;
       fb.bounces++;
     }
 
-    // Hit enemies
-    let fbDead = false;
-    level.enemies.forEach(e => {
-      if (e.alive && Math.abs(fb.x - e.x) < 14 && Math.abs(fb.y - e.y) < 14) {
+    let kill = false;
+    world.enemies.forEach(e => {
+      if (e.alive && Math.abs(fb.x - (e.x + 8)) < 14 && Math.abs(fb.y - (e.y + 8)) < 14) {
         e.alive = false;
-        e.flatTimer = 40;
+        e.squish = 40;
         score += 200;
-        AudioEngine.stomp();
-        fbDead = true;
+        Sound.stomp();
+        kill = true;
       }
     });
 
-    if (fbDead || fb.bounces > 3 || fb.x < player.x - 140 || fb.x > player.x + 200) {
+    if (kill || fb.bounces > 3 || Math.abs(fb.x - player.x) > 300) {
       fireballs.splice(i, 1);
     }
   }
 
-  // Enemies Update & Collisions
-  level.enemies.forEach(e => {
+  // Enemies Patrol & Stomp
+  world.enemies.forEach(e => {
     if (e.alive) {
       e.x += e.vx;
-      if (e.x < 100 || e.x > 1500) e.vx *= -1;
+      if (e.x < 100 || e.x > LEVEL_LEN - 100) e.vx *= -1;
 
-      // Check collision with player
-      const pH = player.powerTier > 0 ? 24 : 16;
-      if (
-        player.x + 12 > e.x &&
-        player.x + 4 < e.x + 16 &&
-        player.y + pH >= e.y &&
-        player.y <= e.y + 16
-      ) {
-        // Stomp
-        if (player.vy > 0 && player.y + pH <= e.y + 8) {
+      // Player Collision
+      if (player.x + pW > e.x && player.x < e.x + 18 && player.y + pH >= e.y && player.y <= e.y + 18) {
+        // Jump Stomp
+        if (player.vy > 0 && player.y + pH <= e.y + 9) {
           e.alive = false;
-          e.flatTimer = 35;
-          player.vy = -3.8;
+          e.squish = 35;
+          player.vy = -4.5;
           score += 200;
-          AudioEngine.stomp();
-        } else if (player.invulnTimer === 0) {
-          // Player hit
-          if (player.powerTier > 0) {
-            player.powerTier--;
-            player.invulnTimer = 60;
-            AudioEngine.bump();
+          Sound.stomp();
+        } else if (player.invuln === 0) {
+          // Take Damage
+          if (player.tier > 0) {
+            player.tier--;
+            player.invuln = 70;
+            Sound.bump();
           } else {
-            // Respawn back a little with grace
-            player.x = Math.max(32, player.x - 60);
-            player.y = 176;
-            player.invulnTimer = 60;
-            score = Math.max(0, score - 100);
-            AudioEngine.bump();
+            player.x = Math.max(40, player.x - 50);
+            player.invuln = 70;
+            score = Math.max(0, score - 150);
+            Sound.bump();
           }
         }
       }
-    } else if (e.flatTimer > 0) {
-      e.flatTimer--;
+    } else if (e.squish > 0) {
+      e.squish--;
     }
   });
 
-  // Rolling Obstacles
-  level.obstacles.forEach(o => {
+  // Obstacles (Rolling basketballs & flight cases)
+  world.obstacles.forEach(o => {
     o.x += o.vx;
-    o.rot += o.vx * 0.1;
-    if (o.x < 50 || o.x > 1500) o.vx *= -1;
+    if (o.type === 'ball') o.rot += o.vx * 0.12;
+    if (o.x < 100 || o.x > LEVEL_LEN - 100) o.vx *= -1;
 
-    // Hit player
-    const pH = player.powerTier > 0 ? 24 : 16;
-    if (
-      Math.abs((player.x + 8) - o.x) < 12 &&
-      Math.abs((player.y + pH / 2) - o.y) < 12
-    ) {
-      if (player.invulnTimer === 0) {
-        if (player.powerTier > 0) {
-          player.powerTier--;
-          player.invulnTimer = 60;
-        } else {
-          player.x = Math.max(32, player.x - 40);
-          player.invulnTimer = 60;
-        }
-        AudioEngine.bump();
+    if (Math.abs((player.x + pW/2) - o.x) < 14 && Math.abs((player.y + pH/2) - o.y) < 14) {
+      if (player.invuln === 0) {
+        if (player.tier > 0) player.tier--;
+        else player.x = Math.max(40, player.x - 40);
+        player.invuln = 70;
+        Sound.bump();
       }
     }
   });
 
-  // Particles update
-  for (let i = level.particles.length - 1; i >= 0; i--) {
-    const p = level.particles[i];
+  // Token float particles
+  for (let i = world.particles.length - 1; i >= 0; i--) {
+    const p = world.particles[i];
     p.y += p.vy;
-    p.vy += 0.22;
-    p.timer++;
-    if (p.timer > 28) level.particles.splice(i, 1);
+    p.vy += 0.2;
+    p.life++;
+    if (p.life > 25) world.particles.splice(i, 1);
   }
 
   // Animation cycle
   if (player.grounded && Math.abs(player.vx) > 0.1) {
-    player.animTimer += 0.22;
-    player.animFrame = Math.floor(player.animTimer) % 2;
+    player.animTick++;
   } else {
-    player.animFrame = 0;
+    player.animTick = 0;
   }
 
-  // Finish Flag Collision
-  if (!player.finished && player.x >= level.flag.x - 8) {
+  // Flag Check
+  if (!player.finished && player.x >= world.flag.x - 10) {
     player.finished = true;
     player.vx = 0;
-    AudioEngine.levelClear();
-    score += 1500;
+    Sound.win();
+    score += 2000;
   }
 }
 
-// --- RENDER ROUTINE ---
-function drawSkyGradient(cameraX) {
-  // 16-bit dusk church sky: dark steel blue into warm gold sunset glow
-  const grad = ctx.createLinearGradient(0, 0, 0, V_HEIGHT);
-  grad.addColorStop(0, '#121b29');
-  grad.addColorStop(0.65, '#25354e');
-  grad.addColorStop(0.88, '#94582f');
-  grad.addColorStop(1, '#d88c3a');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, V_WIDTH, V_HEIGHT);
+// --- PARALLAX BACKGROUND & SCENERY RENDER ---
+function drawParallax(camX) {
+  // 16-Bit Dusk Sky: Royal Navy Blue into Sunset Amber
+  const skyGrad = ctx.createLinearGradient(0, 0, 0, H);
+  skyGrad.addColorStop(0, '#0c1626');
+  skyGrad.addColorStop(0.55, '#1e324d');
+  skyGrad.addColorStop(0.85, '#914924');
+  skyGrad.addColorStop(1, '#df7a32');
+  ctx.fillStyle = skyGrad;
+  ctx.fillRect(0, 0, W, H);
 
-  // Distant Church Silhouette & Cross in background
-  const chX = (1300 - cameraX * 0.18);
-  ctx.fillStyle = '#1c293c';
-  ctx.fillRect(chX, 100, 64, 100);
+  // Distant Sun Rays
+  ctx.fillStyle = 'rgba(255, 201, 51, 0.08)';
   ctx.beginPath();
-  ctx.moveTo(chX - 10, 100);
-  ctx.lineTo(chX + 32, 50);
-  ctx.lineTo(chX + 74, 100);
+  ctx.moveTo(W/2, 0);
+  ctx.lineTo(W/2 - 90, H);
+  ctx.lineTo(W/2 - 40, H);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(W/2, 0);
+  ctx.lineTo(W/2 + 40, H);
+  ctx.lineTo(W/2 + 100, H);
+  ctx.fill();
+
+  // Distant Church Sanctuary Silhouettes (0.15x parallax)
+  const distChurchX = (1800 - camX * 0.15);
+  ctx.fillStyle = '#172233';
+  ctx.fillRect(distChurchX, 110, 80, 150);
+  ctx.beginPath();
+  ctx.moveTo(distChurchX - 10, 110);
+  ctx.lineTo(distChurchX + 40, 50);
+  ctx.lineTo(distChurchX + 90, 110);
   ctx.fill();
   // Steeple Cross
-  ctx.fillStyle = P.gold;
-  ctx.fillRect(chX + 30, 24, 4, 26);
-  ctx.fillRect(chX + 24, 32, 16, 4);
+  ctx.fillStyle = '#ffc933';
+  ctx.fillRect(distChurchX + 38, 20, 4, 30);
+  ctx.fillRect(distChurchX + 30, 28, 20, 4);
 
-  // Parallax Hills & Warm Stained-Glass Tone Backdrops
-  const hillOffset = -(cameraX * 0.3) % 200;
-  for (let hx = hillOffset - 80; hx < V_WIDTH + 80; hx += 140) {
-    ctx.fillStyle = '#1e2e42';
+  // Far rolling hills (0.3x parallax)
+  const hillFar = -(camX * 0.3) % 240;
+  ctx.fillStyle = '#1e2e44';
+  for (let x = hillFar - 120; x < W + 120; x += 180) {
     ctx.beginPath();
-    ctx.arc(hx, 180, 55, Math.PI, 0);
+    ctx.arc(x, 260, 90, Math.PI, 0);
     ctx.fill();
   }
-}
 
-function drawGround(cameraX) {
-  // Ground tiles: Dark Steel Blue curb with Burnt Orange brick foundation
-  ctx.fillStyle = P.steelLight;
-  ctx.fillRect(0, 200, V_WIDTH, 4);
-  ctx.fillStyle = P.steelDark;
-  ctx.fillRect(0, 204, V_WIDTH, 20);
+  // Near tree line (0.5x parallax)
+  const trees = -(camX * 0.5) % 180;
+  ctx.fillStyle = '#263b57';
+  for (let x = trees - 80; x < W + 80; x += 110) {
+    ctx.beginPath();
+    ctx.arc(x, 260, 45, Math.PI, 0);
+    ctx.fill();
+  }
 
-  ctx.fillStyle = P.orange;
-  const tileX = -(cameraX % 16);
-  for (let gx = tileX; gx < V_WIDTH; gx += 16) {
-    ctx.fillRect(gx + 1, 206, 14, 6);
-    ctx.fillRect(gx + 9, 214, 6, 6);
-    ctx.fillRect(gx + 1, 214, 6, 6);
+  // Modern Church Platform Ground
+  ctx.fillStyle = '#22344f';
+  ctx.fillRect(0, 260, W, 6);
+  ctx.fillStyle = '#0d1522';
+  ctx.fillRect(0, 266, W, 34);
+
+  // Burnt-Orange & Gold Paver Trim
+  const paverOffset = -(camX % 20);
+  ctx.fillStyle = '#e85d1d';
+  for (let gx = paverOffset; gx < W; gx += 20) {
+    ctx.fillRect(gx + 1, 268, 18, 8);
+    ctx.fillRect(gx + 10, 278, 8, 8);
+    ctx.fillRect(gx + 1, 278, 8, 8);
   }
 }
 
+// --- MASTER RENDER ---
 function render() {
-  const cameraX = Math.max(0, player.x - 84);
+  const camX = Math.max(0, player.x - 110);
 
-  drawSkyGradient(cameraX);
-  drawGround(cameraX);
+  drawParallax(camX);
 
   ctx.save();
-  ctx.translate(-cameraX, 0);
+  ctx.translate(-camX, 0);
 
-  // --- CHURCH SANCTUARY AT END OF LEVEL ---
-  const ch = level.church;
-  ctx.fillStyle = '#212f45';
-  ctx.fillRect(ch.x, 80, ch.w, 120);
-  ctx.fillStyle = P.orange;
+  // 1. END OF LEVEL: Foundery Sanctuary
+  const sc = world.sanctuary;
+  ctx.fillStyle = '#1c293d';
+  ctx.fillRect(sc.x, 90, sc.w, 170);
+  // Stained Glass Cathedral A-Frame
+  ctx.fillStyle = '#e85d1d';
   ctx.beginPath();
-  ctx.moveTo(ch.x - 10, 80);
-  ctx.lineTo(ch.x + ch.w / 2, 25);
-  ctx.lineTo(ch.x + ch.w + 10, 80);
+  ctx.moveTo(sc.x - 10, 90);
+  ctx.lineTo(sc.x + sc.w / 2, 20);
+  ctx.lineTo(sc.x + sc.w + 10, 90);
   ctx.fill();
-  // Stained Glass Center
-  ctx.fillStyle = P.gold;
+  // Glowing Center Emblem
+  ctx.fillStyle = '#ffc933';
   ctx.beginPath();
-  ctx.arc(ch.x + ch.w / 2, 60, 16, 0, Math.PI * 2);
+  ctx.arc(sc.x + sc.w / 2, 70, 22, 0, Math.PI * 2);
   ctx.fill();
-  // Church Entrance Arch
-  ctx.fillStyle = P.steelDark;
-  ctx.fillRect(ch.x + 35, 140, 30, 60);
-  // Banner
-  ctx.fillStyle = P.cream;
-  ctx.fillRect(ch.x + 10, 110, 80, 14);
-  ctx.fillStyle = P.steelDark;
-  ctx.font = 'bold 6px monospace';
-  ctx.fillText('FOUNDERY CHURCH', ch.x + 14, 120);
+  ctx.fillStyle = '#e85d1d';
+  ctx.font = 'bold 20px "Outfit", sans-serif';
+  ctx.fillText('F', sc.x + sc.w/2 - 7, 78);
+  // Welcome Arch
+  ctx.fillStyle = '#0d1522';
+  ctx.fillRect(sc.x + sc.w/2 - 20, 180, 40, 80);
+  ctx.fillStyle = '#fff4db';
+  ctx.font = '6px "Press Start 2P"';
+  ctx.fillText('FOUNDERY', sc.x + 38, 140);
+  ctx.fillText('CHURCH', sc.x + 44, 152);
 
-  // --- FINISH LINE FLAG ---
-  const fl = level.flag;
-  ctx.fillStyle = '#999';
-  ctx.fillRect(fl.x, 100, 3, fl.poleH);
-  ctx.fillStyle = P.gold;
-  ctx.fillRect(fl.x - 2, 96, 7, 5); // gold finial
-  // Stylized Foundery "F" Flag
-  ctx.fillStyle = P.orange;
-  ctx.fillRect(fl.x + 3, fl.flagY, 26, 18);
-  ctx.fillStyle = P.gold;
-  ctx.font = 'bold 12px sans-serif';
-  ctx.fillText('F', fl.x + 10, fl.flagY + 14);
+  // 2. FINISH LINE FLAGPOLE
+  const fl = world.flag;
+  ctx.fillStyle = '#a0b3cc';
+  ctx.fillRect(fl.x, 120, 4, fl.poleH);
+  ctx.fillStyle = '#ffc933';
+  ctx.beginPath();
+  ctx.arc(fl.x + 2, 116, 5, 0, Math.PI * 2);
+  ctx.fill();
 
-  // --- SIGNS ---
-  level.signs.forEach(s => {
-    // Post
-    ctx.fillStyle = P.wood;
-    ctx.fillRect(s.x + 40, s.y + 12, 4, 14);
-    // Signboard
-    ctx.fillStyle = P.cream;
-    ctx.fillRect(s.x, s.y, 88, 14);
-    ctx.strokeStyle = P.orange;
-    ctx.strokeRect(s.x + 0.5, s.y + 0.5, 87, 13);
-    ctx.fillStyle = P.steelDark;
-    ctx.font = 'bold 5px monospace';
-    ctx.fillText(s.text, s.x + 4, s.y + 9);
+  // Foundery "F" Flag
+  ctx.fillStyle = '#e85d1d';
+  ctx.fillRect(fl.x + 4, fl.flagY, 34, 22);
+  ctx.fillStyle = '#ffc933';
+  ctx.fillRect(fl.x + 4, fl.flagY, 34, 3);
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 14px "Outfit", sans-serif';
+  ctx.fillText('F', fl.x + 14, fl.flagY + 17);
+
+  // 3. SIGNS
+  world.signs.forEach(s => {
+    ctx.fillStyle = '#2d1a0e';
+    ctx.fillRect(s.x + 48, s.y + 14, 4, 20);
+    ctx.fillStyle = '#fff7e8';
+    ctx.fillRect(s.x, s.y, 100, 16);
+    ctx.strokeStyle = '#e85d1d';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(s.x + 0.5, s.y + 0.5, 99, 15);
+    ctx.fillStyle = '#1c2533';
+    ctx.font = '5px "Press Start 2P"';
+    ctx.fillText(s.text, s.x + 4, s.y + 11);
   });
 
-  // --- MINISTRY DOORS (Pipes replacement) ---
-  level.doors.forEach(d => {
-    const doorY = 200 - d.h;
-    // Frame
-    ctx.fillStyle = d.color;
-    ctx.fillRect(d.x, doorY, d.w, d.h);
-    ctx.fillStyle = P.cream;
-    ctx.fillRect(d.x + 4, doorY + 6, d.w - 8, d.h - 8);
-    // Sign on Door
-    ctx.fillStyle = P.steelDark;
-    ctx.fillRect(d.x + 2, doorY - 10, d.w - 4, 9);
-    ctx.fillStyle = P.gold;
-    ctx.font = 'bold 5px monospace';
-    ctx.fillText(d.label, d.x + 4, doorY - 3);
-    // Doorknob
-    ctx.fillStyle = P.gold;
-    ctx.fillRect(d.x + d.w - 8, doorY + d.h / 2, 3, 3);
-  });
+  // 4. MINISTRY DOORS
+  world.doors.forEach(d => drawMinistryDoor(ctx, d));
 
-  // --- FLOATING PLATFORMS (Bibles / Stage Audio) ---
-  level.platforms.forEach(plat => {
-    if (plat.type === 'bible') {
-      // Holy Bible Platform: Dark Leather with Gold Pages
-      ctx.fillStyle = '#421a08';
-      ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
-      ctx.fillStyle = P.gold;
-      ctx.fillRect(plat.x + 2, plat.y + 3, plat.w - 4, plat.h - 6);
-      ctx.fillStyle = P.cream;
-      ctx.font = 'bold 6px monospace';
-      ctx.fillText(plat.label, plat.x + 4, plat.y + 8);
-    } else {
-      // Stage Audio Equipment Roadcase
-      ctx.fillStyle = '#1c222a';
-      ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
-      ctx.fillStyle = '#8892a0';
-      ctx.strokeRect(plat.x + 0.5, plat.y + 0.5, plat.w - 1, plat.h - 1);
-      ctx.fillStyle = P.orange;
-      ctx.fillRect(plat.x + 4, plat.y + 3, 4, 4);
-      ctx.fillStyle = P.gold;
-      ctx.fillRect(plat.x + 10, plat.y + 3, 4, 4);
-    }
-  });
+  // 5. PLATFORMS
+  world.platforms.forEach(p => drawPlatform(ctx, p));
 
-  // --- BLOCKS (FAITH? & Bricks) ---
-  level.blocks.forEach(b => {
-    const drawY = b.y + b.bounce;
+  // 6. BLOCKS
+  world.blocks.forEach(b => {
     if (b.type === 'faith') {
-      if (b.hit) {
-        ctx.fillStyle = '#544638';
-        ctx.fillRect(b.x, drawY, 16, 16);
-      } else {
-        ctx.fillStyle = P.orange;
-        ctx.fillRect(b.x, drawY, 16, 16);
-        ctx.strokeStyle = P.gold;
-        ctx.strokeRect(b.x + 0.5, drawY + 0.5, 15, 15);
-        ctx.fillStyle = P.cream;
-        ctx.font = 'bold 7px monospace';
-        ctx.fillText('FAITH', b.x + 1, drawY + 9);
-        ctx.fillStyle = P.gold;
-        ctx.fillText('?', b.x + 6, drawY + 15);
-      }
+      drawFaithBlock(ctx, b.x, b.y, b.hit, b.bounce, globalTick);
     } else {
-      // Brick
-      ctx.fillStyle = P.steelLight;
-      ctx.fillRect(b.x, drawY, 16, 16);
-      ctx.strokeStyle = P.steelDark;
-      ctx.strokeRect(b.x + 0.5, drawY + 0.5, 15, 15);
-      ctx.fillStyle = P.orange;
-      ctx.fillRect(b.x + 2, drawY + 4, 5, 2);
-      ctx.fillRect(b.x + 9, drawY + 10, 5, 2);
+      // 16-bit Steel Structural Brick
+      const by = b.y + b.bounce;
+      ctx.fillStyle = '#334d74';
+      ctx.fillRect(b.x, by, 20, 20);
+      ctx.fillStyle = '#4c6c9e';
+      ctx.fillRect(b.x, by, 20, 2);
+      ctx.fillRect(b.x, by, 2, 20);
+      ctx.fillStyle = '#1d2f47';
+      ctx.fillRect(b.x, by + 18, 20, 2);
+      ctx.fillRect(b.x + 18, by, 2, 20);
+      ctx.fillStyle = '#e85d1d';
+      ctx.fillRect(b.x + 3, by + 5, 6, 3);
+      ctx.fillRect(b.x + 11, by + 12, 6, 3);
     }
   });
 
-  // --- ITEMS (Coffee / Flame) ---
-  level.items.forEach(it => {
-    if (it.type === 'coffee') {
-      ctx.drawImage(coffeeSprite, it.x, it.y);
-    } else if (it.type === 'flame') {
-      ctx.drawImage(flameIconSprite, it.x, it.y);
+  // 7. POWER-UP ITEMS
+  world.items.forEach(it => {
+    if (it.type === 'coffee') drawCoffee(ctx, it.x, it.y, globalTick);
+    if (it.type === 'flame') drawFlameIcon(ctx, it.x, it.y, globalTick);
+  });
+
+  // 8. ENEMIES
+  world.enemies.forEach(e => {
+    if (e.type === 'cable') drawCableMonster(ctx, e, globalTick);
+    if (e.type === 'battery') drawBatteryMonster(ctx, e, globalTick);
+    if (e.type === 'glitch' || e.type === 'clock') drawGlitchMonster(ctx, e, globalTick);
+  });
+
+  // 9. OBSTACLES
+  world.obstacles.forEach(o => {
+    if (o.type === 'ball') {
+      // Rolling basketball
+      ctx.save();
+      ctx.translate(o.x, o.y);
+      ctx.rotate(o.rot);
+      ctx.fillStyle = '#e85d1d';
+      ctx.beginPath();
+      ctx.arc(0, 0, o.r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#111';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.arc(0, 0, o.r, 0, Math.PI * 2);
+      ctx.moveTo(-o.r, 0); ctx.lineTo(o.r, 0);
+      ctx.stroke();
+      ctx.restore();
+    } else {
+      // Road Camera Hardcase
+      ctx.fillStyle = '#1c222c';
+      ctx.fillRect(o.x - o.w/2, o.y - o.h/2, o.w, o.h);
+      ctx.strokeStyle = '#9cb4d8';
+      ctx.strokeRect(o.x - o.w/2 + 0.5, o.y - o.h/2 + 0.5, o.w - 1, o.h - 1);
+      ctx.fillStyle = '#e85d1d';
+      ctx.fillRect(o.x - 3, o.y - 2, 6, 4);
     }
   });
 
-  // --- ENENIES ---
-  level.enemies.forEach(e => {
-    if (e.alive) {
-      if (e.type === 'cable') ctx.drawImage(cableMonster, e.x, e.y);
-      else if (e.type === 'battery') ctx.drawImage(batteryMonster, e.x, e.y);
-      else if (e.type === 'glitch') ctx.drawImage(glitchMonster, e.x, e.y);
-    } else if (e.flatTimer > 0) {
-      // Flattened defeat visual
-      ctx.fillStyle = P.orange;
-      ctx.fillRect(e.x, e.y + 12, 16, 4);
-    }
-  });
-
-  // --- ROLLING BASKETBALL OBSTACLES ---
-  level.obstacles.forEach(o => {
-    ctx.save();
-    ctx.translate(o.x, o.y);
-    ctx.rotate(o.rot);
-    ctx.drawImage(basketballSprite, -o.r, -o.r);
-    ctx.restore();
-  });
-
-  // --- PROJECTILE FIREBALLS ---
+  // 10. PROJECTILE FIREBALLS
   fireballs.forEach(fb => {
-    ctx.fillStyle = P.orange;
+    ctx.fillStyle = '#ffc933';
     ctx.beginPath();
-    ctx.arc(fb.x, fb.y, 4, 0, Math.PI * 2);
+    ctx.arc(fb.x, fb.y, 5, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = P.gold;
+    ctx.fillStyle = '#e85d1d';
     ctx.beginPath();
-    ctx.arc(fb.x, fb.y, 2, 0, Math.PI * 2);
+    ctx.arc(fb.x, fb.y, 3, 0, Math.PI * 2);
     ctx.fill();
   });
 
-  // --- PARTICLES (Glowing "F" Tokens) ---
-  level.particles.forEach(p => {
-    if (p.type === 'token_float') {
-      ctx.fillStyle = P.gold;
-      ctx.font = 'bold 12px sans-serif';
-      ctx.fillText('F', p.x, p.y);
-    }
+  // 11. PARTICLES
+  world.particles.forEach(p => {
+    if (p.type === 'token') drawToken(ctx, p.x, p.y, globalTick);
   });
 
-  // --- PLAYER MEDIA VOLUNTEER ---
-  if (player.invulnTimer % 4 < 2) {
-    let sprite;
-    if (player.powerTier > 0) {
-      sprite = !player.grounded ? volBigJump : (player.animFrame === 1 ? volBigRun1 : volBigJump);
-    } else {
-      sprite = !player.grounded ? volSmallJump : (player.animFrame === 1 ? volSmallRun2 : volSmallRun1);
-    }
-
-    ctx.save();
-    if (!player.facingRight) {
-      ctx.translate(player.x + 16, player.y);
-      ctx.scale(-1, 1);
-      ctx.drawImage(sprite, 0, 0);
-    } else {
-      ctx.drawImage(sprite, player.x, player.y);
-    }
-    ctx.restore();
+  // 12. VOLUNTEER CHARACTER
+  if (player.invuln % 6 < 3) {
+    drawVolunteer(
+      ctx,
+      player.x,
+      player.y,
+      player.tier,
+      player.facingRight,
+      Math.abs(player.vx) > 0.1,
+      player.grounded,
+      player.animTick
+    );
   }
 
   ctx.restore();
 
-  // --- RETRO 16-BIT HUD OVERLAY ---
-  ctx.fillStyle = P.gold;
-  ctx.font = 'bold 8px monospace';
-  ctx.fillText('VOLUNTEER', 14, 14);
-  ctx.fillStyle = P.cream;
-  ctx.fillText(String(score).padStart(6, '0'), 14, 23);
+  // --- 16-BIT HUD HEADER ---
+  ctx.fillStyle = '#ffc933';
+  ctx.font = '7px "Press Start 2P"';
+  ctx.fillText('MEDIA VOLUNTEER', 14, 18);
+  ctx.fillStyle = '#fff4db';
+  ctx.fillText(String(score).padStart(6, '0'), 14, 30);
 
   // Glowing "F" Token Counter
-  ctx.fillStyle = P.orange;
-  ctx.fillRect(86, 15, 6, 8);
-  ctx.fillStyle = P.gold;
-  ctx.font = 'bold 8px sans-serif';
-  ctx.fillText('F', 87, 22);
-  ctx.fillStyle = P.cream;
-  ctx.font = 'bold 8px monospace';
-  ctx.fillText('×' + String(tokens).padStart(2, '0'), 96, 23);
+  drawToken(ctx, 140, 14, globalTick);
+  ctx.fillStyle = '#fff4db';
+  ctx.fillText('×' + String(tokens).padStart(2, '0'), 160, 25);
 
-  // Foundery World Indicator
-  ctx.fillStyle = P.gold;
-  ctx.fillText('FOUNDERY', 146, 14);
-  ctx.fillStyle = P.cream;
-  ctx.fillText('STAGE 1-1', 146, 23);
+  // World Stage
+  ctx.fillStyle = '#ffc933';
+  ctx.fillText('FOUNDERY', 228, 18);
+  ctx.fillStyle = '#fff4db';
+  ctx.fillText('STAGE 1-1', 228, 30);
 
-  // Power Up Status
-  ctx.fillStyle = P.gold;
-  ctx.fillText('POWER', 204, 14);
-  ctx.fillStyle = P.orange;
-  ctx.fillText(player.powerTier === 2 ? 'FLAME' : (player.powerTier === 1 ? 'COFFEE' : 'NORMAL'), 204, 23);
+  // Power Level
+  ctx.fillStyle = '#ffc933';
+  ctx.fillText('POWER', 320, 18);
+  ctx.fillStyle = '#e85d1d';
+  ctx.fillText(player.tier === 2 ? 'FLAME' : (player.tier === 1 ? 'COFFEE' : 'NORMAL'), 320, 30);
 
-  // Victory Card
+  // Victory Card Overlay
   if (victory) {
-    ctx.fillStyle = 'rgba(15, 20, 29, 0.88)';
-    ctx.fillRect(32, 50, 192, 110);
-    ctx.strokeStyle = P.gold;
-    ctx.lineWidth = 2;
-    ctx.strokeRect(32, 50, 192, 110);
+    ctx.fillStyle = 'rgba(13, 21, 34, 0.94)';
+    ctx.fillRect(40, 60, 320, 170);
+    ctx.strokeStyle = '#ffc933';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(40, 60, 320, 170);
 
-    ctx.fillStyle = P.orange;
-    ctx.font = 'bold 11px monospace';
-    ctx.fillText('STAGE COMPLETED!', 52, 75);
+    ctx.fillStyle = '#e85d1d';
+    ctx.font = '12px "Press Start 2P"';
+    ctx.fillText('SERVICE COMPLETE!', 78, 100);
 
-    ctx.fillStyle = P.cream;
-    ctx.font = 'bold 7px monospace';
-    ctx.fillText('SUNDAYS ARE JUST THE START', 44, 96);
-    ctx.fillText('MORE THAN A SUNDAY CHURCH', 46, 110);
+    ctx.fillStyle = '#fff4db';
+    ctx.font = '7px "Press Start 2P"';
+    ctx.fillText('SUNDAYS ARE JUST THE START', 68, 130);
+    ctx.fillText('MORE THAN A SUNDAY CHURCH', 72, 148);
 
-    ctx.fillStyle = P.gold;
-    ctx.fillText(`FINAL SCORE: ${score}`, 68, 134);
+    ctx.fillStyle = '#ffc933';
+    ctx.font = '9px "Press Start 2P"';
+    ctx.fillText(`FINAL SCORE: ${score}`, 110, 185);
   }
 }
 
-// --- MAIN ANIMATION TICK ---
+// --- ENGINE LOOP ---
 function loop() {
   update();
   render();
