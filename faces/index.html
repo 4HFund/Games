@@ -23,8 +23,8 @@ button{font:inherit}.app{width:min(1180px,100%);margin:auto;padding:14px 16px 60
 <body>
 <div class="app">
 <div class="nav"><div class="brand"><div class="logo">F</div><div><b>Faces of The Foundery</b><small>Interactive Card Collection</small></div></div><div class="navpill"><span id="count">0</span>/<span id="total">14</span> COLLECTED</div></div>
-<section class="hero"><div class="eyebrow">The church is people</div><h1>MEET THE PEOPLE<br><span>BEHIND THE MISSION.</span></h1><p>Scan a physical card, step into a mini-game inspired by how that person serves, then unlock their digital collectible. No app download. No account. Just play, discover, collect.</p><div class="chips"><div class="chip">MOBILE FIRST</div><div class="chip">QR READY</div><div class="chip">14 COLLECTIBLES</div><div class="chip">LOCAL COLLECTION</div></div></section>
-<div class="sectionHead"><div><h2>Choose a mission</h2><p>Every person has a different game.</p></div><p id="progress">0 OF 14 COMPLETE</p></div>
+<section class="hero"><div class="eyebrow">The church is people</div><h1>MEET THE PEOPLE<br><span>BEHIND THE MISSION.</span></h1><p>Scan a physical card, step into a mini-game inspired by how that person serves, then unlock their digital collectible. No app download. No account. Just play, discover, collect.</p><div class="chips"><div class="chip">MOBILE FIRST</div><div class="chip">QR READY</div><div class="chip">16 COLLECTIBLES</div><div class="chip">LOCAL COLLECTION</div></div></section>
+<div class="sectionHead"><div><h2>Choose a mission</h2><p>Every person has a different game.</p></div><p id="progress">0 OF 16 COMPLETE</p></div>
 <div class="grid" id="grid"></div>
 <section class="binder"><div class="sectionHead"><div><h2>Your Foundery Binder</h2><p>Complete missions to fill the collection.</p></div></div><div class="bindergrid" id="binder"></div></section>
 <div class="foot">Prototype progress is stored only on this device. No login, leaderboard, or personal information required.</div>
@@ -45,7 +45,9 @@ walker:{name:"Rob + Janice Walker",glyph:"RW",series:"NEXT GEN + HIKING",accent:
 mozingo:{name:"Sidney + Jacy Mozingo",glyph:"SJ",series:"CREATIVE + OUTREACH",accent:"#67b8ff",role:"Creative + Media • Kenny's Kloset • God's Choice • Forged to Protect • Adventure Kids",mission:"Serve + Create",tag:"Switch gears. Serve wherever needed.",game:"reaction"},
 bailee:{name:"Bailee Steele",glyph:"BS",series:"CHILDREN'S MINISTRY",accent:"#e58cab",role:"Children's Ministry Support • Stepped in to help oversee and support during the transition",mission:"Keep It Moving",tag:"Cover the gaps. Care for the kids.",game:"sort"},
 riggs:{name:"Tyler + Alexis Riggs",glyph:"TR",series:"FITNESS + SERVE TEAM",accent:"#87df8f",role:"Tyler: Foundery Fitness Group • Tyler + Alexis: Serve Team Volunteers",mission:"Built to Serve",tag:"Move. Lift. Help. Repeat.",game:"reaction"},
-parr:{name:"The Parr Family",glyph:"PF",series:"SPORTS + MEDIA + BUILDING CARE",accent:"#ff9e62",role:"Brian + Becky + Family • Sports Ministry • Monday Volleyball • Camera • Building Care",mission:"Keep It Moving",tag:"Volleyball. Camera. Building. Serve.",game:"scenario"}
+parr:{name:"The Parr Family",glyph:"PF",series:"SPORTS + MEDIA + BUILDING CARE",accent:"#ff9e62",role:"Brian + Becky + Family • Sports Ministry • Monday Volleyball • Camera • Building Care",mission:"Keep It Moving",tag:"Volleyball. Camera. Building. Serve.",game:"scenario"},
+sandy:{name:"Sandy Hart",glyph:"SH",series:"HOSPITALITY + KENNY'S KLOSET LEGACY",accent:"#f4b46b",role:"Sunday Hospitality • Helps pass out cookies each Sunday • Kenny's Kloset is named in memory of her husband, Ken Hart",mission:"Cookie Crew",tag:"A warm welcome can start with something simple.",game:"scenario"},
+penrod:{name:"Judy + Ron Penrod",glyph:"JP",series:"HOSPITALITY",accent:"#f0d27d",role:"Hospitality Ministry",mission:"Welcome Home",tag:"Open the doors. Notice people. Make them feel welcome.",game:"scenario"}
 };
 var owned=new Set(JSON.parse(localStorage.getItem("facesFounderyPro")||"[]")),cleanup=null;
 function save(){localStorage.setItem("facesFounderyPro",JSON.stringify(Array.from(owned)));render()}
@@ -80,7 +82,17 @@ parr:{title:"Keep The Foundery Moving",copy:"One family, a lot of lanes. Rotate 
 ["Volleyball night is starting.",["Get the court ready","Leave equipment scattered","Cancel without checking"],0],
 ["The camera tally light comes on.",["Frame the shot","Point at the floor","Walk away"],0],
 ["Something in the building needs attention.",["Check it and help fix it","Ignore it","Cover it with a sign forever"],0],
-["A busy church event needs hands.",["Jump in where needed","Wait to be asked five times","Leave the setup unfinished"],0]]}
+["A busy church event needs hands.",["Jump in where needed","Wait to be asked five times","Leave the setup unfinished"],0]]},
+sandy:{title:"Cookie Crew",copy:"Hospitality is often built from small, faithful acts. Help Sandy keep the Sunday cookie table ready and welcoming.",rounds:[
+["The cookie trays are almost empty.",["Refill them before the rush","Wait until after service","Hide the empty trays"],0],
+["A first-time guest walks over.",["Greet them warmly and offer a cookie","Say nothing","Point at the table and walk away"],0],
+["The lobby gets busy.",["Keep serving and noticing people","Focus only on the table","Pack everything up early"],0],
+["Someone asks about Kenny's Kloset.",["Share that it was named in memory of Ken Hart","Make up an answer","Tell them it has no story"],0]]},
+penrod:{title:"Welcome Home",copy:"Hospitality sets the tone before service begins. Help Judy and Ron make the room feel ready and welcoming.",rounds:[
+["A guest enters and looks unsure.",["Greet them and help them find their way","Wait for them to ask twice","Ignore them"],0],
+["The welcome area is running low on materials.",["Restock it before people arrive","Leave it empty","Move it out of sight"],0],
+["Someone is standing alone.",["Go say hello","Assume they want to be alone","Walk past them"],0],
+["Service is about to begin.",["Make sure the entry and welcome areas are ready","Turn off the lobby lights","Put away the materials"],0]]}
 };
 function gameScenario(id){
   var d=GAME_DATA[id]||{title:PEOPLE[id].mission,copy:"Complete the mission.",rounds:[["A need appears.",["Step in and help","Ignore it","Make it harder"],0]]};
