@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Faces of The Foundery — Mini Games</title>
+<meta name="theme-color" content="#111722">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Oswald:wght@600;700&display=swap');
+:root{
+  --bg:#0b0f15;--panel:#121a25;--panel2:#182231;--line:#2a384d;--text:#f8f3e8;--muted:#9dacbf;
+  --orange:#e95d1e;--orange2:#ff7a36;--gold:#f4c85c;--green:#5ee09a;--red:#ff6b6b;--blue:#55b9ff;
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:
+radial-gradient(circle at 80% 0%,rgba(233,93,30,.16),transparent 30rem),
+radial-gradient(circle at 0% 30%,rgba(85,185,255,.08),transparent 28rem),var(--bg);color:var(--text);min-height:100vh}
+button{font:inherit}
+.wrap{width:min(1120px,100%);margin:auto;padding:22px 16px 50px}
+.topbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:26px}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{width:42px;height:42px;border-radius:12px;background:linear-gradient(145deg,var(--orange2),#9d2d0a);display:grid;place-items:center;font-weight:900;box-shadow:0 0 30px rgba(233,93,30,.25)}
+.brand b{display:block;font-family:Oswald,sans-serif;font-size:18px;letter-spacing:.08em;text-transform:uppercase}
+.brand span{font-size:11px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase}
+.progressPill{border:1px solid var(--line);background:rgba(18,26,37,.8);padding:10px 13px;border-radius:999px;font-weight:800;font-size:12px;white-space:nowrap}
+.hero{padding:28px 0 22px}
+.eyebrow{color:var(--orange2);text-transform:uppercase;font-size:11px;letter-spacing:.22em;font-weight:900}
+h1{font-family:Oswald,sans-serif;font-size:clamp(38px,8vw,76px);line-height:.95;margin:8px 0 14px;text-transform:uppercase;letter-spacing:-.02em}
+.hero p{max-width:690px;color:#c4cfdb;line-height:1.65;margin:0;font-size:15px}
+.hint{display:inline-flex;gap:8px;align-items:center;margin-top:16px;color:#e8d8bd;font-size:12px;border:1px solid #4a382a;background:#21180f;padding:9px 12px;border-radius:9px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px}
+.card{position:relative;min-height:365px;border:1px solid var(--line);background:linear-gradient(180deg,#1a2636,#101722);border-radius:20px;overflow:hidden;cursor:pointer;transition:.2s;box-shadow:0 16px 40px rgba(0,0,0,.25)}
+.card:hover{transform:translateY(-3px);border-color:#4a5f79}
+.card.locked .art{filter:saturate(.55) brightness(.75)}
+.card.unlocked{border-color:#7b6940;box-shadow:0 0 0 1px rgba(244,200,92,.18),0 18px 42px rgba(0,0,0,.32)}
+.art{height:220px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.art:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(3,6,10,.88));pointer-events:none}
+.art>*{position:relative;z-index:2}
+.art.bobby{background:radial-gradient(circle at 50% 20%,#86552d,transparent 33%),linear-gradient(135deg,#24190f,#653314)}
+.art.rob{background:radial-gradient(circle at 60% 20%,#4f7650,transparent 35%),linear-gradient(135deg,#102016,#294534)}
+.art.jacy{background:radial-gradient(circle at 45% 15%,#7b466d,transparent 33%),linear-gradient(135deg,#1f1320,#4d273e)}
+.art.sidney{background:radial-gradient(circle at 55% 15%,#394f75,transparent 33%),linear-gradient(135deg,#101722,#263952)}
+.avatar{width:104px;height:104px;border-radius:50%;align-self:center;margin-top:13px;display:grid;place-items:center;border:2px solid rgba(255,255,255,.28);background:rgba(255,255,255,.08);font-family:Oswald;font-size:32px;letter-spacing:.06em;box-shadow:inset 0 0 30px rgba(255,255,255,.05)}
+.ministry{font-size:9px;letter-spacing:.18em;font-weight:900;text-transform:uppercase}
+.cardName{font-family:Oswald;font-size:34px;text-transform:uppercase;line-height:.9;text-shadow:0 2px 10px #000}
+.cardBody{padding:16px}
+.role{font-size:12px;color:#d5dfeb;line-height:1.45;min-height:52px}
+.play{width:100%;border:none;border-radius:12px;padding:12px 14px;background:linear-gradient(135deg,var(--orange),#bd3c0c);color:white;font-weight:900;margin-top:13px;cursor:pointer}
+.unlock{position:absolute;right:12px;top:12px;z-index:4;background:#111a;border:1px solid #ffffff2a;border-radius:999px;padding:6px 8px;font-size:10px;font-weight:900}
+.unlocked .unlock{background:#1c3327;border-color:#4d9b6d;color:#9af0bb}
+.sectionTitle{margin-top:38px;font-family:Oswald;font-size:26px;text-transform:uppercase}
+.binder{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.slot{height:96px;border:1px dashed #36465b;border-radius:14px;background:#101722;display:grid;place-items:center;text-align:center;color:#6f7f92;font-size:11px;font-weight:800;padding:8px}
+.slot.owned{border-style:solid;border-color:#6f613c;color:#f2dc9a;background:linear-gradient(145deg,#2b2415,#171510)}
+.overlay{position:fixed;inset:0;background:rgba(3,6,10,.84);backdrop-filter:blur(10px);display:none;z-index:20;padding:14px;overflow:auto}
+.overlay.show{display:block}
+.gameShell{width:min(650px,100%);margin:3vh auto;border:1px solid #33455d;background:linear-gradient(180deg,#172130,#0e141e);border-radius:22px;overflow:hidden;box-shadow:0 30px 80px #000}
+.gameHead{display:flex;justify-content:space-between;align-items:flex-start;padding:18px;border-bottom:1px solid #29384c}
+.gameHead h2{font-family:Oswald;text-transform:uppercase;font-size:28px;margin:0}
+.gameHead p{margin:4px 0 0;color:var(--muted);font-size:11px}
+.close{width:38px;height:38px;border-radius:50%;border:1px solid #3d4f67;background:#111925;color:white;cursor:pointer;font-size:20px}
+.game{padding:20px}
+.gameIntro{color:#c9d3df;line-height:1.55;font-size:13px;margin:0 0 16px}
+.scoreRow{display:flex;justify-content:space-between;gap:10px;margin-bottom:14px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#9eb0c5}
+.btnGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choice{border:1px solid #34465d;background:#172233;color:white;padding:15px;border-radius:14px;cursor:pointer;text-align:left;font-weight:800;min-height:58px}
+.choice:hover{border-color:#65809f}
+.choice.good{background:#173524;border-color:#51b47a}
+.choice.bad{background:#401d20;border-color:#c75b62}
+.message{margin-top:14px;min-height:44px;border-radius:12px;padding:12px;background:#0e151f;border:1px solid #28384b;color:#c9d3df;font-size:12px;line-height:1.45}
+.bigPrompt{border:1px solid #32445c;background:#111a26;border-radius:16px;min-height:130px;display:grid;place-items:center;text-align:center;padding:20px;margin-bottom:12px;font-family:Oswald;font-size:26px;text-transform:uppercase}
+.cueGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.cue{height:92px;border:1px solid #34465d;background:#121c29;border-radius:14px;color:white;font-weight:900;font-size:13px;cursor:pointer}
+.cue.active{background:linear-gradient(145deg,var(--orange2),#b9370b);box-shadow:0 0 26px rgba(255,122,54,.35);transform:scale(1.02)}
+.sortItem{font-size:56px}
+.categories{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cat{border:1px solid #34465d;border-radius:12px;background:#162131;color:white;padding:13px 8px;font-weight:800;cursor:pointer}
+.pathMap{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.pathNode{height:78px;border:1px solid #34465d;border-radius:14px;display:grid;place-items:center;background:#111a26;font-size:28px}
+.pathNode.done{background:#163222;border-color:#43946a}
+.storySteps{display:grid;grid-template-columns:1fr;gap:8px}
+.storyBtn{border:1px solid #34465d;background:#15202e;color:white;border-radius:12px;padding:13px;text-align:left;cursor:pointer;font-weight:800}
+.storyBtn.selected{border-color:var(--gold);background:#2a2416}
+.finish{display:none;text-align:center;padding:8px 4px 2px}
+.finish.show{display:block}
+.medal{width:78px;height:78px;border-radius:50%;margin:8px auto 14px;display:grid;place-items:center;font-size:36px;background:radial-gradient(circle,#ffdc72,#a96d11);box-shadow:0 0 35px rgba(244,200,92,.25)}
+.finish h3{font-family:Oswald;font-size:30px;text-transform:uppercase;margin:0}
+.finish p{color:#bdc8d6;line-height:1.5;font-size:13px}
+.finish button{border:0;border-radius:12px;background:linear-gradient(135deg,var(--orange2),var(--orange));color:#fff;padding:13px 18px;font-weight:900;cursor:pointer}
+.footer{text-align:center;margin-top:36px;color:#65758a;font-size:10px;line-height:1.7}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.binder{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.wrap{padding:14px 12px 38px}.topbar{align-items:flex-start}.brand span{display:none}.grid{grid-template-columns:1fr 1fr;gap:9px}.card{min-height:310px;border-radius:15px}.art{height:180px;padding:11px}.avatar{width:80px;height:80px;font-size:26px}.cardName{font-size:26px}.cardBody{padding:11px}.role{font-size:10px;min-height:58px}.play{padding:10px;font-size:11px}.btnGrid{grid-template-columns:1fr}.game{padding:15px}.categories{grid-template-columns:1fr}.cue{height:78px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand"><div class="mark">F</div><div><b>Faces of The Foundery</b><span>Meet • Play • Connect</span></div></div>
+    <div class="progressPill"><span id="count">0</span>/4 collected</div>
+  </div>
+
+  <section class="hero">
+    <div class="eyebrow">Scan a card. Meet a person. Play their story.</div>
+    <h1>THE PEOPLE<br>BEHIND THE MISSION.</h1>
+    <p>Every card opens a tiny game inspired by the way that person serves. Finish their challenge to add their digital card to your Foundery collection.</p>
+    <div class="hint">📱 Prototype: tap a card below — QR codes can link directly to each person.</div>
+  </section>
+
+  <section class="grid" id="cards"></section>
+
+  <h2 class="sectionTitle">My Foundery Binder</h2>
+  <section class="binder" id="binder"></section>
+
+  <div class="footer">Prototype collection is saved only on this device. No account, leaderboard, or personal data required.</div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="gameShell">
+    <div class="gameHead">
+      <div><h2 id="gameTitle">Mini Game</h2><p id="gameSub">Faces of The Foundery</p></div>
+      <button class="close" id="closeBtn">×</button>
+    </div>
+    <div class="game" id="game"></div>
+  </div>
+</div>
+
+<script>
+const people = {
+  bobby:{
+    name:"Pastor Bobby", initials:"BW", ministry:"Leadership", cls:"bobby",
+    role:"Lead Pastor • Storyteller",
+    game:"Build the Message",
+    desc:"Put the pieces of a message together in a clear order."
+  },
+  rob:{
+    name:"Rob Walker", initials:"RW", ministry:"Next Gen + Hiking", cls:"rob",
+    role:"Next Generation Kids Leader • Hiking Ministry Leader",
+    game:"Trail Guide",
+    desc:"Guide your group through the trail by making smart, caring choices."
+  },
+  jacy:{
+    name:"Jacy Mozingo", initials:"JM", ministry:"Outreach + Kids", cls:"jacy",
+    role:"Kenny’s Kloset • God’s Choice • Forged to Protect • Adventure Kids",
+    game:"Kloset Sort",
+    desc:"Sort donated items quickly so families can find what they need."
+  },
+  sidney:{
+    name:"Sidney Mozingo", initials:"SM", ministry:"Creative + Media", cls:"sidney",
+    role:"Documentarian • Creative Director • Producer",
+    game:"Sunday Production",
+    desc:"Hit the right production cue at the right moment and keep service moving."
+  }
+};
+
+const owned = new Set(JSON.parse(localStorage.getItem("founderyFaces")||"[]"));
+const cardsEl=document.getElementById("cards"), binderEl=document.getElementById("binder"), overlay=document.getElementById("overlay"), gameEl=document.getElementById("game");
+function save(){localStorage.setItem("founderyFaces",JSON.stringify([...owned]));render();}
+function render(){
+  cardsEl.innerHTML=""; binderEl.innerHTML="";
+  Object.entries(people).forEach(([id,p])=>{
+    const yes=owned.has(id);
+    cardsEl.insertAdjacentHTML("beforeend",`
+      <article class="card ${yes?"unlocked":"locked"}" onclick="openGame('${id}')">
+        <div class="unlock">${yes?"✓ COLLECTED":"PLAY TO UNLOCK"}</div>
+        <div class="art ${p.cls}">
+          <div class="ministry">${p.ministry}</div>
+          <div class="avatar">${p.initials}</div>
+          <div><div class="cardName">${p.name}</div></div>
+        </div>
+        <div class="cardBody">
+          <div class="role">${p.role}</div>
+          <button class="play">${yes?"PLAY AGAIN":"PLAY MINI GAME"}</button>
+        </div>
+      </article>`);
+    binderEl.insertAdjacentHTML("beforeend",`<div class="slot ${yes?"owned":""}">${yes?"✓ "+p.name:"LOCKED CARD"}<br><small>${yes?p.ministry:"Complete the mini game"}</small></div>`);
+  });
+  document.getElementById("count").textContent=owned.size;
+}
+function openGame(id){
+  overlay.classList.add("show"); document.body.style.overflow="hidden";
+  document.getElementById("gameTitle").textContent=people[id].game;
+  document.getElementById("gameSub").textContent=people[id].name+" • "+people[id].ministry;
+  if(id==="bobby") gameBobby(id);
+  if(id==="rob") gameRob(id);
+  if(id==="jacy") gameJacy(id);
+  if(id==="sidney") gameSidney(id);
+}
+function closeGame(){overlay.classList.remove("show");document.body.style.overflow="";}
+document.getElementById("closeBtn").onclick=closeGame;
+overlay.addEventListener("click",e=>{if(e.target===overlay)closeGame()});
+
+function completed(id){
+  owned.add(id); save();
+  gameEl.innerHTML=`<div class="finish show"><div class="medal">✓</div><h3>Card Unlocked</h3><p>You completed <b>${people[id].game}</b> and added <b>${people[id].name}</b> to your Foundery Binder.</p><button onclick="closeGame()">ADD TO BINDER</button></div>`;
+}
+
+function gameBobby(id){
+  const correct=["Scripture","Story","What it means","Take it with you"];
+  let selected=[];
+  gameEl.innerHTML=`
+    <p class="gameIntro">A message has four pieces. Tap them in the order that helps people move from the Bible to everyday life.</p>
+    <div class="scoreRow"><span>Story Builder</span><span id="step">0 / 4</span></div>
+    <div class="storySteps" id="story">
+      ${["Take it with you","Story","Scripture","What it means"].map(x=>`<button class="storyBtn" data-v="${x}">${x}</button>`).join("")}
+    </div>
+    <div class="message" id="msg">Start with the foundation.</div>`;
+  document.querySelectorAll(".storyBtn").forEach(b=>b.onclick=()=>{
+    if(b.classList.contains("selected"))return;
+    const expected=correct[selected.length];
+    if(b.dataset.v===expected){
+      selected.push(b.dataset.v);b.classList.add("selected");
+      document.getElementById("step").textContent=selected.length+" / 4";
+      document.getElementById("msg").textContent=selected.length===4?"That flows: Scripture → story → meaning → response.":"Nice. What should come next?";
+      if(selected.length===4)setTimeout(()=>completed(id),650);
+    }else{
+      document.getElementById("msg").textContent="Try a different piece. Think about what everything should be anchored in.";
+    }
+  });
+}
+
+function gameRob(id){
+  const rounds=[
+    {q:"The trail splits. One path is shorter but muddy and steep. What do you do?",a:["Keep the group together and choose the safer path","Race ahead to finish first"],good:0},
+    {q:"Someone in the group is falling behind.",a:["Slow down and check on them","Tell them to catch up"],good:0},
+    {q:"You find litter near the overlook.",a:["Pack it out with you","Leave it for somebody else"],good:0}
+  ];
+  let n=0,done=0;
+  const paint=()=>{
+    const r=rounds[n];
+    gameEl.innerHTML=`
+      <p class="gameIntro">Good trail leaders protect the group, notice people, and leave the trail better than they found it.</p>
+      <div class="pathMap"><div class="pathNode done">🥾</div><div class="pathNode ${done>0?"done":""}">🌲</div><div class="pathNode ${done>1?"done":""}">⛰️</div></div>
+      <div class="bigPrompt" style="font-size:18px">${r.q}</div>
+      <div class="btnGrid">${r.a.map((x,i)=>`<button class="choice" data-i="${i}">${x}</button>`).join("")}</div>
+      <div class="message" id="msg">Choose the way you would lead.</div>`;
+    document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{
+      if(+b.dataset.i===r.good){
+        b.classList.add("good");document.getElementById("msg").textContent="Good call — lead with care, not just speed.";
+        done++; if(n===rounds.length-1)setTimeout(()=>completed(id),650); else {n++;setTimeout(paint,650)}
+      }else{b.classList.add("bad");document.getElementById("msg").textContent="Try again. A good guide looks out for the whole group.";}
+    });
+  };paint();
+}
+
+function gameJacy(id){
+  const items=[
+    {icon:"👕",label:"Shirt",cat:"Clothing"},{icon:"👟",label:"Shoes",cat:"Shoes"},
+    {icon:"🧥",label:"Coat",cat:"Clothing"},{icon:"🎒",label:"Backpack",cat:"Other"},
+    {icon:"👖",label:"Pants",cat:"Clothing"},{icon:"🥾",label:"Boots",cat:"Shoes"}
+  ];
+  let n=0,score=0;
+  const paint=()=>{
+    const item=items[n];
+    gameEl.innerHTML=`
+      <p class="gameIntro">Help get donations organized so people can quickly find what they need.</p>
+      <div class="scoreRow"><span>Item ${n+1} / ${items.length}</span><span>${score} correct</span></div>
+      <div class="bigPrompt"><div><div class="sortItem">${item.icon}</div><div style="font-size:18px;margin-top:8px">${item.label}</div></div></div>
+      <div class="categories">
+        ${["Clothing","Shoes","Other"].map(c=>`<button class="cat" data-c="${c}">${c}</button>`).join("")}
+      </div>
+      <div class="message" id="msg">Where does this item belong?</div>`;
+    document.querySelectorAll(".cat").forEach(b=>b.onclick=()=>{
+      if(b.dataset.c===item.cat){
+        score++;b.classList.add("good");document.getElementById("msg").textContent="Sorted! One more item ready for a family.";
+        if(n===items.length-1)setTimeout(()=>completed(id),550); else {n++;setTimeout(paint,450)}
+      }else{b.classList.add("bad");document.getElementById("msg").textContent="Not that bin — try another one.";}
+    });
+  };paint();
+}
+
+function gameSidney(id){
+  const cues=[
+    {name:"LYRICS",icon:"🖥️"},{name:"CAMERA",icon:"🎥"},{name:"AUDIO",icon:"🎚️"},{name:"STREAM",icon:"🔴"}
+  ];
+  let round=0,hits=0,active=-1,timer=null,locked=false;
+  gameEl.innerHTML=`
+    <p class="gameIntro">Production is about being ready before anybody notices. Hit the glowing cue before it disappears.</p>
+    <div class="scoreRow"><span>Round <span id="round">1</span> / 8</span><span><span id="hits">0</span> hits</span></div>
+    <div class="bigPrompt" id="prompt">GET READY</div>
+    <div class="cueGrid" id="cues">${cues.map((c,i)=>`<button class="cue" data-i="${i}">${c.icon}<br><br>${c.name}</button>`).join("")}</div>
+    <div class="message" id="msg">Watch for the cue.</div>`;
+  const buttons=[...document.querySelectorAll(".cue")];
+  function next(){
+    if(round>=8){clearTimeout(timer);setTimeout(()=>completed(id),400);return}
+    locked=false; active=Math.floor(Math.random()*4);
+    buttons.forEach((b,i)=>b.classList.toggle("active",i===active));
+    document.getElementById("prompt").textContent="CUE "+cues[active].name;
+    document.getElementById("round").textContent=round+1;
+    timer=setTimeout(()=>{
+      if(!locked){locked=true;document.getElementById("msg").textContent="Missed it — reset and stay ready.";buttons.forEach(b=>b.classList.remove("active"));round++;setTimeout(next,450)}
+    },1250);
+  }
+  buttons.forEach(b=>b.onclick=()=>{
+    if(locked)return; locked=true; clearTimeout(timer);
+    if(+b.dataset.i===active){hits++;document.getElementById("hits").textContent=hits;document.getElementById("msg").textContent="Clean cue. Nobody in the room noticed — perfect.";}
+    else document.getElementById("msg").textContent="Wrong cue — recover and keep moving.";
+    buttons.forEach(x=>x.classList.remove("active"));round++;setTimeout(next,420);
+  });
+  setTimeout(next,700);
+}
+render();
+
+const direct=new URLSearchParams(location.search).get("person");
+if(direct && people[direct]) setTimeout(()=>openGame(direct),250);
+</script>
+</body>
+</html>
