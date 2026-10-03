@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#080b10">
 <title>Faces of The Foundery</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Oswald:wght@500;600;700&family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Oswald:wght@500;600;700&family=Press+Start+2P&family=Pixelify+Sans:wght@400..700&display=swap');
 :root{--bg:#080b10;--panel:#111821;--line:rgba(255,255,255,.11);--text:#f7f2e8;--muted:#92a0af;--orange:#ff6a22;--gold:#f3ca6c}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;background:radial-gradient(900px 600px at 95% -10%,rgba(255,106,34,.15),transparent 60%),radial-gradient(700px 700px at -5% 45%,rgba(70,120,170,.11),transparent 60%),var(--bg);color:var(--text);font-family:Inter,sans-serif;min-height:100vh}
 body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:34px 34px;mask-image:linear-gradient(#000,transparent)}
@@ -422,16 +422,184 @@ h1 span{
   .missionSplash{padding:14px}.launchCard{width:150px}.launchGlyph{font-size:48px}.launchName{font-size:10px}.missionCopy h3{font-size:18px}
 }
 
+
+/* ===== STUDIO POLISH PASS ===== */
+:root{--hud-shadow:#01040d;--hud-blue:#0b2b5a;--hud-blue2:#164d8d;--hud-gold:#ffc532}
+body{background-attachment:fixed}
+button{user-select:none}
+.nav{max-width:1180px;margin-inline:auto}
+.navProgressWrap{display:grid;grid-template-columns:1fr auto;align-items:center;gap:5px 8px}
+.navpill{grid-column:1/3;text-align:center}
+.navMeter{grid-column:1}
+.sfxToggle{
+  grid-column:2;border:2px solid #8ad4ff;background:#0b2b5a;color:#fff;border-radius:0;
+  box-shadow:2px 2px 0 #01040d;padding:5px 7px;font-family:"Press Start 2P",monospace;font-size:5px;cursor:pointer
+}
+.sfxToggle.off{color:#8194aa;border-color:#405773;background:#08162d}
+.heroGrid>div:first-child{position:relative;overflow:hidden}
+.heroGrid>div:first-child:after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:72px;pointer-events:none;opacity:.8;
+  background:
+    linear-gradient(#08152e 0 0) 0 56px/100% 16px no-repeat,
+    linear-gradient(135deg,transparent 48%,#07142d 49% 55%,transparent 56%) 0 30px/70px 42px repeat-x,
+    linear-gradient(45deg,transparent 48%,#0b2045 49% 58%,transparent 59%) 32px 28px/90px 48px repeat-x;
+}
+.heroGrid>div:first-child>*{position:relative;z-index:1}
+h1,.name,.launchName,.missionCopy h3,.intro h3,.cname,.heroPanel .panelBig{
+  font-family:"Pixelify Sans","Press Start 2P",monospace!important;
+}
+h1{font-weight:700;letter-spacing:-.03em}
+.name{font-weight:700;font-size:24px}
+.card{overflow:hidden}
+.cardArt{background:#102b58}
+.cardArt:before{opacity:1!important;width:auto!important;height:auto!important;inset:0!important;right:auto!important;top:auto!important;box-shadow:none!important}
+.cardArt:after{z-index:1}
+.card .mono{z-index:2}
+.card[data-id="bobby"] .cardArt:before{
+  background:
+    linear-gradient(70deg,transparent 0 41%,rgba(255,197,50,.38) 42% 45%,transparent 46%) left/55% 100% no-repeat,
+    linear-gradient(-70deg,transparent 0 41%,rgba(255,107,18,.34) 42% 45%,transparent 46%) right/55% 100% no-repeat,
+    linear-gradient(#0a1735 0 0) 0 78%/100% 22% no-repeat,
+    repeating-linear-gradient(90deg,#1e315d 0 18px,#14254c 18px 36px);
+}
+.card[data-id="dave"] .cardArt:before{
+  background:
+    linear-gradient(#7fc76a 0 0) 0 63%/100% 37% no-repeat,
+    linear-gradient(#8d949a 0 0) 47% 0/25% 100% no-repeat,
+    linear-gradient(#b84f3d 0 0) 10% 55%/25% 18% no-repeat,
+    linear-gradient(#f0d18d 0 0) 14% 69%/17% 15% no-repeat,
+    linear-gradient(#203b73,#3b79bd);
+}
+.card[data-id="smith"] .cardArt:before{
+  background:
+    linear-gradient(#21345b 0 0) 0 77%/100% 23% no-repeat,
+    repeating-linear-gradient(90deg,transparent 0 38px,#8a5b32 38px 50px,transparent 50px 84px) 0 65%/100% 14% no-repeat,
+    linear-gradient(180deg,#2e4380 0,#c65f6b 55%,#f0aa55 100%);
+}
+.card[data-id="cody"] .cardArt:before{
+  background:
+    linear-gradient(#a8794e 0 0) 0 72%/100% 28% no-repeat,
+    linear-gradient(#e7d5a8 0 0) 13% 20%/28% 34% no-repeat,
+    linear-gradient(#f1e7c8 0 0) 57% 13%/28% 38% no-repeat,
+    linear-gradient(#213a6b,#385e91);
+}
+.card[data-id="beatty"] .cardArt:before{
+  background:
+    repeating-linear-gradient(90deg,#3d2c24 0 8px,transparent 8px 52px) 0 25%/100% 55% no-repeat,
+    repeating-linear-gradient(90deg,#d65a4b 0 24px,#e3aa4e 24px 48px,#518fc3 48px 72px,#70aa64 72px 96px) 0 43%/100% 22% no-repeat,
+    linear-gradient(#64442e,#2c1c17);
+}
+.card[data-id="kelly"] .cardArt:before,.card[data-id="bailee"] .cardArt:before{
+  background:
+    linear-gradient(#f0d765 0 0) 10% 62%/24% 18% no-repeat,
+    linear-gradient(#62a7d5 0 0) 42% 54%/20% 26% no-repeat,
+    linear-gradient(#d96d87 0 0) 72% 60%/18% 20% no-repeat,
+    repeating-linear-gradient(90deg,#4b8b65 0 36px,#5ba176 36px 72px);
+}
+.card[data-id="upward"] .cardArt:before,.card[data-id="parr"] .cardArt:before,.card[data-id="riggs"] .cardArt:before{
+  background:
+    linear-gradient(#e39a48 0 0) 0 69%/100% 31% no-repeat,
+    linear-gradient(#fff 0 0) 50% 0/3px 100% no-repeat,
+    linear-gradient(#cae5f7 0 0) 50% 17%/34% 18% no-repeat,
+    linear-gradient(#355982,#172d55);
+}
+.card[data-id="cook"] .cardArt:before,.card[data-id="sandy"] .cardArt:before,.card[data-id="penrod"] .cardArt:before{
+  background:
+    linear-gradient(#d9b688 0 0) 0 70%/100% 30% no-repeat,
+    linear-gradient(#6c4028 0 0) 8% 18%/24% 46% no-repeat,
+    linear-gradient(#6c4028 0 0) 68% 18%/24% 46% no-repeat,
+    linear-gradient(#c48b58,#6c4028);
+}
+.card[data-id="vargo"] .cardArt:before{
+  background:
+    linear-gradient(90deg,transparent 0 18%,#6a7188 18% 21%,transparent 21% 79%,#6a7188 79% 82%,transparent 82%),
+    linear-gradient(70deg,transparent 0 46%,#e6b24a 47% 50%,transparent 51%) 15% 0/50% 100% no-repeat,
+    linear-gradient(-70deg,transparent 0 46%,#7f66e8 47% 50%,transparent 51%) 85% 0/50% 100% no-repeat,
+    linear-gradient(#091124,#1d2a50);
+}
+.card[data-id="walker"] .cardArt:before{
+  background:
+    linear-gradient(#407c46 0 0) 0 63%/100% 37% no-repeat,
+    repeating-linear-gradient(115deg,transparent 0 28px,#24572f 29px 43px,transparent 44px 70px),
+    linear-gradient(#2f6a75,#74a75e);
+}
+.card[data-id="mozingo"] .cardArt:before{
+  background:
+    linear-gradient(#07111f 0 0) 0 0/100% 100% no-repeat,
+    linear-gradient(#43b9ff 0 0) 8% 18%/24% 30% no-repeat,
+    linear-gradient(#ff6b12 0 0) 39% 28%/22% 24% no-repeat,
+    linear-gradient(#7f66e8 0 0) 69% 16%/22% 34% no-repeat;
+}
+.card .cardNo{background:#06142e;border:2px solid #ffc532;padding:4px 5px;box-shadow:2px 2px 0 #01040d}
+.playline .arrow{font-size:0}
+.playline .arrow:after{content:"▶";font-family:"Press Start 2P";font-size:8px}
+.card:hover .arrow{animation:arrowBlink .45s steps(2,end) infinite}
+@keyframes arrowBlink{50%{opacity:.35}}
+.stage{position:relative;overflow:hidden}
+.stageMeta{
+  display:flex;justify-content:space-between;gap:8px;margin-bottom:8px;padding:7px 9px;
+  border:2px solid #2b69a4;background:#06142e;color:#8ad4ff;font-family:"Press Start 2P",monospace;
+  font-size:5px;letter-spacing:.02em
+}
+#body{position:relative}
+.shell[data-game="bobby"] .stage{background:linear-gradient(rgba(5,12,28,.86),rgba(5,12,28,.94)),repeating-linear-gradient(75deg,transparent 0 34px,rgba(255,175,50,.11) 34px 42px,transparent 42px 78px)}
+.shell[data-game="dave"] .stage,.shell[data-game="walker"] .stage{background:linear-gradient(rgba(6,22,30,.82),rgba(5,15,22,.94)),repeating-linear-gradient(125deg,#244e35 0 18px,#183925 18px 36px)}
+.shell[data-game="smith"] .stage{background:linear-gradient(rgba(35,24,54,.84),rgba(12,15,34,.96)),linear-gradient(180deg,#6c406f,#db7959)}
+.shell[data-game="upward"] .stage,.shell[data-game="parr"] .stage,.shell[data-game="riggs"] .stage{background:linear-gradient(rgba(7,17,38,.88),rgba(7,17,38,.96)),repeating-linear-gradient(90deg,#b56c34 0 50px,#cc7f3e 50px 100px)}
+.shell[data-game="cook"] .stage,.shell[data-game="sandy"] .stage,.shell[data-game="penrod"] .stage{background:linear-gradient(rgba(35,20,15,.78),rgba(12,9,12,.96)),repeating-linear-gradient(90deg,#6a3d25 0 46px,#7b4a2e 46px 92px)}
+.shell[data-game="vargo"] .stage,.shell[data-game="mozingo"] .stage{background:linear-gradient(rgba(3,8,20,.80),rgba(3,8,20,.96)),repeating-linear-gradient(90deg,#14213e 0 2px,transparent 2px 38px)}
+.shell[data-game="cody"] .stage,.shell[data-game="beatty"] .stage,.shell[data-game="bailee"] .stage,.shell[data-game="kelly"] .stage{background:linear-gradient(rgba(7,18,40,.88),rgba(7,18,40,.96)),repeating-linear-gradient(0deg,#17345d 0 2px,transparent 2px 28px)}
+.intro{box-shadow:0 4px 0 #01040d}
+.intro:before{
+  content:"MISSION";display:inline-block;margin-right:10px;color:#ff6b12;font-family:"Press Start 2P";
+  font-size:5px;vertical-align:middle
+}
+.readyOverlay{
+  min-height:500px;display:grid;place-items:center;border:4px solid #8ad4ff;background:
+  radial-gradient(circle at 50% 42%,rgba(255,197,50,.16),transparent 28%),
+  repeating-linear-gradient(180deg,rgba(255,255,255,.035) 0 2px,transparent 2px 7px),#030918;
+  box-shadow:inset 0 0 0 4px #173f76,0 5px 0 #01040d
+}
+.readyFrame{text-align:center;padding:28px;animation:readyIn .32s steps(4,end) both}
+.readyStage,.readyMission,.readyHint{font-family:"Press Start 2P",monospace}
+.readyStage{font-size:8px;color:#8ad4ff;margin-bottom:22px}
+.readyWord{font-family:"Pixelify Sans",monospace;font-size:72px;font-weight:700;line-height:.85;color:#ffc532;text-shadow:5px 5px 0 #8a3107,9px 9px 0 #01040d}
+.readyWord.go{color:#69ee87;text-shadow:5px 5px 0 #17682f,9px 9px 0 #01040d;animation:goPop .28s steps(3,end)}
+.readyMission{font-size:8px;color:#fff;margin-top:22px}
+.readyHint{font-size:6px;color:#ff7b43;margin-top:18px;animation:blink 1s steps(2,end) infinite}
+@keyframes readyIn{from{opacity:0;transform:scale(.84)}to{opacity:1;transform:none}}
+@keyframes goPop{50%{transform:scale(1.14)}}
+@keyframes blink{50%{opacity:.15}}
+.good{animation:studioGood .18s steps(2,end)}
+.bad{animation:studioBad .22s steps(3,end)}
+@keyframes studioGood{50%{filter:brightness(1.7);transform:translateY(-2px)}}
+@keyframes studioBad{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.reveal{background:
+  radial-gradient(circle at 50% 42%,rgba(255,197,50,.22),transparent 27%),
+  repeating-linear-gradient(180deg,rgba(255,255,255,.04) 0 2px,transparent 2px 7px),rgba(2,6,16,.98)}
+.reveal h4{font-size:24px;letter-spacing:.02em}
+.collect{animation:studioCard 650ms steps(8,end) both}
+@keyframes studioCard{0%{opacity:0;transform:scale(.55) rotate(-5deg)}65%{opacity:1;transform:scale(1.08) rotate(2deg)}100%{transform:scale(1) rotate(0)}}
+.foot{
+  border-top:3px solid #143f7d;margin-top:34px;color:#7da8d0;font-size:5px;letter-spacing:.04em;
+  padding:20px 0 4px
+}
+@media(max-width:560px){
+  .navProgressWrap{grid-template-columns:1fr auto}.sfxToggle{font-size:4px;padding:5px}
+  .stageMeta{font-size:4px}.readyOverlay{min-height:420px}.readyWord{font-size:54px}
+  .name{font-size:14px}.card .cardNo{font-size:5px}.heroGrid>div:first-child:after{height:48px}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
-<div class="nav"><div class="brand"><div class="logo">F</div><div><b>Faces of The Foundery</b><span class="seasonTag">Season 01 • Interactive Collection</span></div></div><div class="navProgressWrap"><div class="navpill"><span id="count">0</span>/<span id="total">16</span> COLLECTED</div><div class="navMeter"><i id="navFill"></i></div></div></div>
+<div class="nav"><div class="brand"><div class="logo">F</div><div><b>Faces of The Foundery</b><span class="seasonTag">Season 01 • Interactive Collection</span></div></div><div class="navProgressWrap"><div class="navpill"><span id="count">0</span>/<span id="total">16</span> COLLECTED</div><div class="navMeter"><i id="navFill"></i></div><button class="sfxToggle" id="sfxToggle" type="button">SFX ON</button></div></div>
 <section class="hero"><div class="heroGrid"><div><div class="eyebrow">Season 01 • 16-Bit Edition</div><h1>FACES OF<br><span>THE FOUNDERY</span></h1><p>One church. Sixteen playable stories. Choose a mission, step into a retro mini-game inspired by how each person serves, and unlock their collectible card.</p><div class="chips"><div class="chip">PRESS START</div><div class="chip">16 MISSIONS</div><div class="chip">QR TO PLAY</div><div class="chip">COLLECT THEM ALL</div></div></div><aside class="heroPanel"><div class="panelKicker">Player Select</div><div class="panelBig">16<br><span>MISSIONS LOADED</span></div><div class="panelFoot"><span>SEASON 01</span><span>READY!</span></div></aside></div></section>
 <div class="sectionHead"><div><h2>Choose a mission</h2><p>Every person has a different game.</p></div><p id="progress">0 OF 16 COMPLETE</p></div><div class="filters"><button class="filterBtn active" data-filter="all">All 16</button><button class="filterBtn" data-filter="leadership">Leadership</button><button class="filterBtn" data-filter="kids">Kids</button><button class="filterBtn" data-filter="hospitality">Hospitality</button><button class="filterBtn" data-filter="sports">Sports</button><button class="filterBtn" data-filter="outreach">Outreach</button><button class="filterBtn" data-filter="behind">Behind the Scenes</button></div>
 <div class="grid" id="grid"></div>
 <section class="binder"><div class="sectionHead"><div><h2>Your Foundery Binder</h2><p>Complete missions to fill the collection.</p></div></div><div class="binderMeter"><i id="binderFill"></i></div><div class="bindergrid" id="binder"></div></section>
-<div class="foot">Prototype progress is stored only on this device. No login, leaderboard, or personal information required.</div>
+<div class="foot">SEASON 01 • PROGRESS SAVES ON THIS DEVICE • SUNDAYS ARE JUST THE START</div>
 </div>
 <div class="overlay" id="overlay"><div class="shell" id="shell"><div class="gamebar"><div class="gbrand"><div class="dot"></div><div><div class="gt" id="gt">Mission</div><div class="gs" id="gs">Faces of The Foundery</div></div></div><button class="close" id="close">×</button></div><div class="stage" id="stage"></div></div></div>
 <script>
@@ -460,7 +628,7 @@ var g=document.getElementById("grid"),b=document.getElementById("binder"),keys=O
 g.innerHTML="";b.innerHTML="";
 keys.forEach(function(id,i){
 var p=PEOPLE[id],yes=owned.has(id),visible=activeFilter==="all"||(FILTER_MAP[activeFilter]||[]).indexOf(id)>-1;
-var c=document.createElement("article");c.className="card"+(yes?" owned":"")+(visible?"":" filteredOut");c.style.setProperty("--a",p.accent);c.style.setProperty("--delay",(Math.min(i,10)*35)+"ms");
+var c=document.createElement("article");c.className="card"+(yes?" owned":"")+(visible?"":" filteredOut");c.dataset.id=id;c.style.setProperty("--a",p.accent);c.style.setProperty("--delay",(Math.min(i,10)*35)+"ms");
 c.innerHTML='<div class="state">'+(yes?"✓ collected":"unlock by play")+'</div><div class="cardArt"><div class="series"><span>'+p.series+'</span></div><div class="cardNo">#'+String(i+1).padStart(2,"0")+'</div><div class="mono">'+p.glyph+'</div><div class="namewrap"><div class="mission">'+p.mission+'</div><div class="name">'+p.name+'</div></div></div><div class="body"><div class="role">'+p.role+'</div><div class="cardTag">'+p.tag+'</div><div class="playline"><b>'+(yes?"REPLAY MISSION":"PLAY MISSION")+'</b><div class="arrow">↗</div></div></div>';
 c.onclick=function(){openGame(id)};g.appendChild(c);
 var sl=document.createElement("div");sl.className="slot"+(yes?" owned":"");sl.innerHTML='<div><strong>'+(yes?p.name:"Locked")+'</strong><small>'+(yes?p.series:"Complete the mission")+'</small></div><div class="seal">'+(yes?p.glyph:"?")+'</div>';b.appendChild(sl)
@@ -469,20 +637,28 @@ var pct=total?Math.round(owned.size/total*100):0;
 document.getElementById("count").textContent=owned.size;document.getElementById("total").textContent=total;document.getElementById("progress").textContent=owned.size+" OF "+total+" COMPLETE";
 document.getElementById("navFill").style.width=pct+"%";document.getElementById("binderFill").style.width=pct+"%";
 }
-function head(id,title,copy){var p=PEOPLE[id],shell=document.getElementById("shell");shell.style.setProperty("--a",p.accent);document.getElementById("gt").textContent=p.mission;document.getElementById("gs").textContent=p.name+" • "+p.series;document.getElementById("stage").innerHTML='<div class="intro"><h3>'+title+'</h3><p>'+copy+'</p></div><div id="body"></div>';return document.getElementById("body")}
+function head(id,title,copy){var p=PEOPLE[id],shell=document.getElementById("shell"),num=Object.keys(PEOPLE).indexOf(id)+1;shell.style.setProperty("--a",p.accent);shell.dataset.game=id;document.getElementById("gt").textContent=p.mission;document.getElementById("gs").textContent=p.name+" • "+p.series;document.getElementById("stage").innerHTML='<div class="stageMeta"><span>STAGE '+String(num).padStart(2,"0")+'</span><span>PLAYER 1</span><span>SEASON 01</span></div><div class="intro"><h3>'+title+'</h3><p>'+copy+'</p></div><div id="body"></div>';return document.getElementById("body")}
 function openGame(id){
 closeGame(false);var p=PEOPLE[id],n=Object.keys(PEOPLE).indexOf(id)+1,shell=document.getElementById("shell"),st=document.getElementById("stage");
-shell.style.setProperty("--a",p.accent);document.getElementById("gt").textContent="Mission Briefing";document.getElementById("gs").textContent=p.name+" • "+p.series;
+shell.style.setProperty("--a",p.accent);shell.dataset.game=id;document.getElementById("gt").textContent="Mission Briefing";document.getElementById("gs").textContent=p.name+" • "+p.series;
 document.getElementById("overlay").classList.add("show");document.body.style.overflow="hidden";
-st.innerHTML='<div class="missionSplash"><div class="launchCard" style="--a:'+p.accent+'"><div class="launchCardIn"><div class="launchTop"><span>FACES OF THE FOUNDERY</span><span>#'+String(n).padStart(2,"0")+'</span></div><div class="launchGlyph">'+p.glyph+'</div><div><div class="launchName">'+p.name+'</div><div class="launchSeries">'+p.series+'</div></div></div></div><div class="missionCopy"><div class="micro">Mission '+String(n).padStart(2,"0")+' of '+Object.keys(PEOPLE).length+'</div><h3>'+p.mission+'</h3><p>'+p.tag+'</p><p class="missionRole">'+p.role+'</p><div class="launchActions"><button class="startMission">Start mission</button><button class="secondaryMission">Back</button></div></div></div>';
+st.innerHTML='<div class="missionSplash"><div class="launchCard" style="--a:'+p.accent+'"><div class="launchCardIn"><div class="launchTop"><span>FACES OF THE FOUNDERY</span><span>#'+String(n).padStart(2,"0")+'</span></div><div class="launchGlyph">'+p.glyph+'</div><div><div class="launchName">'+p.name+'</div><div class="launchSeries">'+p.series+'</div></div></div></div><div class="missionCopy"><div class="micro">STAGE '+String(n).padStart(2,"0")+' / '+String(Object.keys(PEOPLE).length).padStart(2,"0")+' • PLAYER 1</div><h3>'+p.mission+'</h3><p>'+p.tag+'</p><p class="missionRole">'+p.role+'</p><div class="launchActions"><button class="startMission">Start mission</button><button class="secondaryMission">Back</button></div></div></div>';
 st.querySelector(".startMission").onclick=function(){startGame(id)};st.querySelector(".secondaryMission").onclick=function(){closeGame(true)}
 }
-function startGame(id){var g=PEOPLE[id].game;if(g==="bobby")gameBobby(id);else if(g==="rob")gameRob(id);else if(g==="sort")gameSortCustom(id);else if(g==="reaction")gameReactionCustom(id);else if(g==="sequence")gameSequenceCustom(id);else if(g==="basket")gameBasket(id);else if(g==="visit")gameVisit(id);else if(g==="bridge")gameBridge(id);else if(g==="dual")gameDual(id);else if(g==="parr")gameParr(id);else if(g==="cookies")gameCookies(id);else if(g==="welcome")gameWelcome(id);else if(g==="kids")gameKids(id);else if(g==="fitness")gameFitness(id)}
+function runGame(id){var g=PEOPLE[id].game;if(g==="bobby")gameBobby(id);else if(g==="rob")gameRob(id);else if(g==="sort")gameSortCustom(id);else if(g==="reaction")gameReactionCustom(id);else if(g==="sequence")gameSequenceCustom(id);else if(g==="basket")gameBasket(id);else if(g==="visit")gameVisit(id);else if(g==="bridge")gameBridge(id);else if(g==="dual")gameDual(id);else if(g==="parr")gameParr(id);else if(g==="cookies")gameCookies(id);else if(g==="welcome")gameWelcome(id);else if(g==="kids")gameKids(id);else if(g==="fitness")gameFitness(id)}
+function startGame(id){
+  if(cleanup){cleanup();cleanup=null}
+  var st=document.getElementById("stage"),p=PEOPLE[id],num=Object.keys(PEOPLE).indexOf(id)+1;
+  st.innerHTML='<div class="readyOverlay"><div class="readyFrame"><div class="readyStage">STAGE '+String(num).padStart(2,"0")+'</div><div class="readyWord">READY?</div><div class="readyMission">'+p.mission+'</div><div class="readyHint">GET SET...</div></div></div>';
+  var t1=setTimeout(function(){var w=st.querySelector(".readyWord"),h=st.querySelector(".readyHint");if(w){w.textContent="GO!";w.classList.add("go")}if(h)h.textContent="PLAY!";sfx("go")},650);
+  var t2=setTimeout(function(){cleanup=null;runGame(id)},1120);
+  cleanup=function(){clearTimeout(t1);clearTimeout(t2)}
+}
 function closeGame(hide){if(cleanup){cleanup();cleanup=null}if(hide!==false){document.getElementById("overlay").classList.remove("show");document.body.style.overflow=""}}
 document.getElementById("close").onclick=function(){closeGame(true)};
 function unlock(id,stats){
 if(cleanup){cleanup();cleanup=null}var p=PEOPLE[id],first=!owned.has(id);owned.add(id);save();var n=Object.keys(PEOPLE).indexOf(id)+1,box=document.createElement("div");box.className="reveal";
-box.innerHTML='<div class="revealin"><div class="collect" style="--a:'+p.accent+'"><div class="collectin"><div class="ctop"><span>FACES OF THE FOUNDERY</span><span>#'+String(n).padStart(2,"0")+'</span></div><div class="cglyph">'+p.glyph+'</div><div><div class="cname">'+p.name+'</div><div class="crole">'+p.role+'</div></div></div></div><h4>'+(first?"CARD UNLOCKED!":"STAGE CLEAR!")+'</h4><p>'+stats+'. '+(first?"This collectible is now saved in your Foundery Binder.":"Your card remains in your collection.")+'</p><button class="done">BACK TO COLLECTION</button></div>';
+box.innerHTML='<div class="revealin"><div class="collect" style="--a:'+p.accent+'"><div class="collectin"><div class="ctop"><span>FACES OF THE FOUNDERY</span><span>#'+String(n).padStart(2,"0")+'</span></div><div class="cglyph">'+p.glyph+'</div><div><div class="cname">'+p.name+'</div><div class="crole">'+p.role+'</div></div></div></div><h4>'+(first?"NEW CARD UNLOCKED!":"STAGE CLEAR!")+'</h4><p>'+stats+'. '+(first?"This collectible is now saved in your Foundery Binder.":"Your card remains in your collection.")+'</p><button class="done">BACK TO COLLECTION</button></div>';
 for(var i=0;i<22;i++){var cf=document.createElement("i");cf.className="confettiPiece";cf.style.setProperty("--x",(Math.random()*100)+"%");cf.style.setProperty("--delay",(Math.random()*.45)+"s");cf.style.setProperty("--dur",(1.8+Math.random()*1.2)+"s");cf.style.setProperty("--rot",(Math.random()*180)+"deg");cf.style.setProperty("--c",i%3===0?p.accent:(i%3===1?"#f3ca6c":"#f7f2e8"));box.appendChild(cf)}
 box.querySelector(".done").onclick=function(){closeGame(true)};document.getElementById("stage").appendChild(box)
 }
@@ -589,6 +765,30 @@ function gameBasket(id){
   body.querySelector("#shoot").onclick=function(){if(dead)return;shots++;body.querySelector("#shots").textContent=shots;var ok=pos>=41&&pos<=58;if(ok){made++;body.querySelector("#made").textContent=made+"/5";body.querySelector("#bf").className="feedback good";body.querySelector("#bf").textContent="BUCKET — KEEP GOING";if(made>=5){dead=true;cancelAnimationFrame(raf);setTimeout(function(){unlock(id,"Upward Game Day: 5 baskets made in "+shots+" shots")},450)}}else{body.querySelector("#bf").className="feedback bad";body.querySelector("#bf").textContent="OFF THE RIM — RESET"}};
   cleanup=function(){dead=true;cancelAnimationFrame(raf)};anim()
 }
+
+var sfxEnabled=localStorage.getItem("facesSfx")!=="off",audioCtx=null;
+function sfx(type){
+  if(!sfxEnabled)return;
+  try{
+    audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+    var now=audioCtx.currentTime,o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.type=type==="clear"?"square":type==="bad"?"sawtooth":"square";
+    var f=type==="go"?660:type==="clear"?784:type==="bad"?110:type==="select"?330:440;
+    o.frequency.setValueAtTime(f,now);
+    if(type==="go")o.frequency.exponentialRampToValueAtTime(990,now+.09);
+    if(type==="clear")o.frequency.exponentialRampToValueAtTime(1174,now+.18);
+    if(type==="bad")o.frequency.exponentialRampToValueAtTime(70,now+.12);
+    g.gain.setValueAtTime(.035,now);g.gain.exponentialRampToValueAtTime(.001,now+(type==="clear"?.22:.11));
+    o.connect(g);g.connect(audioCtx.destination);o.start(now);o.stop(now+(type==="clear"?.23:.12));
+  }catch(e){}
+}
+var sfxBtn=document.getElementById("sfxToggle");
+function paintSfx(){if(!sfxBtn)return;sfxBtn.textContent=sfxEnabled?"SFX ON":"SFX OFF";sfxBtn.classList.toggle("off",!sfxEnabled)}
+if(sfxBtn){sfxBtn.onclick=function(){sfxEnabled=!sfxEnabled;localStorage.setItem("facesSfx",sfxEnabled?"on":"off");paintSfx();if(sfxEnabled)sfx("select")};paintSfx()}
+document.addEventListener("pointerdown",function(e){if(e.target.closest("button")&&!e.target.closest("#sfxToggle"))sfx("select")},{passive:true});
+var oldUnlock=unlock;
+unlock=function(id,stats){sfx("clear");oldUnlock(id,stats)};
+
 document.querySelectorAll(".filterBtn").forEach(function(btn){btn.onclick=function(){setFilter(btn.dataset.filter,btn)}});render();var direct=new URLSearchParams(location.search).get("person");if(direct&&PEOPLE[direct])setTimeout(function(){openGame(direct)},300);
 </script>
 </body>
