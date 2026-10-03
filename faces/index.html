@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#080b10">
 <title>Faces of The Foundery</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Oswald:wght@500;600;700&family=Press+Start+2P&display=swap');
 :root{--bg:#080b10;--panel:#111821;--line:rgba(255,255,255,.11);--text:#f7f2e8;--muted:#92a0af;--orange:#ff6a22;--gold:#f3ca6c}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;background:radial-gradient(900px 600px at 95% -10%,rgba(255,106,34,.15),transparent 60%),radial-gradient(700px 700px at -5% 45%,rgba(70,120,170,.11),transparent 60%),var(--bg);color:var(--text);font-family:Inter,sans-serif;min-height:100vh}
 body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:34px 34px;mask-image:linear-gradient(#000,transparent)}
@@ -109,12 +109,325 @@ button,.card{-webkit-tap-highlight-color:transparent}
 .fitnessLanes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.repBtn{height:105px;border:1px solid #33465c;border-radius:15px;background:#121c28;color:#fff;font-family:Oswald;font-size:25px}.repBtn.next{border-color:var(--a);background:color-mix(in srgb,var(--a) 14%,#121c28)}.repBar{height:10px;background:#0b1118;border:1px solid #28384b;border-radius:999px;overflow:hidden;margin-top:13px}.repBar i{display:block;height:100%;width:0;background:var(--a);transition:width .12s}
 @media(max-width:560px){.dualBoard{gap:8px}.station{padding:10px}.stationMeter{height:125px}.welcomeDoor,.needSpot{min-height:96px}.repBtn{height:90px}.volleyCourt,.cameraFrame{height:185px}}
 
+
+/* ===== FACES 16-BIT / SNES-INSPIRED ARCADE SKIN ===== */
+:root{
+  --px:#071a3a;--px2:#0b2b5a;--px3:#143f7d;--cream:#fff4d4;
+  --arcade-orange:#ff6b12;--arcade-gold:#ffc532;--arcade-blue:#43b9ff;
+  --arcade-green:#4fd267;--arcade-red:#e74b48;--ink:#050916;
+}
+html{background:#050916}
+body{
+  background:
+    linear-gradient(180deg,#071635 0,#102a62 20%,#7c3f79 42%,#ff7b35 58%,#14213c 59%,#061022 100%);
+  color:var(--cream);
+}
+body:before{
+  opacity:.95;
+  mask-image:none;
+  background:
+    radial-gradient(circle at 8% 9%,#fff 0 1px,transparent 2px),
+    radial-gradient(circle at 23% 5%,#ffd75e 0 1px,transparent 2px),
+    radial-gradient(circle at 71% 8%,#fff 0 1px,transparent 2px),
+    radial-gradient(circle at 92% 13%,#ffd75e 0 1px,transparent 2px),
+    linear-gradient(135deg,transparent 0 48%,rgba(255,255,255,.025) 49% 51%,transparent 52%) 0 0/12px 12px;
+}
+body:after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.10;
+  background:repeating-linear-gradient(180deg,rgba(255,255,255,.11) 0 1px,transparent 1px 4px);
+}
+.app{width:min(1240px,100%);padding-top:10px}
+.nav{
+  background:#071a3a;border:3px solid #8ad4ff;border-bottom-color:#2c7fc0;
+  box-shadow:0 4px 0 #020713,inset 0 0 0 3px #112f64;
+  padding:10px 12px;margin-top:6px;position:sticky;
+}
+.nav:after{display:none}
+.logo{
+  border-radius:2px;background:var(--arcade-orange);box-shadow:3px 3px 0 #7b2500,-2px -2px 0 #ffbf4c;
+  font-family:"Press Start 2P",monospace;font-size:17px;
+}
+.brand b,.seasonTag,.navpill,.eyebrow,.chip,.sectionHead p,.filterBtn,
+.state,.series,.mission,.playline b,.slot small,.foot,.gs,.hud span,.feedback,
+.pad,.bin,.ctop,.crole,.launchTop,.launchSeries,.missionCopy .micro,.startMission,
+.secondaryMission,.bigAction,.stageTab,.repBtn{
+  font-family:"Press Start 2P",monospace;
+}
+.brand b{font-size:13px;letter-spacing:0;text-shadow:2px 2px 0 #000}
+.seasonTag{color:#ffc532;font-size:6px;letter-spacing:.04em}
+.navpill{
+  border:2px solid #f7f1d1;border-radius:2px;background:#061530;color:#ffc532;
+  box-shadow:2px 2px 0 #000;padding:9px 10px;font-size:7px;
+}
+.navMeter,.binderMeter{border-radius:0;border:2px solid #061022;background:#173a66;height:8px}
+.navMeter i,.binderMeter i{background:linear-gradient(90deg,#ff6b12 0 35%,#ffc532 35% 70%,#4fd267 70%)}
+.hero{padding:38px 0 30px;position:relative}
+.heroGrid{align-items:stretch}
+.heroGrid>div:first-child{
+  border:4px solid #ffc532;background:
+    linear-gradient(180deg,rgba(5,15,40,.52),rgba(5,15,40,.88)),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.035) 0 6px,transparent 6px 12px);
+  box-shadow:0 6px 0 #52230b,inset 0 0 0 4px #112f64;padding:24px;
+}
+.eyebrow{color:#ffc532;font-size:8px;letter-spacing:0}.eyebrow:before{height:5px;width:26px;background:#ff6b12;box-shadow:0 4px 0 #782305}
+h1{
+  font-family:"Press Start 2P",monospace;font-size:clamp(38px,7vw,78px);line-height:1.04;
+  letter-spacing:-.06em;margin:18px 0 16px;color:#ff7a16;
+  text-shadow:4px 4px 0 #701d08,7px 7px 0 #050916;
+}
+h1 span{
+  color:#fff8dc;-webkit-text-stroke:0;
+  text-shadow:4px 4px 0 #1d6fb8,7px 7px 0 #050916;
+}
+.hero p{color:#fff3d6;font-size:12px;line-height:1.8}
+.chip{
+  border:2px solid #8ad4ff;border-radius:2px;background:#092656;color:#fff;padding:9px 10px;
+  box-shadow:2px 2px 0 #020713;font-size:6px;
+}
+.heroPanel{
+  border:4px solid #8ad4ff;border-radius:0;background:#071a3a;box-shadow:0 6px 0 #020713,inset 0 0 0 4px #173e72;
+}
+.heroPanel:before{border-radius:0;border-color:#ffc532;box-shadow:none}
+.heroPanel .panelKicker,.heroPanel .panelFoot{font-family:"Press Start 2P",monospace}
+.heroPanel .panelKicker{color:#ffc532;font-size:7px}
+.heroPanel .panelBig{font-family:"Press Start 2P",monospace;color:#ff7a16;text-shadow:3px 3px 0 #6e2109;font-size:52px}
+.heroPanel .panelBig span{font-size:9px;color:#fff}
+.heroPanel .panelFoot{font-size:6px;color:#8ad4ff}
+
+.sectionHead{align-items:center}
+.sectionHead h2{
+  font-family:"Press Start 2P",monospace;font-size:18px;color:#ffc532;text-shadow:3px 3px 0 #07122d;
+}
+.sectionHead p{font-size:6px;color:#d8e7ff}
+.filters{padding-bottom:16px}
+.filterBtn{
+  border:2px solid #6aa6d9;border-radius:2px;background:#0a2754;color:#c8d7ee;box-shadow:2px 2px 0 #020713;
+  padding:10px 11px;font-size:6px;
+}
+.filterBtn.active{border-color:#ffc532;background:#c84b10;color:#fff;box-shadow:2px 2px 0 #5e1d06}
+.grid{gap:12px}
+.card{
+  min-height:430px;border-radius:0;border:4px solid #8ad4ff;
+  background:#071a3a;box-shadow:0 5px 0 #020713,inset 0 0 0 3px #1d4d89;
+  transition:transform .12s;image-rendering:pixelated;
+}
+.card:hover{transform:translateY(-3px);border-color:#ffc532;box-shadow:0 7px 0 #020713,inset 0 0 0 3px #873c14}
+.card:after{display:none}
+.card:before{
+  background:
+    linear-gradient(180deg,transparent 0 60%,rgba(2,7,19,.86) 100%),
+    repeating-linear-gradient(0deg,transparent 0 7px,rgba(255,255,255,.03) 7px 8px),
+    linear-gradient(135deg,color-mix(in srgb,var(--a) 38%,#11285e),#071a3a);
+}
+.cardArt{height:258px;border-bottom:4px solid #020713}
+.cardArt:before{
+  width:150px;height:150px;border-radius:0;right:18px;top:54px;border:0;
+  background:
+    linear-gradient(#ffc532 0 0) 50% 8%/42px 8px no-repeat,
+    linear-gradient(#ffc532 0 0) 35% 16%/8px 32px no-repeat,
+    linear-gradient(#ffc532 0 0) 65% 16%/8px 32px no-repeat,
+    linear-gradient(#ff8a1d 0 0) 50% 46%/84px 8px no-repeat,
+    linear-gradient(#0a1b3e 0 0) 50% 74%/116px 44px no-repeat;
+  opacity:.25;box-shadow:none;
+}
+.cardArt:after{height:50%;background:linear-gradient(transparent,rgba(3,9,23,.96))}
+.series{font-size:6px;line-height:1.5}
+.cardNo{font-family:"Press Start 2P",monospace;font-size:7px;color:#ffc532}
+.mono{
+  right:14px;bottom:42px;font-family:"Press Start 2P",monospace;font-size:65px;opacity:.88;
+  color:#fff7d8;-webkit-text-stroke:0;text-shadow:5px 5px 0 color-mix(in srgb,var(--a) 60%,#020713),8px 8px 0 #020713;
+}
+.mission{font-size:6px;color:#ffc532;letter-spacing:0}.name{
+  font-family:"Press Start 2P",monospace;font-size:18px;line-height:1.25;letter-spacing:-.04em;text-shadow:3px 3px 0 #020713;
+}
+.body{background:#06142e;border-top:2px solid #2d69a2;padding:13px}
+.role{color:#e5eef9;font-size:9px;line-height:1.55;min-height:62px}
+.cardTag{font-size:8px;color:#85a8ce}
+.playline{border-top:2px solid #1c4f84}
+.playline b{font-size:6px;color:#ffc532}
+.arrow{
+  border-radius:0;border:2px solid #ffc532;background:#c84b10;color:#fff;box-shadow:2px 2px 0 #541800;
+}
+.state{
+  border:2px solid #d9eaff;border-radius:0;background:#071a3a;color:#fff;font-size:5px;box-shadow:2px 2px 0 #020713;
+}
+.card.owned .state{background:#145d2e;border-color:#6df18e;color:#fff}
+.binder{border-top:4px solid #173f76}
+.bindergrid{gap:8px}
+.slot{
+  border:3px dashed #456d9d;border-radius:0;background:#071a3a;box-shadow:0 3px 0 #020713;color:#718baa;
+}
+.slot.owned{border-style:solid;border-color:#ffc532;background:#0c2654;color:#fff1a9}
+.slot strong{font-family:"Press Start 2P",monospace;font-size:9px;line-height:1.4}
+.seal{border:2px solid currentColor;border-radius:0;font-family:"Press Start 2P",monospace;font-size:8px}
+
+.overlay{background:rgba(2,5,14,.96);backdrop-filter:none}
+.shell{
+  border-radius:0;border:5px solid #8ad4ff;background:#071a3a;
+  box-shadow:0 8px 0 #020713,inset 0 0 0 4px #173f76;max-width:820px;
+}
+.gamebar{
+  height:auto;min-height:70px;border-bottom:4px solid #020713;background:#082554;padding:12px;
+  box-shadow:inset 0 -3px 0 #1f5b9a;
+}
+.dot{border-radius:0;background:#ff6b12;box-shadow:3px 3px 0 #7a2304}
+.gt{font-family:"Press Start 2P",monospace;font-size:12px;color:#ffc532;text-shadow:2px 2px 0 #020713}
+.gs{font-size:6px;color:#d6e9ff;line-height:1.6}
+.close{border-radius:0;border:3px solid #ffd3c8;background:#b62d29;box-shadow:3px 3px 0 #55100d;color:#fff}
+.stage{padding:16px;background:
+  repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 3px,transparent 3px 6px),#06142e;
+}
+.intro{border:3px solid #2f6fa9;background:#0a2754;padding:12px;align-items:center}
+.intro h3{
+  font-family:"Press Start 2P",monospace;font-size:17px;line-height:1.35;color:#ffc532;text-shadow:2px 2px 0 #020713;
+}
+.intro p{font-family:Inter,sans-serif;color:#edf5ff;font-size:11px}
+.hud{gap:6px}
+.hud span{
+  border:3px solid #8ad4ff;border-radius:0;background:#071a3a;box-shadow:0 3px 0 #020713;
+  color:#fff;font-size:7px;padding:10px 11px;
+}
+.hud b{color:#ffc532}
+.feedback{
+  border:2px solid #315a84;background:#071a3a;padding:10px;min-height:46px;color:#dcecff;font-size:6px;line-height:1.7;
+}
+.feedback.good{color:#6df18e;border-color:#3fa35b;background:#092b19}
+.feedback.bad{color:#ff8f83;border-color:#b73c36;background:#381211}
+.arena,.arcadeFrame{
+  border-radius:0;border:4px solid #8ad4ff;background:#06142e;box-shadow:0 5px 0 #020713,inset 0 0 0 3px #143f7d;
+}
+.display{
+  border-radius:0;border:3px solid #264f83;background:
+    radial-gradient(circle at 50% 50%,color-mix(in srgb,var(--a) 28%,transparent),transparent 52%),#030a18;
+}
+.display b,.monitor b{font-family:"Press Start 2P",monospace;font-size:24px;color:#fff4d4;text-shadow:3px 3px 0 #020713}
+.pads{gap:8px}
+.pad,.bin,.ctrl,.dpad button,.station button,.welcomeDoor,.needSpot,.fixSpot{
+  border-radius:0!important;border:3px solid #8ad4ff!important;background:#0c2a58!important;color:#fff!important;
+  box-shadow:0 4px 0 #020713!important;text-shadow:2px 2px 0 #020713;
+}
+.pad,.bin{font-size:7px;line-height:1.5}
+.pad:active,.bin:active,.ctrl:active,.dpad button:active,.bigAction:active,.startMission:active,.secondaryMission:active{
+  transform:translateY(3px);box-shadow:0 1px 0 #020713!important;
+}
+.pad.live,.needSpot.live,.fixSpot.live{
+  background:#c84b10!important;border-color:#ffc532!important;box-shadow:0 4px 0 #631e06!important;
+}
+.pad.good,.bin.good{background:#17682f!important;border-color:#6df18e!important}
+.pad.bad,.bin.bad{background:#7d211f!important;border-color:#ff8d7e!important}
+.trailwrap{
+  border-radius:0;border:4px solid #8ad4ff;box-shadow:0 5px 0 #020713;background:#06142e;
+}
+.trailwrap canvas,.arcadeCanvas{image-rendering:pixelated}
+.controls{gap:8px}.ctrl{font-family:"Press Start 2P",monospace}
+.conveyor{
+  border-radius:0;border:4px solid #8ad4ff;background:
+    repeating-linear-gradient(90deg,#9a622e 0 32px,#6d3f1f 32px 38px);box-shadow:0 4px 0 #020713;
+}
+.conveyor:before{
+  content:"";position:absolute;left:0;right:0;top:0;height:60px;
+  background:linear-gradient(#143f7d 0 0) 0 0/100% 16px no-repeat,
+  repeating-linear-gradient(90deg,#223861 0 24px,#172744 24px 48px);
+}
+.item{
+  border-radius:0;border:3px solid #ffc532;background:#082554;box-shadow:4px 4px 0 #020713;
+}
+.item b{font-family:"Press Start 2P",monospace;font-size:28px;color:#ffc532}
+.item small{font-family:"Press Start 2P",monospace;font-size:7px;line-height:1.5}
+.bins{border-radius:0;border:4px solid #8ad4ff;border-top:0;background:#06142e}
+.monitor{border-radius:0;border:4px solid #8ad4ff;background:#020713;box-shadow:inset 0 0 0 4px #143f7d}
+.monitor:before{background:repeating-linear-gradient(180deg,rgba(67,185,255,.09) 0 2px,transparent 2px 6px)}
+.bridgeTrack{border-radius:0;border:3px solid #8ad4ff;background:#020713;box-shadow:0 4px 0 #020713}
+.bridgeTarget{border-radius:0;background:#17682f;border:3px solid #6df18e}
+.bridgeNeedle{border-radius:0;background:#ffc532;box-shadow:3px 3px 0 #7e5200}
+.bridgePlank{border-radius:0;border:3px dashed #456d9d;background:#06142e}
+.bridgePlank.on{border-style:solid;border-color:#6df18e;background:#17682f}
+.bigAction,.startMission{
+  border-radius:0;border:3px solid #ffe7a3;background:#dc4f0c!important;box-shadow:0 5px 0 #6d1d03!important;
+  font-size:8px;text-shadow:2px 2px 0 #6d1d03;
+}
+.secondaryMission{
+  border-radius:0;border:3px solid #9acdf8;background:#154986;color:#fff;box-shadow:0 5px 0 #061b35;font-size:8px;
+}
+.dualBoard{gap:8px}
+.station{
+  border-radius:0;border:4px solid #8ad4ff;background:#071a3a;box-shadow:0 5px 0 #020713;
+}
+.station h4{font-family:"Press Start 2P",monospace;font-size:12px;color:#ffc532}
+.stationMeter{border-radius:0;border:3px solid #020713;background:#132b51}
+.stationFill{background:repeating-linear-gradient(0deg,#4fd267 0 12px,#2c9f48 12px 16px)}
+.stageTabs{gap:5px}.stageTab{border-radius:0;border:2px solid #456d9d;background:#071a3a;font-size:6px}
+.stageTab.live{border-color:#ffc532;background:#c84b10}
+.volleyCourt{
+  border-radius:0;border:4px solid #8ad4ff;background:
+    repeating-linear-gradient(90deg,transparent 0 59px,rgba(255,255,255,.16) 59px 62px),
+    linear-gradient(180deg,#173f76 0 34%,#d48736 34% 100%);
+  box-shadow:0 5px 0 #020713;
+}
+.volleyCourt:before{
+  content:"";position:absolute;left:0;right:0;top:8px;height:38px;
+  background:repeating-linear-gradient(90deg,#f5c44e 0 7px,#e55342 7px 14px,#43b9ff 14px 21px,#79c95b 21px 28px);
+  opacity:.75;
+}
+.volleyNet{height:5px;background:#fff;box-shadow:0 3px 0 #1d3d66}
+.volleyBall{border-radius:0;width:30px;height:30px;background:
+  linear-gradient(45deg,#fff 0 40%,#4f9fea 40% 60%,#fff 60%);border:3px solid #071a3a;image-rendering:pixelated}
+.cameraFrame{border-radius:0;border:4px solid #8ad4ff;background:
+  linear-gradient(rgba(40,80,110,.24) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(40,80,110,.24) 1px,transparent 1px),#020713;
+  background-size:20px 20px;
+}
+.cameraTarget,.cameraBox{border-radius:0}
+.fixGrid{gap:6px}
+.welcomeGrid,.kidsGrid{gap:8px}
+.welcomeDoor,.needSpot{font-family:"Press Start 2P",monospace}
+.welcomeDoor b{font-family:"Press Start 2P",monospace;font-size:8px;color:#b8d5f5}
+.welcomeDoor .guest{
+  border-radius:0;border:3px solid #ffc532;background:#c84b10;font-family:"Press Start 2P",monospace;font-size:12px;
+  box-shadow:inset 0 0 0 3px #6d1d03;
+}
+.repBtn{border-radius:0;border:3px solid #8ad4ff;background:#0c2a58;box-shadow:0 4px 0 #020713;font-size:12px}
+.repBtn.next{border-color:#ffc532;background:#c84b10}
+.repBar{border-radius:0;border:3px solid #020713;height:14px;background:#132b51}
+.repBar i{background:repeating-linear-gradient(90deg,#ff6b12 0 18px,#ffc532 18px 22px)}
+.missionSplash{background:#06142e;border:3px solid #143f7d;padding:24px}
+.launchCard{
+  border-radius:0;padding:8px;background:#ffc532;box-shadow:7px 7px 0 #020713;transform:none;
+}
+.launchCardIn{border-radius:0;border:4px solid #071a3a;background:
+  linear-gradient(180deg,color-mix(in srgb,var(--a) 65%,#173f76),#06142e 72%);padding:14px}
+.launchGlyph{
+  font-family:"Press Start 2P",monospace;font-size:72px;color:#fff4d4;-webkit-text-stroke:0;text-shadow:5px 5px 0 #020713;
+}
+.launchName{font-family:"Press Start 2P",monospace;font-size:18px;line-height:1.35;text-shadow:3px 3px 0 #020713}
+.missionCopy h3{font-family:"Press Start 2P",monospace;font-size:28px;line-height:1.35;color:#ffc532;text-shadow:3px 3px 0 #020713}
+.missionCopy p{color:#edf5ff}
+.collect{
+  border-radius:0;background:#ffc532;padding:8px;box-shadow:8px 8px 0 #020713,0 0 0 5px #ff7a16;transform:none;
+}
+.collectin{border-radius:0;border:4px solid #071a3a;background:linear-gradient(180deg,color-mix(in srgb,var(--a) 45%,#173f76),#06142e)}
+.cglyph{font-family:"Press Start 2P",monospace;font-size:70px;color:#fff4d4;-webkit-text-stroke:0;text-shadow:5px 5px 0 #020713}
+.cname{font-family:"Press Start 2P",monospace;font-size:19px;line-height:1.35}
+.reveal h4{font-family:"Press Start 2P",monospace;color:#ffc532;font-size:17px;text-shadow:3px 3px 0 #020713}
+.done{border-radius:0;border:3px solid #ffe7a3;background:#dc4f0c;box-shadow:0 5px 0 #6d1d03;font-family:"Press Start 2P",monospace;font-size:7px;color:#fff}
+@media(max-width:560px){
+  .app{padding-left:8px;padding-right:8px}
+  .nav{border-width:2px}.brand b{font-size:9px}.seasonTag{font-size:5px}.navProgressWrap{min-width:103px}
+  .heroGrid>div:first-child{padding:16px;border-width:3px}h1{font-size:32px;line-height:1.18;text-shadow:3px 3px 0 #701d08,5px 5px 0 #050916}
+  h1 span{text-shadow:3px 3px 0 #1d6fb8,5px 5px 0 #050916}.hero p{font-size:11px}
+  .grid{gap:8px}.card{min-height:340px;border-width:3px}.cardArt{height:205px}.mono{font-size:42px}.name{font-size:11px}.role{font-size:7px;min-height:64px}.series{font-size:5px}
+  .sectionHead h2{font-size:13px}.sectionHead p{font-size:5px}.filterBtn{font-size:5px;padding:8px}
+  .shell{border-width:3px}.stage{padding:10px}.intro{display:block;padding:10px}.intro h3{font-size:13px}.intro p{margin-top:8px}
+  .hud span{font-size:6px;padding:8px}.feedback{font-size:5px}
+  .missionSplash{padding:14px}.launchCard{width:150px}.launchGlyph{font-size:48px}.launchName{font-size:10px}.missionCopy h3{font-size:18px}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
 <div class="nav"><div class="brand"><div class="logo">F</div><div><b>Faces of The Foundery</b><span class="seasonTag">Season 01 • Interactive Collection</span></div></div><div class="navProgressWrap"><div class="navpill"><span id="count">0</span>/<span id="total">16</span> COLLECTED</div><div class="navMeter"><i id="navFill"></i></div></div></div>
-<section class="hero"><div class="heroGrid"><div><div class="eyebrow">Season 01 • The church is people</div><h1>MEET THE PEOPLE<br><span>BEHIND THE MISSION.</span></h1><p>Sixteen stories of people who show up, serve, lead, build, welcome, coach, create, care and keep The Foundery moving. Scan a physical card, play their mission, and add them to your digital collection.</p><div class="chips"><div class="chip">16 COLLECTIBLES</div><div class="chip">QR TO PLAY</div><div class="chip">NO APP REQUIRED</div><div class="chip">PROGRESS SAVED</div></div></div><aside class="heroPanel"><div class="panelKicker">Foundery Collection</div><div class="panelBig">16<br><span>PEOPLE + FAMILIES</span></div><div class="panelFoot"><span>SEASON 01</span><span>ONE CHURCH</span></div></aside></div></section>
+<section class="hero"><div class="heroGrid"><div><div class="eyebrow">Season 01 • 16-Bit Edition</div><h1>FACES OF<br><span>THE FOUNDERY</span></h1><p>One church. Sixteen playable stories. Choose a mission, step into a retro mini-game inspired by how each person serves, and unlock their collectible card.</p><div class="chips"><div class="chip">PRESS START</div><div class="chip">16 MISSIONS</div><div class="chip">QR TO PLAY</div><div class="chip">COLLECT THEM ALL</div></div></div><aside class="heroPanel"><div class="panelKicker">Player Select</div><div class="panelBig">16<br><span>MISSIONS LOADED</span></div><div class="panelFoot"><span>SEASON 01</span><span>READY!</span></div></aside></div></section>
 <div class="sectionHead"><div><h2>Choose a mission</h2><p>Every person has a different game.</p></div><p id="progress">0 OF 16 COMPLETE</p></div><div class="filters"><button class="filterBtn active" data-filter="all">All 16</button><button class="filterBtn" data-filter="leadership">Leadership</button><button class="filterBtn" data-filter="kids">Kids</button><button class="filterBtn" data-filter="hospitality">Hospitality</button><button class="filterBtn" data-filter="sports">Sports</button><button class="filterBtn" data-filter="outreach">Outreach</button><button class="filterBtn" data-filter="behind">Behind the Scenes</button></div>
 <div class="grid" id="grid"></div>
 <section class="binder"><div class="sectionHead"><div><h2>Your Foundery Binder</h2><p>Complete missions to fill the collection.</p></div></div><div class="binderMeter"><i id="binderFill"></i></div><div class="bindergrid" id="binder"></div></section>
@@ -169,7 +482,7 @@ function closeGame(hide){if(cleanup){cleanup();cleanup=null}if(hide!==false){doc
 document.getElementById("close").onclick=function(){closeGame(true)};
 function unlock(id,stats){
 if(cleanup){cleanup();cleanup=null}var p=PEOPLE[id],first=!owned.has(id);owned.add(id);save();var n=Object.keys(PEOPLE).indexOf(id)+1,box=document.createElement("div");box.className="reveal";
-box.innerHTML='<div class="revealin"><div class="collect" style="--a:'+p.accent+'"><div class="collectin"><div class="ctop"><span>FACES OF THE FOUNDERY</span><span>#'+String(n).padStart(2,"0")+'</span></div><div class="cglyph">'+p.glyph+'</div><div><div class="cname">'+p.name+'</div><div class="crole">'+p.role+'</div></div></div></div><h4>'+(first?"Card unlocked":"Mission complete")+'</h4><p>'+stats+'. '+(first?"This collectible is now saved in your Foundery Binder.":"Your card remains in your collection.")+'</p><button class="done">BACK TO COLLECTION</button></div>';
+box.innerHTML='<div class="revealin"><div class="collect" style="--a:'+p.accent+'"><div class="collectin"><div class="ctop"><span>FACES OF THE FOUNDERY</span><span>#'+String(n).padStart(2,"0")+'</span></div><div class="cglyph">'+p.glyph+'</div><div><div class="cname">'+p.name+'</div><div class="crole">'+p.role+'</div></div></div></div><h4>'+(first?"CARD UNLOCKED!":"STAGE CLEAR!")+'</h4><p>'+stats+'. '+(first?"This collectible is now saved in your Foundery Binder.":"Your card remains in your collection.")+'</p><button class="done">BACK TO COLLECTION</button></div>';
 for(var i=0;i<22;i++){var cf=document.createElement("i");cf.className="confettiPiece";cf.style.setProperty("--x",(Math.random()*100)+"%");cf.style.setProperty("--delay",(Math.random()*.45)+"s");cf.style.setProperty("--dur",(1.8+Math.random()*1.2)+"s");cf.style.setProperty("--rot",(Math.random()*180)+"deg");cf.style.setProperty("--c",i%3===0?p.accent:(i%3===1?"#f3ca6c":"#f7f2e8"));box.appendChild(cf)}
 box.querySelector(".done").onclick=function(){closeGame(true)};document.getElementById("stage").appendChild(box)
 }
@@ -179,11 +492,56 @@ function gameJacy(id){var body=head(id,"Kloset Rush","A donation rush just came 
 function gameSidney(id){var body=head(id,"Control Room","Hit the live production cue before the timing window closes. Twelve cues. Speed increases as you go.");var cues=["CAMERA","LYRICS","AUDIO","STREAM"],round=0,score=0,combo=0,active=-1,locked=true,dead=false,timer=null,start=0;body.innerHTML='<div class="hud"><span>CUE <b id="sr">1/12</b></span><span>SCORE <b id="ss">0</b></span><span>COMBO <b id="sc">0</b></span></div><div class="arena"><div class="monitor"><b id="cue">STANDBY</b></div><div class="pads" id="cpads"></div></div><div class="feedback" id="sf">Watch the monitor.</div>';var pads=body.querySelector("#cpads");cues.forEach(function(x,i){var btn=document.createElement("button");btn.className="pad";btn.textContent=x;btn.onclick=function(){hit(i,btn)};pads.appendChild(btn)});function next(){if(dead)return;if(round>=12){unlock(id,"Control Room complete with "+score+" points");return}locked=false;active=Math.floor(Math.random()*4);start=performance.now();Array.from(pads.children).forEach(function(p,i){p.classList.toggle("live",i===active)});body.querySelector("#cue").textContent="GO "+cues[active];body.querySelector("#sr").textContent=(round+1)+"/12";var win=Math.max(600,1050-round*25);timer=setTimeout(function(){resolve(false,null)},win)}function hit(i,btn){if(locked)return;resolve(i===active,btn)}function resolve(ok,btn){if(locked||dead)return;locked=true;clearTimeout(timer);Array.from(pads.children).forEach(function(p){p.classList.remove("live")});var fb=body.querySelector("#sf");if(ok){var react=Math.round(performance.now()-start);combo++;score+=react<350?250:150;btn.classList.add("good");setTimeout(function(){btn.classList.remove("good")},190);fb.className="feedback good";fb.textContent=(react<350?"PERFECT":"CLEAN")+" — "+react+"MS"}else{combo=0;if(btn){btn.classList.add("bad");setTimeout(function(){btn.classList.remove("bad")},190)}fb.className="feedback bad";fb.textContent=btn?"WRONG CUE — RECOVER":"MISSED WINDOW — RESET"}body.querySelector("#ss").textContent=score;body.querySelector("#sc").textContent=combo;round++;body.querySelector("#cue").textContent="STANDBY";setTimeout(next,430)}cleanup=function(){dead=true;clearTimeout(timer)};setTimeout(next,700)}
 
 
-function gameVisit(id){var body=head(id,"Visitation Run","Move through the neighborhood and reach all five glowing stops before time runs out.");body.innerHTML='<div class="hud"><span>VISITS <b id="vv">0/5</b></span><span>TIME <b id="vt">35</b></span></div><div class="arcadeFrame"><canvas id="vc" class="arcadeCanvas" width="420" height="420"></canvas></div><div class="dpad"><button class="up">↑</button><button class="left">←</button><button class="down">↓</button><button class="right">→</button></div><div class="feedback">Visit all five glowing stops.</div>';var c=body.querySelector("#vc"),ctx=c.getContext("2d"),cell=60,px=0,py=6,stops=[[1,5],[5,5],[3,3],[1,1],[5,1]],blocks=[[2,5],[2,4],[4,4],[4,3],[2,2],[3,2],[4,2]],count=0,time=35,dead=false,tick;function draw(){ctx.fillStyle="#0c141b";ctx.fillRect(0,0,420,420);ctx.strokeStyle="#26384a";for(var i=0;i<=7;i++){ctx.beginPath();ctx.moveTo(i*cell,0);ctx.lineTo(i*cell,420);ctx.stroke();ctx.beginPath();ctx.moveTo(0,i*cell);ctx.lineTo(420,i*cell);ctx.stroke()}blocks.forEach(function(b){ctx.fillStyle="#303943";ctx.fillRect(b[0]*cell+8,b[1]*cell+8,44,44)});stops.forEach(function(v){ctx.fillStyle="#f25b45";ctx.beginPath();ctx.arc(v[0]*cell+30,v[1]*cell+30,12,0,Math.PI*2);ctx.fill()});ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(px*cell+30,py*cell+30,15,0,Math.PI*2);ctx.fill()}function move(dx,dy){if(dead)return;var nx=px+dx,ny=py+dy;if(nx<0||ny<0||nx>6||ny>6||blocks.some(function(b){return b[0]===nx&&b[1]===ny}))return;px=nx;py=ny;for(var i=stops.length-1;i>=0;i--){if(stops[i][0]===px&&stops[i][1]===py){stops.splice(i,1);count++;body.querySelector("#vv").textContent=count+"/5";if(count===5){dead=true;clearInterval(tick);setTimeout(function(){unlock(id,"All five visitation stops completed with "+time+" seconds left")},300)}}}draw()}body.querySelector(".up").onclick=function(){move(0,-1)};body.querySelector(".down").onclick=function(){move(0,1)};body.querySelector(".left").onclick=function(){move(-1,0)};body.querySelector(".right").onclick=function(){move(1,0)};tick=setInterval(function(){time--;body.querySelector("#vt").textContent=time;if(time<=0&&!dead){dead=true;clearInterval(tick);setTimeout(function(){gameVisit(id)},600)}},1000);cleanup=function(){dead=true;clearInterval(tick)};draw()}
+function gameVisit(id){var body=head(id,"Visitation Run","Move through the neighborhood and reach all five glowing stops before time runs out.");body.innerHTML='<div class="hud"><span>VISITS <b id="vv">0/5</b></span><span>TIME <b id="vt">35</b></span></div><div class="arcadeFrame"><canvas id="vc" class="arcadeCanvas" width="420" height="420"></canvas></div><div class="dpad"><button class="up">↑</button><button class="left">←</button><button class="down">↓</button><button class="right">→</button></div><div class="feedback">Visit all five glowing stops.</div>';var c=body.querySelector("#vc"),ctx=c.getContext("2d"),cell=60,px=0,py=6,stops=[[1,5],[5,5],[3,3],[1,1],[5,1]],blocks=[[2,5],[2,4],[4,4],[4,3],[2,2],[3,2],[4,2]],count=0,time=35,dead=false,tick;function draw(){
+ctx.imageSmoothingEnabled=false;
+ctx.fillStyle="#67b85a";ctx.fillRect(0,0,420,420);
+for(var gy=0;gy<7;gy++){for(var gx=0;gx<7;gx++){
+ var road=(gx===3||gy===3);
+ ctx.fillStyle=road?"#8d949a":((gx+gy)%2?"#63ad52":"#74c45f");
+ ctx.fillRect(gx*cell,gy*cell,cell,cell);
+ if(road){ctx.fillStyle="#d8d2a2";if(gx===3)ctx.fillRect(gx*cell+28,gy*cell,4,14);if(gy===3)ctx.fillRect(gx*cell,gy*cell+28,14,4)}
+}}
+blocks.forEach(function(b){
+ var bx=b[0]*cell,by=b[1]*cell;
+ ctx.fillStyle="#a64c36";ctx.fillRect(bx+8,by+20,44,30);
+ ctx.fillStyle="#6e2d2a";ctx.fillRect(bx+4,by+12,52,12);
+ ctx.fillStyle="#f1d18a";ctx.fillRect(bx+18,by+30,10,20);
+ ctx.fillStyle="#4a86b8";ctx.fillRect(bx+34,by+28,10,9);
+ ctx.fillStyle="#2f713e";ctx.fillRect(bx+2,by+42,9,12);ctx.fillRect(bx+49,by+40,8,14);
+});
+stops.forEach(function(v){
+ var sx=v[0]*cell+30,sy=v[1]*cell+30;
+ ctx.fillStyle="#fff3c4";ctx.fillRect(sx-8,sy-16,16,16);
+ ctx.fillStyle="#e64b3c";ctx.fillRect(sx-3,sy-13,6,10);ctx.fillRect(sx-6,sy-10,12,4);
+ ctx.fillStyle="#ffc532";ctx.fillRect(sx-3,sy+3,6,6);
+});
+var ox=px*cell+30,oy=py*cell+30;
+ctx.fillStyle="#162a4e";ctx.fillRect(ox-9,oy-8,18,19);
+ctx.fillStyle="#f0b078";ctx.fillRect(ox-7,oy-18,14,10);
+ctx.fillStyle="#11182b";ctx.fillRect(ox-10,oy-22,20,5);
+ctx.fillStyle="#ff6b12";ctx.fillRect(ox-11,oy+10,8,9);ctx.fillRect(ox+3,oy+10,8,9);
+}function move(dx,dy){if(dead)return;var nx=px+dx,ny=py+dy;if(nx<0||ny<0||nx>6||ny>6||blocks.some(function(b){return b[0]===nx&&b[1]===ny}))return;px=nx;py=ny;for(var i=stops.length-1;i>=0;i--){if(stops[i][0]===px&&stops[i][1]===py){stops.splice(i,1);count++;body.querySelector("#vv").textContent=count+"/5";if(count===5){dead=true;clearInterval(tick);setTimeout(function(){unlock(id,"All five visitation stops completed with "+time+" seconds left")},300)}}}draw()}body.querySelector(".up").onclick=function(){move(0,-1)};body.querySelector(".down").onclick=function(){move(0,1)};body.querySelector(".left").onclick=function(){move(-1,0)};body.querySelector(".right").onclick=function(){move(1,0)};tick=setInterval(function(){time--;body.querySelector("#vt").textContent=time;if(time<=0&&!dead){dead=true;clearInterval(tick);setTimeout(function(){gameVisit(id)},600)}},1000);cleanup=function(){dead=true;clearInterval(tick)};draw()}
 function gameBridge(id){var body=head(id,"Build the Bridge","Time six connections as the moving marker passes through the green window.");body.innerHTML='<div class="hud"><span>PLANKS <b id="bp">0/6</b></span><span>STREAK <b id="bs">0</b></span></div><div class="arena"><div class="bridgeTrack"><div class="bridgeTarget" id="bt"></div><div class="bridgeNeedle" id="bn"></div></div><button class="bigAction" id="connect">CONNECT</button><div class="bridgeDeck" id="bd"></div></div><div class="feedback" id="bf">Time the connection.</div>';var needle=body.querySelector("#bn"),target=body.querySelector("#bt"),deck=body.querySelector("#bd"),pos=0,dir=1,placed=0,streak=0,left=40,width=16,dead=false,raf;for(var i=0;i<6;i++){var d=document.createElement("div");d.className="bridgePlank";d.textContent="•";deck.appendChild(d)}function tgt(){left=15+Math.random()*58;width=Math.max(10,17-placed);target.style.left=left+"%";target.style.width=width+"%"}function anim(){if(dead)return;pos+=dir*(1.3+placed*.18);if(pos>=94){pos=94;dir=-1}if(pos<=0){pos=0;dir=1}needle.style.left=pos+"%";raf=requestAnimationFrame(anim)}body.querySelector("#connect").onclick=function(){var ok=pos+3>=left&&pos+3<=left+width,fb=body.querySelector("#bf");if(ok){deck.children[placed].classList.add("on");deck.children[placed].textContent="✓";placed++;streak++;body.querySelector("#bp").textContent=placed+"/6";body.querySelector("#bs").textContent=streak;fb.className="feedback good";fb.textContent="CONNECTED";if(placed===6){dead=true;cancelAnimationFrame(raf);setTimeout(function(){unlock(id,"Bridge completed")},300)}else tgt()}else{streak=0;body.querySelector("#bs").textContent=0;fb.className="feedback bad";fb.textContent="MISSED — TRY AGAIN"}};cleanup=function(){dead=true;cancelAnimationFrame(raf)};tgt();anim()}
 function gameDual(id){var body=head(id,"Sunday Starts Here","Keep both Books and Welcome out of the red for 28 seconds.");body.innerHTML='<div class="hud"><span>TIME <b id="dt">28</b></span><span>SCORE <b id="ds">0</b></span></div><div class="dualBoard"><div class="station"><h4>Books</h4><div class="stationMeter"><div class="stationFill" id="books"></div></div><button id="balance">RECONCILE</button></div><div class="station"><h4>Welcome</h4><div class="stationMeter"><div class="stationFill" id="welcome"></div></div><button id="greet">GREET</button></div></div>';var a=78,b=72,time=28,score=0,dead=false,tick;function paint(){var x=body.querySelector("#books"),y=body.querySelector("#welcome");x.style.height=Math.max(0,a)+"%";y.style.height=Math.max(0,b)+"%";x.className="stationFill"+(a<25?" danger":a<45?" warn":"");y.className="stationFill"+(b<25?" danger":b<45?" warn":"")}body.querySelector("#balance").onclick=function(){a=Math.min(100,a+19);b-=3;score+=60;body.querySelector("#ds").textContent=score;paint()};body.querySelector("#greet").onclick=function(){b=Math.min(100,b+20);a-=2;score+=60;body.querySelector("#ds").textContent=score;paint()};tick=setInterval(function(){a-=2.5+Math.random()*2.7;b-=3+Math.random()*3.2;time--;body.querySelector("#dt").textContent=time;paint();if(a<=0||b<=0){dead=true;clearInterval(tick);setTimeout(function(){gameDual(id)},600)}else if(time<=0){dead=true;clearInterval(tick);unlock(id,"Both Sunday systems stayed healthy — "+score+" points")}},1000);cleanup=function(){dead=true;clearInterval(tick)};paint()}
 function gameParr(id){var body=head(id,"Keep The Foundery Moving","Three stages: volleyball, camera, then building care.");body.innerHTML='<div class="hud"><span>STAGE <b id="ps">1/3</b></span><span>SCORE <b id="psc">0</b></span></div><div class="stageTabs"><div class="stageTab live">Volleyball</div><div class="stageTab">Camera</div><div class="stageTab">Building</div></div><div id="pstage"></div>';var box=body.querySelector("#pstage"),tabs=body.querySelectorAll(".stageTab"),score=0,dead=false,raf,timer;function tab(n){tabs.forEach(function(t,i){t.classList.toggle("live",i===n)});body.querySelector("#ps").textContent=(n+1)+"/3"}function volley(){tab(0);var hits=0,x=8,dir=1,y=18;box.innerHTML='<div class="volleyCourt"><div class="volleyNet"></div><div class="volleyBall" id="vb"></div></div><button class="bigAction" id="bump">BUMP</button>';var ball=box.querySelector("#vb");function a(){if(dead)return;x+=dir*1.35;if(x>87){x=87;dir=-1}if(x<7){x=7;dir=1}y=18+Math.abs(Math.sin(x/11))*46;ball.style.left=x+"%";ball.style.top=y+"%";raf=requestAnimationFrame(a)}box.querySelector("#bump").onclick=function(){if(y>48){hits++;score+=100;body.querySelector("#psc").textContent=score;if(hits>=4){cancelAnimationFrame(raf);setTimeout(camera,250)}}};a()}function camera(){tab(1);var done=0,tx=0,ty=0;box.innerHTML='<div class="cameraFrame"><div class="cameraTarget" id="ct"></div><div class="cameraBox"></div></div><button class="bigAction" id="frame">FRAME SHOT</button>';var t=box.querySelector("#ct");function move(){tx=10+Math.random()*75;ty=8+Math.random()*60;t.style.left=tx+"%";t.style.top=ty+"%"}move();box.querySelector("#frame").onclick=function(){if(tx>35&&tx<58&&ty>28&&ty<53){done++;score+=150;body.querySelector("#psc").textContent=score;if(done>=3){setTimeout(fixes,250);return}}move()}}function fixes(){tab(2);var fixed=0,active=-1;box.innerHTML='<div class="fixGrid" id="fg"></div>';var fg=box.querySelector("#fg");for(var i=0;i<9;i++){var b=document.createElement("button");b.className="fixSpot";b.textContent="•";b.dataset.i=i;b.onclick=function(){if(+this.dataset.i===active){this.classList.remove("live");this.textContent="✓";fixed++;score+=120;body.querySelector("#psc").textContent=score;active=-1;if(fixed>=5){clearTimeout(timer);setTimeout(function(){unlock(id,"All three Parr family challenges completed — "+score+" points")},300)}else setTimeout(spawn,180)}};fg.appendChild(b)}function spawn(){if(dead||fixed>=5)return;active=Math.floor(Math.random()*9);fg.children[active].classList.add("live");fg.children[active].textContent="!";timer=setTimeout(function(){if(active>=0){fg.children[active].classList.remove("live");fg.children[active].textContent="•";active=-1;spawn()}},1000)}spawn()}cleanup=function(){dead=true;if(raf)cancelAnimationFrame(raf);if(timer)clearTimeout(timer)};volley()}
-function gameCookies(id){var body=head(id,"Cookie Crew","Move the tray and catch 12 cookies before five hit the floor.");body.innerHTML='<div class="hud"><span>CAUGHT <b id="cc">0/12</b></span><span>MISSED <b id="cm">0/5</b></span></div><div class="arcadeFrame"><canvas id="cookie" class="arcadeCanvas" width="420" height="460"></canvas></div><div class="controls"><button class="ctrl" id="cl">←</button><button class="ctrl" id="cr">→</button></div>';var c=body.querySelector("#cookie"),ctx=c.getContext("2d"),tray=170,v=0,arr=[],caught=0,missed=0,dead=false,last=performance.now(),spawn=0,raf;function draw(){ctx.fillStyle="#17110c";ctx.fillRect(0,0,420,460);arr.forEach(function(o){ctx.fillStyle="#c98542";ctx.beginPath();ctx.arc(o.x,o.y,13,0,Math.PI*2);ctx.fill()});ctx.fillStyle="#d7dce0";ctx.fillRect(tray,405,92,12)}function step(now){if(dead)return;var dt=Math.min(32,now-last);last=now;tray+=v*dt*.22;v*=.9;tray=Math.max(4,Math.min(324,tray));spawn+=dt;if(spawn>620){spawn=0;arr.push({x:20+Math.random()*380,y:-15,s:2.7+Math.random()*1.7})}arr.forEach(function(o){o.y+=o.s*dt*.075});arr=arr.filter(function(o){if(o.y>398&&o.y<430&&o.x>tray-3&&o.x<tray+95){caught++;body.querySelector("#cc").textContent=caught+"/12";if(caught>=12){dead=true;setTimeout(function(){unlock(id,"Cookie Crew complete — 12 cookies served")},300)}return false}if(o.y>470){missed++;body.querySelector("#cm").textContent=missed+"/5";if(missed>=5){dead=true;setTimeout(function(){gameCookies(id)},600)}return false}return true});draw();if(!dead)raf=requestAnimationFrame(step)}body.querySelector("#cl").onpointerdown=function(){v-=2.2};body.querySelector("#cr").onpointerdown=function(){v+=2.2};cleanup=function(){dead=true;if(raf)cancelAnimationFrame(raf)};raf=requestAnimationFrame(step)}
+function gameCookies(id){var body=head(id,"Cookie Crew","Move the tray and catch 12 cookies before five hit the floor.");body.innerHTML='<div class="hud"><span>CAUGHT <b id="cc">0/12</b></span><span>MISSED <b id="cm">0/5</b></span></div><div class="arcadeFrame"><canvas id="cookie" class="arcadeCanvas" width="420" height="460"></canvas></div><div class="controls"><button class="ctrl" id="cl">←</button><button class="ctrl" id="cr">→</button></div>';var c=body.querySelector("#cookie"),ctx=c.getContext("2d"),tray=170,v=0,arr=[],caught=0,missed=0,dead=false,last=performance.now(),spawn=0,raf;function draw(){
+ctx.imageSmoothingEnabled=false;
+ctx.fillStyle="#6b3f2a";ctx.fillRect(0,0,420,460);
+ctx.fillStyle="#8d5b38";for(var yy=0;yy<360;yy+=40){for(var xx=(yy/40%2)*20;xx<420;xx+=40){ctx.fillRect(xx,yy,36,36)}}
+ctx.fillStyle="#163c68";ctx.fillRect(0,0,420,48);
+ctx.fillStyle="#ffc532";ctx.fillRect(0,44,420,4);
+ctx.fillStyle="#efe1c0";ctx.fillRect(0,355,420,105);
+ctx.fillStyle="#d3b889";ctx.fillRect(0,370,420,8);
+arr.forEach(function(o){
+ var x=Math.round(o.x/4)*4,y=Math.round(o.y/4)*4;
+ ctx.fillStyle="#5e351f";ctx.fillRect(x-12,y-12,24,24);
+ ctx.fillStyle="#d8903e";ctx.fillRect(x-10,y-10,20,20);
+ ctx.fillStyle="#57311f";ctx.fillRect(x-6,y-5,4,4);ctx.fillRect(x+3,y-7,4,4);ctx.fillRect(x-1,y+3,4,4);
+});
+ctx.fillStyle="#313b4a";ctx.fillRect(tray-4,401,100,6);
+ctx.fillStyle="#d7dce0";ctx.fillRect(tray,407,92,14);
+ctx.fillStyle="#ffffff";ctx.fillRect(tray+8,410,76,5);
+}function step(now){if(dead)return;var dt=Math.min(32,now-last);last=now;tray+=v*dt*.22;v*=.9;tray=Math.max(4,Math.min(324,tray));spawn+=dt;if(spawn>620){spawn=0;arr.push({x:20+Math.random()*380,y:-15,s:2.7+Math.random()*1.7})}arr.forEach(function(o){o.y+=o.s*dt*.075});arr=arr.filter(function(o){if(o.y>398&&o.y<430&&o.x>tray-3&&o.x<tray+95){caught++;body.querySelector("#cc").textContent=caught+"/12";if(caught>=12){dead=true;setTimeout(function(){unlock(id,"Cookie Crew complete — 12 cookies served")},300)}return false}if(o.y>470){missed++;body.querySelector("#cm").textContent=missed+"/5";if(missed>=5){dead=true;setTimeout(function(){gameCookies(id)},600)}return false}return true});draw();if(!dead)raf=requestAnimationFrame(step)}body.querySelector("#cl").onpointerdown=function(){v-=2.2};body.querySelector("#cr").onpointerdown=function(){v+=2.2};cleanup=function(){dead=true;if(raf)cancelAnimationFrame(raf)};raf=requestAnimationFrame(step)}
 function gameWelcome(id){var body=head(id,"Welcome Home","Guests appear around the lobby. Tap them before their welcome window closes.");body.innerHTML='<div class="hud"><span>WELCOMED <b id="ww">0/12</b></span><span>MISSED <b id="wm">0/3</b></span></div><div class="welcomeGrid" id="wg"></div>';var labels=["FRONT DOOR","LOBBY","INFO TABLE","SANCTUARY"],grid=body.querySelector("#wg"),done=0,missed=0,active=-1,dead=false,timer;labels.forEach(function(x,i){var b=document.createElement("button");b.className="welcomeDoor";b.dataset.i=i;b.innerHTML="<b>"+x+"</b>";b.onclick=function(){if(+this.dataset.i===active){var g=this.querySelector(".guest");if(g)g.remove();active=-1;done++;body.querySelector("#ww").textContent=done+"/12";clearTimeout(timer);if(done>=12){dead=true;setTimeout(function(){unlock(id,"Welcome Home complete — 12 guests greeted")},300)}else setTimeout(spawn,150)}};grid.appendChild(b)});function spawn(){if(dead)return;active=Math.floor(Math.random()*4);var g=document.createElement("div");g.className="guest";g.textContent="GUEST";grid.children[active].appendChild(g);timer=setTimeout(function(){if(active>=0){var e=grid.children[active].querySelector(".guest");if(e)e.remove();active=-1;missed++;body.querySelector("#wm").textContent=missed+"/3";if(missed>=3){dead=true;setTimeout(function(){gameWelcome(id)},600)}else spawn()}},850-Math.min(done*25,250))}cleanup=function(){dead=true;clearTimeout(timer)};spawn()}
 function gameKids(id){var body=head(id,"Kids Crew","Tap the glowing ministry need before it disappears. Clear 15 before three expire.");body.innerHTML='<div class="hud"><span>HELPED <b id="kh">0/15</b></span><span>MISSED <b id="km">0/3</b></span></div><div class="kidsGrid" id="kg"></div>';var names=["CAMP","UPWARD","KIDS","SETUP"],grid=body.querySelector("#kg"),done=0,missed=0,active=-1,dead=false,timer;names.forEach(function(x,i){var b=document.createElement("button");b.className="needSpot";b.textContent=x;b.dataset.i=i;b.onclick=function(){if(+this.dataset.i===active){clearTimeout(timer);this.classList.remove("live");active=-1;done++;body.querySelector("#kh").textContent=done+"/15";if(done>=15){dead=true;setTimeout(function(){unlock(id,"Kids Crew complete — 15 needs covered")},300)}else setTimeout(spawn,110)}};grid.appendChild(b)});function spawn(){if(dead)return;active=Math.floor(Math.random()*4);grid.children[active].classList.add("live");timer=setTimeout(function(){if(active>=0){grid.children[active].classList.remove("live");active=-1;missed++;body.querySelector("#km").textContent=missed+"/3";if(missed>=3){dead=true;setTimeout(function(){gameKids(id)},600)}else spawn()}},760-Math.min(done*18,220))}cleanup=function(){dead=true;clearTimeout(timer)};spawn()}
 function gameFitness(id){var body=head(id,"Built to Serve","Alternate LEFT and RIGHT for 24 reps. Every six reps, hit SERVE before continuing.");body.innerHTML='<div class="hud"><span>REPS <b id="fr">0/24</b></span><span>COMBO <b id="fc">0</b></span></div><div class="arena"><div class="display"><b id="ft">LEFT</b></div><div class="fitnessLanes"><button class="repBtn next" id="fl">LEFT</button><button class="repBtn" id="frr">RIGHT</button></div><div class="repBar"><i id="fbar"></i></div><button class="bigAction" id="serve" style="margin-top:12px;opacity:.35" disabled>SERVE</button></div>';var reps=0,combo=0,next=0,dead=false,due=false,l=body.querySelector("#fl"),r=body.querySelector("#frr"),serve=body.querySelector("#serve");function paint(){body.querySelector("#fr").textContent=reps+"/24";body.querySelector("#fc").textContent=combo;body.querySelector("#fbar").style.width=(reps/24*100)+"%";l.classList.toggle("next",next===0&&!due);r.classList.toggle("next",next===1&&!due);body.querySelector("#ft").textContent=due?"SERVE":next===0?"LEFT":"RIGHT";serve.disabled=!due;serve.style.opacity=due?"1":".35"}function rep(w){if(dead||due)return;if(w===next){reps++;combo++;next=1-next;if(reps%6===0)due=true;if(reps>=24&&!due){dead=true;setTimeout(function(){unlock(id,"Built to Serve complete — "+combo+" clean reps")},300)}paint()}else{combo=0;paint()}}l.onclick=function(){rep(0)};r.onclick=function(){rep(1)};serve.onclick=function(){if(!due)return;due=false;combo+=3;if(reps>=24){dead=true;setTimeout(function(){unlock(id,"Built to Serve complete — "+combo+" combo score")},300)}paint()};cleanup=function(){dead=true};paint()}
