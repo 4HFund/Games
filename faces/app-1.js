@@ -33,7 +33,10 @@
     set(k,v){try{localStorage.setItem(k,v)}catch{}},
     json(k,f){try{return JSON.parse(this.get(k,''))||f}catch{return f}}
   };
-  const owned = new Set(Array.isArray(safe.json('facesOwned',[]))?safe.json('facesOwned',[]):[]);
+  const legacyOwned = safe.json('facesFounderyPro',[]);
+  const currentOwned = safe.json('facesOwned',Array.isArray(legacyOwned)?legacyOwned:[]);
+  const owned = new Set(Array.isArray(currentOwned)?currentOwned:[]);
+  if(Array.isArray(legacyOwned)&&legacyOwned.length&&!safe.get('facesOwned','')) safe.set('facesOwned',JSON.stringify(legacyOwned));
   const results = safe.json('facesResults',{});
   let filter='all',currentId=null,sfxOn=safe.get('facesSfx','on')!=='off';
 
