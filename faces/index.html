@@ -590,9 +590,30 @@ h1{font-weight:700;letter-spacing:-.03em}
   .name{font-size:14px}.card .cardNo{font-size:5px}.heroGrid>div:first-child:after{height:48px}
 }
 
+
+.bootScreen{position:fixed;inset:0;z-index:5000;display:grid;place-items:center;align-content:center;gap:14px;padding:22px;text-align:center;overflow:hidden;background:linear-gradient(180deg,#071332 0,#17366d 38%,#8f4a77 64%,#ff7b35 78%,#07152f 79%);transition:opacity .3s steps(4,end),transform .3s steps(4,end)}
+.bootScreen.leaving{opacity:0;transform:scale(1.035)}
+.bootStars{position:absolute;inset:0 0 35% 0;background:radial-gradient(circle at 8% 18%,#fff 0 1px,transparent 2px),radial-gradient(circle at 23% 9%,#ffc532 0 1px,transparent 2px),radial-gradient(circle at 52% 17%,#fff 0 1px,transparent 2px),radial-gradient(circle at 77% 12%,#ffc532 0 1px,transparent 2px),radial-gradient(circle at 91% 24%,#fff 0 1px,transparent 2px)}
+.bootChurch{position:relative;width:170px;height:138px;filter:drop-shadow(6px 6px 0 rgba(2,5,16,.4))}
+.bootChurch i{position:absolute;display:block}.churchBody{left:30px;right:30px;bottom:0;height:68px;background:#16274e;border:5px solid #07152f;box-shadow:inset 0 0 0 4px #31538b}.steeple{left:69px;bottom:64px;width:32px;height:52px;background:#16274e;border:5px solid #07152f;clip-path:polygon(50% 0,100% 34%,100% 100%,0 100%,0 34%)}.crossV{left:82px;top:0;width:8px;height:32px;background:#ffc532}.crossH{left:73px;top:10px;width:26px;height:8px;background:#ffc532}.door{left:75px;bottom:5px;width:22px;height:35px;background:#ff7a16;border:4px solid #07152f}
+.bootLogo{position:relative;z-index:2}.bootLogo span,.bootLogo em{display:block;font-family:"Press Start 2P",monospace;font-style:normal}.bootLogo span{font-size:8px;color:#ffc532;margin-bottom:4px}.bootLogo b{display:block;font-family:"Pixelify Sans",monospace;font-size:clamp(44px,10vw,86px);line-height:.84;color:#fff4d4;text-shadow:5px 5px 0 #1767a5,9px 9px 0 #020713}.bootLogo em{margin-top:10px;font-size:8px;color:#ff7a16;text-shadow:2px 2px 0 #6f2304}
+.bootSub{position:relative;z-index:2;max-width:590px;color:#edf6ff;font-family:"Press Start 2P",monospace;font-size:5px;line-height:1.9}.bootProgress{position:relative;z-index:2;width:min(420px,88vw);display:grid;gap:5px;color:#ffc532;font-family:"Press Start 2P",monospace;font-size:5px}.bootProgress i{display:block;height:12px;border:3px solid #d8efff;background:#07152f;padding:2px}.bootProgress b{display:block;height:100%;width:0;background:repeating-linear-gradient(90deg,#ff6b12 0 22px,#ffc532 22px 27px)}
+.bootActions{position:relative;z-index:2;display:grid;gap:8px;width:min(330px,90vw)}.bootActions button{min-height:48px;border:3px solid #ffe6a0;border-radius:0;background:#dc4f0c;color:#fff;box-shadow:0 6px 0 #6d1d03;font-family:"Press Start 2P",monospace;font-size:7px;text-shadow:2px 2px 0 #6d1d03}.bootActions button+button{border-color:#9ed8ff;background:#164d8d;box-shadow:0 6px 0 #071e43}.bootHint{position:relative;z-index:2;color:#a9cae7;font-family:"Press Start 2P",monospace;font-size:5px;animation:blink 1.2s steps(2,end) infinite}
+.gameActions{display:flex;align-items:center;gap:7px}.gameMini{min-height:36px;border:2px solid #8ad4ff;background:#0b2b5a;color:#fff;border-radius:0;box-shadow:2px 2px 0 #020713;font-family:"Press Start 2P",monospace;font-size:5px;padding:0 9px}.slot small{max-width:210px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media(max-width:560px){.bootScreen{gap:11px;padding:14px}.bootChurch{width:138px;height:110px}.churchBody{left:24px;right:24px;height:54px}.steeple{left:55px;bottom:51px}.crossV{left:66px}.crossH{left:57px}.door{left:59px}.bootLogo b{font-size:46px}.bootSub{font-size:4px}.gameMini{font-size:4px;padding:0 6px}}
+
 </style>
 </head>
 <body>
+<div class="bootScreen" id="bootScreen">
+  <div class="bootStars"></div>
+  <div class="bootChurch"><i class="crossV"></i><i class="crossH"></i><i class="steeple"></i><i class="churchBody"></i><i class="door"></i></div>
+  <div class="bootLogo"><span>FACES OF</span><b>THE FOUNDERY</b><em>SEASON 01</em></div>
+  <div class="bootSub">A 16-BIT MINI-GAME COLLECTION ABOUT REAL PEOPLE • A REAL CHURCH • A BIGGER STORY</div>
+  <div class="bootProgress"><span id="bootCollected">0 / 16 CARDS</span><i><b id="bootFill"></b></i></div>
+  <div class="bootActions"><button type="button" id="bootStart">▶ START GAME</button><button type="button" id="bootCollection">CARD COLLECTION</button></div>
+  <div class="bootHint">SUNDAYS ARE JUST THE START</div>
+</div>
 <div class="app">
 <div class="nav"><div class="brand"><div class="logo">F</div><div><b>Faces of The Foundery</b><span class="seasonTag">Season 01 • Interactive Collection</span></div></div><div class="navProgressWrap"><div class="navpill"><span id="count">0</span>/<span id="total">16</span> COLLECTED</div><div class="navMeter"><i id="navFill"></i></div><button class="sfxToggle" id="sfxToggle" type="button">SFX ON</button></div></div>
 <section class="hero"><div class="heroGrid"><div><div class="eyebrow">Season 01 • 16-Bit Edition</div><h1>FACES OF<br><span>THE FOUNDERY</span></h1><p>One church. Sixteen playable stories. Choose a mission, step into a retro mini-game inspired by how each person serves, and unlock their collectible card.</p><div class="chips"><div class="chip">PRESS START</div><div class="chip">16 MISSIONS</div><div class="chip">QR TO PLAY</div><div class="chip">COLLECT THEM ALL</div></div></div><aside class="heroPanel"><div class="panelKicker">Player Select</div><div class="panelBig">16<br><span>MISSIONS LOADED</span></div><div class="panelFoot"><span>SEASON 01</span><span>READY!</span></div></aside></div></section>
@@ -601,7 +622,7 @@ h1{font-weight:700;letter-spacing:-.03em}
 <section class="binder"><div class="sectionHead"><div><h2>Your Foundery Binder</h2><p>Complete missions to fill the collection.</p></div></div><div class="binderMeter"><i id="binderFill"></i></div><div class="bindergrid" id="binder"></div></section>
 <div class="foot">SEASON 01 • PROGRESS SAVES ON THIS DEVICE • SUNDAYS ARE JUST THE START</div>
 </div>
-<div class="overlay" id="overlay"><div class="shell" id="shell"><div class="gamebar"><div class="gbrand"><div class="dot"></div><div><div class="gt" id="gt">Mission</div><div class="gs" id="gs">Faces of The Foundery</div></div></div><button class="close" id="close">×</button></div><div class="stage" id="stage"></div></div></div>
+<div class="overlay" id="overlay"><div class="shell" id="shell"><div class="gamebar"><div class="gbrand"><div class="dot"></div><div><div class="gt" id="gt">Mission</div><div class="gs" id="gs">Faces of The Foundery</div></div></div><div class="gameActions"><button class="gameMini" id="restartBtn" type="button">RESTART</button><button class="close" id="close" type="button">×</button></div></div><div class="stage" id="stage"></div></div></div>
 <script>
 var PEOPLE={
 bobby:{name:"Pastor Bobby Westfall",glyph:"BW",series:"LEADERSHIP",accent:"#ff762f",role:"Lead Pastor • Storyteller",mission:"Message Forge",tag:"Remember the flow. Build the message.",game:"bobby"},
@@ -621,7 +642,7 @@ parr:{name:"The Parr Family",glyph:"PF",series:"SPORTS + MEDIA + BUILDING CARE",
 sandy:{name:"Sandy Hart",glyph:"SH",series:"HOSPITALITY + KENNY'S KLOSET LEGACY",accent:"#f4b46b",role:"Sunday Hospitality • Helps pass out cookies each Sunday • Kenny's Kloset is named in memory of her husband, Ken Hart",mission:"Cookie Crew",tag:"A warm welcome can start with something simple.",game:"cookies"},
 penrod:{name:"Judy + Ron Penrod",glyph:"JP",series:"HOSPITALITY",accent:"#f0d27d",role:"Hospitality Ministry",mission:"Welcome Home",tag:"Open the doors. Notice people. Make them feel welcome.",game:"welcome"}
 };
-var owned=new Set(JSON.parse(localStorage.getItem("facesFounderyPro")||"[]")),cleanup=null,activeFilter="all";var FILTER_MAP={leadership:["bobby","dave"],kids:["kelly","upward","walker","bailee"],hospitality:["cook","sandy","penrod"],sports:["upward","riggs","parr"],outreach:["beatty","mozingo"],behind:["cody","vargo","parr","mozingo"]};function setFilter(k,btn){activeFilter=k;document.querySelectorAll(".filterBtn").forEach(function(x){x.classList.toggle("active",x===btn)});render()}
+var owned=new Set(JSON.parse(localStorage.getItem("facesFounderyPro")||"[]")),results=JSON.parse(localStorage.getItem("facesResults")||"{}"),cleanup=null,activeFilter="all",currentGameId=null;var FILTER_MAP={leadership:["bobby","dave"],kids:["kelly","upward","walker","bailee"],hospitality:["cook","sandy","penrod"],sports:["upward","riggs","parr"],outreach:["beatty","mozingo"],behind:["cody","vargo","parr","mozingo"]};function setFilter(k,btn){activeFilter=k;document.querySelectorAll(".filterBtn").forEach(function(x){x.classList.toggle("active",x===btn)});render()}
 function save(){localStorage.setItem("facesFounderyPro",JSON.stringify(Array.from(owned)));render()}
 function render(){
 var g=document.getElementById("grid"),b=document.getElementById("binder"),keys=Object.keys(PEOPLE),total=keys.length;
@@ -631,7 +652,7 @@ var p=PEOPLE[id],yes=owned.has(id),visible=activeFilter==="all"||(FILTER_MAP[act
 var c=document.createElement("article");c.className="card"+(yes?" owned":"")+(visible?"":" filteredOut");c.dataset.id=id;c.style.setProperty("--a",p.accent);c.style.setProperty("--delay",(Math.min(i,10)*35)+"ms");
 c.innerHTML='<div class="state">'+(yes?"✓ collected":"unlock by play")+'</div><div class="cardArt"><div class="series"><span>'+p.series+'</span></div><div class="cardNo">#'+String(i+1).padStart(2,"0")+'</div><div class="mono">'+p.glyph+'</div><div class="namewrap"><div class="mission">'+p.mission+'</div><div class="name">'+p.name+'</div></div></div><div class="body"><div class="role">'+p.role+'</div><div class="cardTag">'+p.tag+'</div><div class="playline"><b>'+(yes?"REPLAY MISSION":"PLAY MISSION")+'</b><div class="arrow">↗</div></div></div>';
 c.onclick=function(){openGame(id)};g.appendChild(c);
-var sl=document.createElement("div");sl.className="slot"+(yes?" owned":"");sl.innerHTML='<div><strong>'+(yes?p.name:"Locked")+'</strong><small>'+(yes?p.series:"Complete the mission")+'</small></div><div class="seal">'+(yes?p.glyph:"?")+'</div>';b.appendChild(sl)
+var sl=document.createElement("div");sl.className="slot"+(yes?" owned":"");sl.innerHTML='<div><strong>'+(yes?p.name:"Locked")+'</strong><small>'+(yes?(results[id]?"LAST RUN • "+results[id]:p.series):"Complete the mission")+'</small></div><div class="seal">'+(yes?p.glyph:"?")+'</div>';b.appendChild(sl)
 });
 var pct=total?Math.round(owned.size/total*100):0;
 document.getElementById("count").textContent=owned.size;document.getElementById("total").textContent=total;document.getElementById("progress").textContent=owned.size+" OF "+total+" COMPLETE";
@@ -639,7 +660,7 @@ document.getElementById("navFill").style.width=pct+"%";document.getElementById("
 }
 function head(id,title,copy){var p=PEOPLE[id],shell=document.getElementById("shell"),num=Object.keys(PEOPLE).indexOf(id)+1;shell.style.setProperty("--a",p.accent);shell.dataset.game=id;document.getElementById("gt").textContent=p.mission;document.getElementById("gs").textContent=p.name+" • "+p.series;document.getElementById("stage").innerHTML='<div class="stageMeta"><span>STAGE '+String(num).padStart(2,"0")+'</span><span>PLAYER 1</span><span>SEASON 01</span></div><div class="intro"><h3>'+title+'</h3><p>'+copy+'</p></div><div id="body"></div>';return document.getElementById("body")}
 function openGame(id){
-closeGame(false);var p=PEOPLE[id],n=Object.keys(PEOPLE).indexOf(id)+1,shell=document.getElementById("shell"),st=document.getElementById("stage");
+closeGame(false);currentGameId=id;var p=PEOPLE[id],n=Object.keys(PEOPLE).indexOf(id)+1,shell=document.getElementById("shell"),st=document.getElementById("stage");
 shell.style.setProperty("--a",p.accent);shell.dataset.game=id;document.getElementById("gt").textContent="Mission Briefing";document.getElementById("gs").textContent=p.name+" • "+p.series;
 document.getElementById("overlay").classList.add("show");document.body.style.overflow="hidden";
 st.innerHTML='<div class="missionSplash"><div class="launchCard" style="--a:'+p.accent+'"><div class="launchCardIn"><div class="launchTop"><span>FACES OF THE FOUNDERY</span><span>#'+String(n).padStart(2,"0")+'</span></div><div class="launchGlyph">'+p.glyph+'</div><div><div class="launchName">'+p.name+'</div><div class="launchSeries">'+p.series+'</div></div></div></div><div class="missionCopy"><div class="micro">STAGE '+String(n).padStart(2,"0")+' / '+String(Object.keys(PEOPLE).length).padStart(2,"0")+' • PLAYER 1</div><h3>'+p.mission+'</h3><p>'+p.tag+'</p><p class="missionRole">'+p.role+'</p><div class="launchActions"><button class="startMission">Start mission</button><button class="secondaryMission">Back</button></div></div></div>';
@@ -787,9 +808,23 @@ function paintSfx(){if(!sfxBtn)return;sfxBtn.textContent=sfxEnabled?"SFX ON":"SF
 if(sfxBtn){sfxBtn.onclick=function(){sfxEnabled=!sfxEnabled;localStorage.setItem("facesSfx",sfxEnabled?"on":"off");paintSfx();if(sfxEnabled)sfx("select")};paintSfx()}
 document.addEventListener("pointerdown",function(e){if(e.target.closest("button")&&!e.target.closest("#sfxToggle"))sfx("select")},{passive:true});
 var oldUnlock=unlock;
-unlock=function(id,stats){sfx("clear");oldUnlock(id,stats)};
+unlock=function(id,stats){results[id]=stats;localStorage.setItem("facesResults",JSON.stringify(results));sfx("clear");oldUnlock(id,stats)};
 
-document.querySelectorAll(".filterBtn").forEach(function(btn){btn.onclick=function(){setFilter(btn.dataset.filter,btn)}});render();var direct=new URLSearchParams(location.search).get("person");if(direct&&PEOPLE[direct])setTimeout(function(){openGame(direct)},300);
+document.querySelectorAll(".filterBtn").forEach(function(btn){btn.onclick=function(){setFilter(btn.dataset.filter,btn)}});
+render();
+var direct=new URLSearchParams(location.search).get("person");
+var restartBtn=document.getElementById("restartBtn");
+if(restartBtn)restartBtn.onclick=function(){if(currentGameId)startGame(currentGameId)};
+var boot=document.getElementById("bootScreen");
+function closeBoot(target){if(!boot)return;boot.classList.add("leaving");sessionStorage.setItem("facesBootSeen","1");sfx("go");setTimeout(function(){boot.style.display="none";if(target){var el=document.querySelector(target);if(el)el.scrollIntoView({behavior:"smooth",block:"start"})}},360)}
+if(boot){
+ document.getElementById("bootCollected").textContent=owned.size+" / "+Object.keys(PEOPLE).length+" CARDS";
+ document.getElementById("bootFill").style.width=Math.round(owned.size/Object.keys(PEOPLE).length*100)+"%";
+ document.getElementById("bootStart").onclick=function(){closeBoot(".sectionHead")};
+ document.getElementById("bootCollection").onclick=function(){closeBoot(".binder")};
+ if(direct||sessionStorage.getItem("facesBootSeen")==="1")boot.style.display="none";
+}
+if(direct&&PEOPLE[direct])setTimeout(function(){openGame(direct)},300);
 </script>
 </body>
 </html>
